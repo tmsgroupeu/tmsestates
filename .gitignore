@@ -1,1 +1,5 @@
 node_modules/
+
+.env
+cms/.env
+web/.env.local
