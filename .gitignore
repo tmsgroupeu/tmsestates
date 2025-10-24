@@ -1,5 +1,26 @@
+# Node
 node_modules/
+npm-debug.log*
+yarn-error.log*
+pnpm-debug.log*
 
+# Next.js
+web/.next/
+web/out/
+web/.vercel/
+
+# Strapi
+cms/.cache/
+cms/.tmp/
+cms/build/
+cms/.strapi-updater.json
+
+# Env & local
 .env
+.env.*
 cms/.env
-web/.env.local
+web/.env*
+!.env.example
+
+# Mac
+.DS_Store

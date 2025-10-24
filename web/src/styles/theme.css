@@ -1,0 +1,31 @@
+:root{
+  /* from designer */
+  --navy:#0A2342;
+  --black:#111111;
+  --gold:#B8860B; /* Pantone 871C approx */
+  --gold-dk:#a7770a;
+  --ink:#221E1F;
+  --text:#333333;
+  --text-on-dark:#f6f7f8;
+  --surface:#ffffff;
+  --surface-2:#f7f8fb;
+  --shadow: 0 24px 60px -25px rgba(0,0,0,.35);
+
+  --radius: 16px;
+  --easing: cubic-bezier(.22,.61,.36,1);
+  --t100: 100ms; --t200: 200ms; --t350: 350ms; --t600: 600ms;
+}
+
+/* glass helpers */
+.glass{ background: rgba(255,255,255,.08); backdrop-filter: blur(16px);
+        border: 1px solid rgba(255,255,255,.18); }
+.glass-dark{ background: rgba(0,0,0,.25); backdrop-filter: blur(16px);
+             border: 1px solid rgba(255,255,255,.08); }
+
+.btn{ display:inline-flex; align-items:center; justify-content:center;
+      border-radius:9999px; padding:.75rem 1.25rem; font-weight:600;
+      transition: transform var(--t100) var(--easing), opacity var(--t100) var(--easing); }
+.btn:active{ transform: translateY(1px); }
+.btn-primary{ background:var(--gold); color:white; }
+.btn-primary:hover{ background:var(--gold-dk); }
+.btn-outline{ color:#fff; border:1px solid rgba(255,255,255,.35); }
