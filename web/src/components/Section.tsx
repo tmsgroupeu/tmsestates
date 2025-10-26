@@ -1,68 +1,77 @@
-"use client";
-import { motion, useInView, Variants, Transition } from "framer-motion";
-import { useRef } from "react";
+/* Enhanced: ./components/Section.tsx */
 
-// Define a reusable transition object with a specific type.
-const viewTransition: Transition = { 
-  duration: 0.7, 
-  ease: [0.25, 1, 0.5, 1] 
+"use client";
+import { useRef } from "react";
+import { motion, useInView, Variants } from "framer-motion";
+
+const sectionVariants: Variants = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: { staggerChildren: 0.2, delayChildren: 0.1 }
+  },
 };
 
-// Define the base variants using the transition object.
-const sectionVariants: Variants = {
+const itemVariants: Variants = {
   hidden: { opacity: 0, y: 30 },
   visible: { 
     opacity: 1, 
     y: 0,
-    transition: viewTransition
-  },
+    transition: { duration: 0.7, ease: [0.25, 1, 0.5, 1] }
+  }
 };
 
-export default function Section({ id, title, subtitle, children }: {
+type SectionProps = {
   id?: string;
+  className?: string;
+  children: React.ReactNode;
   title?: string;
   subtitle?: string;
-  children: React.ReactNode;
-}) {
-  const ref = useRef(null);
-  const inView = useInView(ref, { margin: "-20% 0px", once: true });
+  variant?: 'light' | 'dark';
+};
 
-  // Create the variants for the content div dynamically and safely.
-  const contentVariants: Variants = {
-    hidden: sectionVariants.hidden,
-    visible: {
-      opacity: 1, // Re-state properties for clarity
-      y: 0,
-      transition: { 
-        ...viewTransition, // Spread the base transition properties
-        delay: (title || subtitle) ? 0.2 : 0 // Add the conditional delay
-      }
-    }
-  };
+export default function Section({ id, className, children, title, subtitle, variant = 'light' }: SectionProps) {
+  const ref = useRef(null);
+  const inView = useInView(ref, { margin: "-30% 0px", once: true });
+
+  const titleColor = variant === 'dark' ? 'text-white' : 'text-navy';
+  const subtitleColor = variant === 'dark' ? 'text-white/80' : 'text-muted-foreground';
 
   return (
-    <section id={id} className="section">
+    <motion.section 
+      id={id} 
+      ref={ref} 
+      className={`section ${className || ''}`}
+      initial="hidden"
+      animate={inView ? "visible" : "hidden"}
+      variants={sectionVariants}
+    >
       {(title || subtitle) && (
-        <motion.div
-          ref={ref}
-          initial="hidden"
-          animate={inView ? "visible" : "hidden"}
-          variants={sectionVariants}
-          className="text-center mb-12 max-w-3xl mx-auto"
-        >
-          {title && <h2 className="text-3xl font-bold sm:text-4xl text-navy font-display">{title}</h2>}
-          {subtitle && <p className="text-muted-foreground mt-3 text-lg">{subtitle}</p>}
-        </motion.div>
+        <div className="text-center mb-12 max-w-3xl mx-auto">
+          {title && (
+            <motion.h2 
+              variants={itemVariants} 
+              className={`text-4xl font-bold sm:text-5xl font-montserrat ${titleColor}`}
+            >
+              {title}
+            </motion.h2>
+          )}
+          {subtitle && (
+            <motion.p 
+              variants={itemVariants}
+              className={`mt-4 text-lg ${subtitleColor}`}
+            >
+              {subtitle}
+            </motion.p>
+          )}
+        </div>
       )}
-      <motion.div
-        // Use the same ref as the header to trigger animation, but with its own variants.
-        ref={ref} 
-        initial="hidden"
-        animate={inView ? "visible" : "hidden"}
-        variants={contentVariants}
-      >
+      
+      {/* Motion variants will be inherited by this div's children */}
+      <motion.div variants={itemVariants}>
         {children}
       </motion.div>
-    </section>
+
+    </motion.section>
   );
-}
+};

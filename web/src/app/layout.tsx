@@ -1,27 +1,28 @@
-import "./globals.css";
-import "@/styles/theme.css";
-import { Montserrat, Open_Sans } from "next/font/google";
-import Navbar from "@/components/Navbar";
+import type { Metadata } from "next";
+import { Inter, Montserrat } from "next/font/google";
+import Header from "@/components/Header";
 import Footer from "@/components/Footer";
-import SmoothScrollProvider from "@/components/providers/SmoothScrollProvider";
+import "./globals.css";
 
-const montserrat = Montserrat({ subsets: ["latin"], weight: ["400","600","700"], variable: "--font-montserrat" });
-const openSans   = Open_Sans({ subsets: ["latin"], weight: ["400","600"], variable: "--font-open-sans" });
+const inter = Inter({ subsets: ["latin"], variable: '--font-inter' });
+const montserrat = Montserrat({ subsets: ["latin"], weight: ['400', '700'], variable: '--font-montserrat' });
 
-export const metadata = {
-  title: "TMS Estates",
-  description: "Your trusted partner in premium real estate.",
+export const metadata: Metadata = {
+  title: "TMS Estates - Luxury Real Estate in Limassol",
+  description: "The definitive guide to luxury real estate in Limassol.",
 };
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+export default function RootLayout({
+  children,
+}: Readonly<{
+  children: React.ReactNode;
+}>) {
   return (
-    <html lang="en" className={`${montserrat.variable} ${openSans.variable}`}>
-      <body className="bg-[var(--light-blue)] text-[var(--text)] antialiased">
-      <SmoothScrollProvider>
-        <Navbar />
-        <main>{children}</main>
+    <html lang="en" className={`${inter.variable} ${montserrat.variable} scroll-smooth`}>
+      <body>
+        <Header />
+        {children}
         <Footer />
-      </SmoothScrollProvider>
       </body>
     </html>
   );

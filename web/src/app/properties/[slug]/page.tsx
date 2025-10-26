@@ -1,137 +1,78 @@
-import Image from "next/image";
-import type { Metadata } from "next";
+/* Fully Updated: ./app/properties/[slug]/page.tsx */
+
 import { fetchPropertyBySlug } from "@/lib/cms";
-import { MapPin, Phone, Mail } from "lucide-react";
+import Image from "next/image";
+import { notFound } from "next/navigation";
+import { BedDouble, Bath, Ruler, MapPin } from "lucide-react";
+import { getStrapiMediaUrl } from "@/lib/media";
+import { Suspense } from "react";
 
-function attrs<T = any>(p: any): T {
-  return (p?.attributes ?? p ?? {}) as T;
+function formatPrice(price?: number, currency = '€'): string {
+    if (typeof price !== 'number' || price <= 0) return "Price on Request";
+    return `${currency}${price.toLocaleString('en-US')}`;
 }
 
-type RouteParams = { slug: string };
-
-export async function generateMetadata({
-  params,
-}: { params: Promise<RouteParams> }): Promise<Metadata> {
-  const { slug } = await params;
-  const p = await fetchPropertyBySlug(slug);
-  if (!p) return {};
-
-  const a = attrs(p);
-  const images: string[] = (a.images?.data ?? [])
-    .map((i: any) => i?.attributes?.url)
-    .filter((u: unknown): u is string => typeof u === "string");
-
-  return {
-    title: a.seoTitle || a.title || "Property",
-    description:
-      a.seoDescription ||
-      (typeof a.description === "string" ? a.description.slice(0, 155) : undefined),
-    openGraph: { images },
-  };
-}
-
-export default async function PropertyPage({
-  params,
-}: { params: Promise<RouteParams> }) {
-  const { slug } = await params;
-  const p = await fetchPropertyBySlug(slug);
-  if (!p) {
-    return (
-      <div className="section py-16">
-        <h1 className="text-2xl font-semibold">Property not found</h1>
-        <p className="text-neutral-600 mt-2">This listing may have been removed or unpublished.</p>
-      </div>
-    );
+export default async function PropertyDetails({ params }: { params: { slug: string } }) {
+  const property = await fetchPropertyBySlug(params.slug);
+  
+  if (!property) {
+    notFound(); // Triggers the not-found page
   }
 
-  const a = attrs(p);
-
-  type Img = { url?: string; alt: string };
-  const imgsRaw: Img[] = (a.images?.data ?? []).map((i: any) => ({
-    url: i?.attributes?.url as string | undefined,
-    alt: i?.attributes?.alternativeText || a.title || "Property image",
-  }));
-
-  // Type guard -> narrows to { url: string; alt: string }
-  const imgs = imgsRaw.filter((img): img is { url: string; alt: string } =>
-    typeof img.url === "string" && img.url.length > 0
-  );
-
-  const title: string = a.title ?? "Property";
-  const city: string | undefined = a.city;
-  const address: string | undefined = a.address;
-  const price = typeof a.price === "number" ? a.price.toLocaleString() : a.price;
-  const currency = a.currency ?? "€";
-  const bedrooms = a.bedrooms;
-  const bathrooms = a.bathrooms;
-  const area = a.area;
-  const status = a.status;
+  const images = (property.images || []).map(getStrapiMediaUrl);
+  const heroImage = images[0] || '/placeholder.jpg';
 
   return (
-    <article className="section py-10">
-      <h1 className="text-4xl font-bold" style={{ fontFamily: "var(--font-montserrat)" }}>
-        {title}
-      </h1>
-      <div className="text-neutral-600 mt-1 flex items-center gap-2">
-        <MapPin size={16} />
-        <span>{[city, address].filter(Boolean).join(" • ") || "Location available on request"}</span>
-      </div>
+    <main className="pt-24 bg-paper">
+      <section className="relative h-[40vh] md:h-[60vh] w-full">
+         <Image src={heroImage} alt={property.title} fill priority className="object-cover" />
+         <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-black/20 to-transparent" />
+      </section>
 
-      <div className="grid gap-4 sm:grid-cols-2 mt-8">
-        {imgs.length > 0 ? (
-          imgs.slice(0, 6).map((img, i) => (
-            <div key={i} className="relative aspect-[4/3] rounded-xl overflow-hidden">
-              <Image src={img.url} alt={img.alt} fill className="object-cover" />
+      <div className="section">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-12 max-w-7xl mx-auto">
+            <div className="lg:col-span-2">
+                <h1 className="text-4xl md:text-5xl font-bold font-montserrat text-navy">{property.title}</h1>
+                <div className="text-lg text-muted-foreground mt-2 flex items-center gap-2">
+                    <MapPin size={20} />
+                    <span>{property.address || property.city}</span>
+                </div>
+                
+                <div className="mt-8 py-6 border-y flex flex-wrap items-center gap-x-8 gap-y-4 text-lg">
+                    {property.bedrooms && <span className="inline-flex items-center gap-2.5"><BedDouble className="text-muted-foreground"/> {property.bedrooms} Bedrooms</span>}
+                    {property.bathrooms && <span className="inline-flex items-center gap-2.5"><Bath className="text-muted-foreground"/> {property.bathrooms} Bathrooms</span>}
+                    {property.area && <span className="inline-flex items-center gap-2.5"><Ruler className="text-muted-foreground"/> {property.area} m²</span>}
+                </div>
+
+                <h3 className="text-2xl font-bold font-montserrat mt-10 mb-4 text-navy">Description</h3>
+                {/* For production, use a library like 'react-markdown' to safely render Markdown */}
+                <div className="prose prose-lg max-w-none">
+                    <p>{property.description?.replace(/\n/g, '<br />') || 'No description available.'}</p>
+                </div>
             </div>
-          ))
-        ) : (
-          <div className="relative aspect-[4/3] rounded-xl overflow-hidden bg-neutral-100 grid place-items-center sm:col-span-2">
-            <span className="text-neutral-500">Images coming soon</span>
-          </div>
-        )}
-      </div>
 
-      <div className="grid lg:grid-cols-3 gap-8 mt-10">
-        <div className="lg:col-span-2 space-y-6 leading-relaxed text-neutral-800">
-          {a.description ? <p>{a.description}</p> : <p className="text-neutral-600">Description coming soon.</p>}
-
-          <div className="glass rounded-2xl overflow-hidden h-72">
-            <iframe
-              title="map"
-              className="w-full h-full"
-              referrerPolicy="no-referrer-when-downgrade"
-              loading="lazy"
-              src={`https://www.google.com/maps?q=${encodeURIComponent(address || city || "Cyprus")}&output=embed`}
-            />
-          </div>
+            <aside className="lg:col-span-1">
+                <div className="sticky top-32 bg-white p-8 rounded-xl shadow-medium">
+                    <div className="text-4xl font-bold text-gold mb-6">{formatPrice(property.price, property.currency)}</div>
+                    <a href="#contact" className="btn btn-primary w-full">Enquire Now</a>
+                </div>
+            </aside>
         </div>
 
-        <aside className="lg:col-span-1 lg:sticky lg:top-20 h-fit">
-          <div className="glass rounded-2xl p-6 space-y-5">
-            <div className="text-2xl font-semibold">
-              {price ? `${currency}${price}` : "Price on request"}
+        {images.length > 1 && (
+            <div className="mt-24">
+                <h3 className="text-3xl font-bold font-montserrat mb-8 text-center text-navy">Property Gallery</h3>
+                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+                    {images.map((img, index) => (
+                        <div key={index} className="relative aspect-video rounded-lg overflow-hidden">
+                             <Image src={img} alt={`${property.title} gallery image ${index + 1}`} fill className="object-cover"/>
+                        </div>
+                    ))}
+                </div>
             </div>
+        )}
 
-            <div className="flex flex-wrap gap-3 text-sm text-neutral-700">
-              {bedrooms != null && <span className="glass rounded-full px-3 py-1">Bedrooms: <b>{bedrooms}</b></span>}
-              {bathrooms != null && <span className="glass rounded-full px-3 py-1">Bathrooms: <b>{bathrooms}</b></span>}
-              {area != null && <span className="glass rounded-full px-3 py-1">Area: <b>{area} m²</b></span>}
-              {status && <span className="glass rounded-full px-3 py-1">Status: <b>{String(status).replace("-", " ")}</b></span>}
-            </div>
-
-            <a href="#contact" className="btn btn-primary w-full text-center">Request viewing</a>
-
-            <div className="flex gap-3 text-sm text-neutral-700">
-              <a className="glass rounded-full px-3 py-2 inline-flex items-center gap-2" href="tel:+1234567890">
-                <Phone size={16}/> Call
-              </a>
-              <a className="glass rounded-full px-3 py-2 inline-flex items-center gap-2" href="mailto:info@tmsestates.com">
-                <Mail size={16}/> Email
-              </a>
-            </div>
-          </div>
-        </aside>
       </div>
-    </article>
+    </main>
   );
 }

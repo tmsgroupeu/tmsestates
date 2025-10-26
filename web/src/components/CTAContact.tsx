@@ -1,42 +1,33 @@
+/* Enhanced: ./components/CTAContact.tsx */
+import { Mail, MessageCircle, Send } from 'lucide-react';
+
+const contactBubbles = [
+    { icon: MessageCircle, label: 'WhatsApp', href: 'https://wa.me/YOUR_NUMBER' },
+    { icon: Mail, label: 'Email', href: 'mailto:info@tmsestates.com' },
+    { icon: Send, label: 'Telegram', href: 'https://t.me/YOUR_USERNAME' },
+];
+
 export default function CTAContact() {
   return (
-    <section id="contact" className="py-16 bg-navy text-text-on-dark">
-      <div className="section">
-        <div className="grid lg:grid-cols-2 gap-x-12 gap-y-8 items-center">
-          <div className="max-w-lg">
-            <h3 className="text-3xl font-bold font-display">Begin Your Property Journey</h3>
-            <p className="text-white/80 mt-3 text-lg">
-              Whether you are buying, selling, or simply exploring options, our advisors are ready to provide a private, no-obligation consultation.
-            </p>
-            <ul className="mt-6 space-y-3 text-white/80">
-              <li className="flex items-center gap-3">✓ <span className="flex-1">Access to exclusive on and off-market listings.</span></li>
-              <li className="flex items-center gap-3">✓ <span className="flex-1">In-depth market analysis tailored to your goals.</span></li>
-              <li className="flex items-center gap-3">✓ <span className="flex-1">A confidential and discreet service at all times.</span></li>
-            </ul>
-          </div>
+    <section id="contact" className="bg-navy text-text-on-dark">
+      <div className="section text-center">
+        <h3 className="text-4xl font-bold font-montserrat">Begin Your Property Journey</h3>
+        <p className="text-white/80 mt-4 text-lg max-w-3xl mx-auto">
+          Whether buying, selling, or exploring, our advisors are ready for a private consultation. Reach out directly through your preferred channel.
+        </p>
 
-          <form className="glass rounded-xl p-6 grid gap-4">
-            <div className="grid sm:grid-cols-2 gap-4">
-              <div>
-                <label htmlFor="name" className="sr-only">Full Name</label>
-                <input id="name" type="text" className="w-full glass-dark rounded-lg px-4 py-3 text-white placeholder-white/70 bg-transparent border border-white/20 focus:ring-gold focus:border-gold" placeholder="Full name" />
+        <div className="flex justify-center items-center gap-8 sm:gap-12 flex-wrap mt-14">
+          {contactBubbles.map((item) => (
+            <a key={item.label} href={item.href} target="_blank" rel="noopener noreferrer" className="group flex flex-col items-center gap-4 text-center">
+              <div className="bg-gold/95 text-navy p-6 rounded-full shadow-lg transition-all duration-300 ease-out group-hover:scale-110 group-hover:-translate-y-2 group-hover:shadow-xl transform-gpu">
+                <item.icon size={36} />
               </div>
-              <div>
-                <label htmlFor="email" className="sr-only">Email</label>
-                <input id="email" type="email" className="w-full glass-dark rounded-lg px-4 py-3 text-white placeholder-white/70 bg-transparent border border-white/20 focus:ring-gold focus:border-gold" placeholder="Email" />
-              </div>
-            </div>
-            <div>
-              <label htmlFor="phone" className="sr-only">Phone</label>
-              <input id="phone" type="tel" className="w-full glass-dark rounded-lg px-4 py-3 text-white placeholder-white/70 bg-transparent border border-white/20 focus:ring-gold focus:border-gold" placeholder="Phone (optional)" />
-            </div>
-            <div>
-              <label htmlFor="message" className="sr-only">Message</label>
-              <textarea id="message" rows={4} className="w-full glass-dark rounded-lg px-4 py-3 text-white placeholder-white/70 bg-transparent border border-white/20 focus:ring-gold focus:border-gold" placeholder="Tell us about your property requirements..." />
-            </div>
-            <button type="submit" className="btn btn-primary w-full">Request Consultation</button>
-          </form>
+              <span className="font-semibold text-white/90">{item.label}</span>
+            </a>
+          ))}
         </div>
+        
+        <p className="mt-16 text-white/60">Or contact us at <a href="mailto:info@tmsestates.com" className="font-semibold text-white/90 hover:text-gold transition-colors">info@tmsestates.com</a></p>
       </div>
     </section>
   );
