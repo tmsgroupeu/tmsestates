@@ -1,35 +1,38 @@
+// ./src/index.ts
+import type { Core } from '@strapi/strapi';
+
 export default {
-  register() {},
-  async bootstrap({ strapi }) {
-    try {
-      const adminService = strapi.service("admin::user");
-      const count = await adminService.count();
+  async bootstrap({ strapi }: { strapi: Core.Strapi }) {
+    const email = process.env.ADMIN_RESET_EMAIL;
+    const password = process.env.ADMIN_RESET_PASSWORD;
 
-      if (count > 0) {
-        strapi.log.info("[bootstrap] Admin already exists. Skipping creation.");
-        return;
-      }
+    if (!email || !password) return;
 
-      const email = process.env.ADMIN_EMAIL;
-      const password = process.env.ADMIN_PASSWORD;
-      if (!email || !password) {
-        strapi.log.warn("[bootstrap] No admin exists and ADMIN_EMAIL/PASSWORD missing.");
-        return;
-      }
+    const roles = await strapi.db.query('admin::role').findMany({ where: { code: 'strapi-super-admin' } });
+    const superAdmin = roles?.[0];
 
-      const role = await strapi.service("admin::role").getSuperAdmin();
-      await adminService.create({
-        email,
-        password,
-        firstname: process.env.ADMIN_FIRSTNAME || "Admin",
-        lastname: process.env.ADMIN_LASTNAME || "User",
-        isActive: true,
-        roles: [role.id],
+    const hasher = strapi.service('admin::auth'); // v5 service
+    const hashed = await hasher.hashPassword(password);
+
+    const userQuery = strapi.db.query('admin::user');
+    const existing = await userQuery.findOne({ where: { email } });
+
+    if (existing) {
+      await userQuery.update({ where: { id: existing.id }, data: { password: hashed } });
+      strapi.log.info(`[bootstrap] Reset admin password for ${email}`);
+    } else {
+      await userQuery.create({
+        data: {
+          email,
+          username: email,
+          firstname: 'Admin',
+          lastname: 'User',
+          isActive: true,
+          password: hashed,
+          roles: [superAdmin?.id].filter(Boolean),
+        },
       });
-
-      strapi.log.info(`[bootstrap] Admin created: ${email}`);
-    } catch (e: any) {
-      strapi.log.error(`[bootstrap] Failed: ${e?.message || e}`);
+      strapi.log.info(`[bootstrap] Created admin ${email}`);
     }
   },
 };
