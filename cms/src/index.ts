@@ -1,29 +1,35 @@
-// cms/src/index.ts
 export default {
   register() {},
-
   async bootstrap({ strapi }) {
-    const count = await strapi.service("admin::user").count();
-    if (count > 0) return;
+    try {
+      const adminService = strapi.service("admin::user");
+      const count = await adminService.count();
 
-    const role = await strapi.service("admin::role").getSuperAdmin();
-    const email = process.env.ADMIN_EMAIL;
-    const password = process.env.ADMIN_PASSWORD;
+      if (count > 0) {
+        strapi.log.info("[bootstrap] Admin already exists. Skipping creation.");
+        return;
+      }
 
-    if (!email || !password) {
-      strapi.log.warn("[bootstrap] No admin exists and ADMIN_EMAIL/PASSWORD not set.");
-      return;
+      const email = process.env.ADMIN_EMAIL;
+      const password = process.env.ADMIN_PASSWORD;
+      if (!email || !password) {
+        strapi.log.warn("[bootstrap] No admin exists and ADMIN_EMAIL/PASSWORD missing.");
+        return;
+      }
+
+      const role = await strapi.service("admin::role").getSuperAdmin();
+      await adminService.create({
+        email,
+        password,
+        firstname: process.env.ADMIN_FIRSTNAME || "Admin",
+        lastname: process.env.ADMIN_LASTNAME || "User",
+        isActive: true,
+        roles: [role.id],
+      });
+
+      strapi.log.info(`[bootstrap] Admin created: ${email}`);
+    } catch (e: any) {
+      strapi.log.error(`[bootstrap] Failed: ${e?.message || e}`);
     }
-
-    await strapi.service("admin::user").create({
-      email,
-      password,
-      firstname: process.env.ADMIN_FIRSTNAME || "Admin",
-      lastname: process.env.ADMIN_LASTNAME || "User",
-      isActive: true,
-      roles: [role.id],
-    });
-
-    strapi.log.info(`[bootstrap] Admin created: ${email}`);
   },
 };
