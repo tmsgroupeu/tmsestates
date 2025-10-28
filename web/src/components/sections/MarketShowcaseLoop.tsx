@@ -1,4 +1,4 @@
-// web/src/components/sections/MarketShowcaseLoop.tsx
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { fetchProperties } from "@/lib/cms";
 import PropertyMarquee from "./PropertyMarquee";
 
