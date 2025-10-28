@@ -2,22 +2,17 @@
 export default ({ env }) => ({
   url: '/admin',
 
-  // SINGLE auth block (fixes TS1117) + sessions (replaces deprecated expiresIn)
   auth: {
     secret: env('ADMIN_JWT_SECRET'),
     sessions: {
-      maxRefreshTokenLifespan: '30d',
-      maxSessionLifespan: '7d',
+      // 30 days
+      maxRefreshTokenLifespan: 30 * 24 * 60 * 60 * 1000,
+      // 7 days
+      maxSessionLifespan: 7 * 24 * 60 * 60 * 1000,
     },
   },
 
-  // API tokens for programmatic access
-  apiToken: {
-    salt: env('API_TOKEN_SALT'),
-  },
+  apiToken: { salt: env('API_TOKEN_SALT') },
 
-  // Silences “Missing transfer.token.salt” warning, enables content transfer
-  transfer: {
-    token: { salt: env('TRANSFER_TOKEN_SALT') },
-  },
+  transfer: { token: { salt: env('TRANSFER_TOKEN_SALT') } },
 });
