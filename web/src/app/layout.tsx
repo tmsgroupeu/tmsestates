@@ -1,7 +1,9 @@
+/* ✅ Modified: ./src/app/layout.tsx */
+
 import type { Metadata } from "next";
 import { Inter, Montserrat } from "next/font/google";
 import Header from "@/components/Header";
-import Footer from "@/components/Footer";
+import ContactBubble from "@/components/ui/ContactBubble"; // ✨ 1. Import the new component
 import "./globals.css";
 
 const inter = Inter({ subsets: ["latin"], variable: '--font-inter' });
@@ -21,8 +23,9 @@ export default function RootLayout({
     <html lang="en" className={`${inter.variable} ${montserrat.variable} scroll-smooth`}>
       <body>
         <Header />
-        {children}
-        <Footer />
+        <main>{children}</main>
+        {/* ✨ 2. Render the bubble here, passing the footer's ID */}
+        <ContactBubble footerId="page-footer" />
       </body>
     </html>
   );

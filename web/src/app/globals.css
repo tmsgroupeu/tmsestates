@@ -86,3 +86,33 @@ body {
     border-color: rgba(255, 255, 255, 0.8);
   }
 }
+
+/* Marquee Animation for Property Carousel */
+@keyframes scroll {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    /* Half the duplicated content's width + the gap */
+    transform: translateX(calc(-100% - 1.5rem)); 
+  }
+}
+
+.scrolling-wrapper {
+  /* Adjust animation duration for speed. Longer duration = slower scroll. */
+  animation: scroll 90s linear infinite;
+}
+
+/* Subtle hop animation for footer icons */
+@keyframes hop {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-6px);
+  }
+}
+
+.hop-animation {
+  animation: hop 2.5s ease-in-out infinite;
+}

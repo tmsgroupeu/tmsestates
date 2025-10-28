@@ -1,31 +1,52 @@
-/* Enhanced: ./components/Testimonials.tsx */
-import Section from "./Section";
+/* ✨ Enhanced: ./src/components/sections/TestimonialsGlass.tsx */
 
-const items = [
-  { q: "Their market knowledge is second to none. They secured our ideal seafront property off-market, handling every detail with absolute professionalism.", a: "The Petrov Family, Buyers" },
-  { q: "The presentation and marketing strategy for our villa were outstanding. We achieved a record price for our area within a month of listing.", a: "A. Demetriou, Seller" },
-  { q: 'As an international investor, trust and efficiency are paramount. TMS Estates delivered on both, providing clear advice and flawless execution.', a: "H. Al Jaber, Investor" },
+"use client";
+
+import { motion } from "framer-motion";
+import { Quote } from "lucide-react"; // Import Quote icon
+
+const testimonials = [
+  { name: "A. Michael", role: "Buyer, Limassol", quote: "A seamless experience from first viewing to handover. Their advice was precise and saved us weeks of searching." },
+  { name: "D. Petrou", role: "Investor, Larnaca", quote: "Access to exclusive listings and thorough due diligence made us confident to expand our portfolio with them." },
+  { name: "S. Kosta", role: "Seller, Paphos", quote: "Premium presentation and truly serious buyers. We managed to close above asking price with minimal friction." },
 ];
 
-export default function Testimonials() {
+export default function TestimonialsGlass() {
   return (
-    <div className="bg-white">
-      <Section 
-        id="stories"
-        title="Client Success Stories"
-        subtitle="Discover the exceptional outcomes we consistently achieve for our clients."
-      >
-        <div className="grid md:grid-cols-3 gap-x-8 gap-y-12">
-          {items.map((t, i) => (
-            <figure key={i} className="text-center p-6 bg-paper rounded-xl">
-              <blockquote className="text-foreground text-lg italic leading-relaxed before:content-['“'] after:content-['”']">
-                {t.q}
-              </blockquote>
-              <figcaption className="mt-4 font-semibold text-muted-foreground">— {t.a}</figcaption>
-            </figure>
-          ))}
-        </div>
-      </Section>
-    </div>
+    <section className="section text-white pt-16 pb-24 md:pt-24 md:pb-32">
+       <motion.div 
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.5 }}
+            className="text-center mb-12"
+        >
+            <h2 className="text-4xl font-bold sm:text-5xl font-montserrat drop-shadow-md">Client Success Stories</h2>
+            <p className="mt-4 text-lg text-white/90 drop-shadow-sm max-w-3xl mx-auto">
+              Real feedback from buyers, sellers and investors across Cyprus.
+            </p>
+        </motion.div>
+
+      <div className="grid gap-6 md:grid-cols-3">
+        {testimonials.map((t, i) => (
+          <motion.div
+            key={t.name}
+            initial={{ opacity: 0, y: 12 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ delay: 0.1 + i * 0.1 }}
+            // ✅ FIX: Using the dark glass effect for better contrast
+            className="glass-dark p-6 rounded-2xl flex flex-col" 
+          >
+            <Quote className="w-8 h-8 text-gold/50 mb-4" />
+            <p className="text-white/90 flex-grow">“{t.quote}”</p>
+            <div className="mt-4 border-t border-white/10 pt-4">
+              <div className="font-semibold text-white">{t.name}</div>
+              <div className="text-sm text-white/60">{t.role}</div>
+            </div>
+          </motion.div>
+        ))}
+      </div>
+    </section>
   );
 }

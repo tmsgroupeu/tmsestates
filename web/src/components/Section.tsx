@@ -8,16 +8,16 @@ const sectionVariants: Variants = {
   hidden: { opacity: 0 },
   visible: {
     opacity: 1,
-    transition: { staggerChildren: 0.2, delayChildren: 0.1 }
+    transition: { staggerChildren: 0.15, delayChildren: 0.1 }
   },
 };
 
 const itemVariants: Variants = {
-  hidden: { opacity: 0, y: 30 },
+  hidden: { opacity: 0, y: 20 },
   visible: { 
     opacity: 1, 
     y: 0,
-    transition: { duration: 0.7, ease: [0.25, 1, 0.5, 1] }
+    transition: { duration: 0.6, ease: [0.25, 1, 0.5, 1] }
   }
 };
 
@@ -32,7 +32,7 @@ type SectionProps = {
 
 export default function Section({ id, className, children, title, subtitle, variant = 'light' }: SectionProps) {
   const ref = useRef(null);
-  const inView = useInView(ref, { margin: "-30% 0px", once: true });
+  const inView = useInView(ref, { margin: "-25% 0px", once: true });
 
   const titleColor = variant === 'dark' ? 'text-white' : 'text-navy';
   const subtitleColor = variant === 'dark' ? 'text-white/80' : 'text-muted-foreground';
@@ -67,7 +67,6 @@ export default function Section({ id, className, children, title, subtitle, vari
         </div>
       )}
       
-      {/* Motion variants will be inherited by this div's children */}
       <motion.div variants={itemVariants}>
         {children}
       </motion.div>

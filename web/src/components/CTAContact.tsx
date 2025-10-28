@@ -1,21 +1,23 @@
 /* Enhanced: ./components/CTAContact.tsx */
+
 import { Mail, MessageCircle, Send } from 'lucide-react';
+import Section from './Section';
 
 const contactBubbles = [
-    { icon: MessageCircle, label: 'WhatsApp', href: 'https://wa.me/YOUR_NUMBER' },
+    { icon: MessageCircle, label: 'WhatsApp', href: 'https://wa.me/YOUR_WHATSAPP_NUMBER' },
     { icon: Mail, label: 'Email', href: 'mailto:info@tmsestates.com' },
-    { icon: Send, label: 'Telegram', href: 'https://t.me/YOUR_USERNAME' },
+    { icon: Send, label: 'Telegram', href: 'https://t.me/YOUR_TELEGRAM_USERNAME' },
 ];
 
 export default function CTAContact() {
   return (
-    <section id="contact" className="bg-navy text-text-on-dark">
-      <div className="section text-center">
-        <h3 className="text-4xl font-bold font-montserrat">Begin Your Property Journey</h3>
-        <p className="text-white/80 mt-4 text-lg max-w-3xl mx-auto">
-          Whether buying, selling, or exploring, our advisors are ready for a private consultation. Reach out directly through your preferred channel.
-        </p>
-
+    <Section 
+        id="contact" 
+        className="bg-navy"
+        variant="dark"
+        title="Begin Your Property Journey"
+        subtitle="Whether buying, selling, or exploring, our advisors are ready for a private consultation. Reach out directly through your preferred channel."
+    >
         <div className="flex justify-center items-center gap-8 sm:gap-12 flex-wrap mt-14">
           {contactBubbles.map((item) => (
             <a key={item.label} href={item.href} target="_blank" rel="noopener noreferrer" className="group flex flex-col items-center gap-4 text-center">
@@ -26,9 +28,6 @@ export default function CTAContact() {
             </a>
           ))}
         </div>
-        
-        <p className="mt-16 text-white/60">Or contact us at <a href="mailto:info@tmsestates.com" className="font-semibold text-white/90 hover:text-gold transition-colors">info@tmsestates.com</a></p>
-      </div>
-    </section>
+    </Section>
   );
 }

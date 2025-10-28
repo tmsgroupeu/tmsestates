@@ -1,4 +1,4 @@
-/* Fully Updated: ./components/ArticleCard.tsx */
+/* Enhanced: ./components/ArticleCard.tsx */
 
 import Image from "next/image";
 import Link from "next/link";
@@ -7,13 +7,13 @@ import { ArrowRight } from "lucide-react";
 import { getStrapiMediaUrl } from "@/lib/media";
 
 export default function ArticleCard({ article }: { article: Article }) {
-  // THE FIX IS HERE: We now access `article.coverImage` (camelCase)
+  // Correctly accesses the camelCase 'coverImage' field
   const imgUrl = getStrapiMediaUrl(article.coverImage); 
   const publishedDate = article.publishedAt ? new Date(article.publishedAt).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }) : '';
 
   return (
     <Link
-      href={`/articles/${article.slug}`}
+      href={`/insights/${article.slug}`}
       className="group block rounded-xl overflow-hidden bg-white shadow-soft transition-all duration-300 hover:shadow-medium hover:-translate-y-1"
     >
       <div className="relative aspect-[16/9] bg-muted overflow-hidden">
