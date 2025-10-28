@@ -1,25 +1,22 @@
 // cms/config/admin.ts
 export default ({ env }) => ({
   url: '/admin',
-  auth: { secret: env('ADMIN_JWT_SECRET') },
 
-  // remove the old expiresIn warning by using sessions
+  // SINGLE auth block (fixes TS1117) + sessions (replaces deprecated expiresIn)
   auth: {
+    secret: env('ADMIN_JWT_SECRET'),
     sessions: {
-      // tighten if you want; these are sane defaults
       maxRefreshTokenLifespan: '30d',
       maxSessionLifespan: '7d',
     },
-    secret: env('ADMIN_JWT_SECRET'),
   },
 
-  // make cookies work behind the proxy + cross-site if needed
-  cookies: {
-    secure: true,       // requires proxy:true + PUBLIC_URL=https://...
-    sameSite: 'none',   // works across subdomains/custom domains
+  // API tokens for programmatic access
+  apiToken: {
+    salt: env('API_TOKEN_SALT'),
   },
 
-  // optional but recommended to silence the transfer salt warning
+  // Silences “Missing transfer.token.salt” warning, enables content transfer
   transfer: {
     token: { salt: env('TRANSFER_TOKEN_SALT') },
   },
