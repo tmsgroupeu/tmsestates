@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { FaUserFriends, FaRegNewspaper, FaQuestionCircle } from "react-icons/fa";
 
 export default function InfoSection() {
