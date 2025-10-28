@@ -5,6 +5,7 @@ import Image from "next/image";
 import { notFound } from "next/navigation";
 import { BedDouble, Bath, Ruler, MapPin } from "lucide-react";
 import { getStrapiMediaUrl } from "@/lib/media";
+import type { StrapiMedia } from "@/lib/media";
 
 function formatPrice(price?: number, currency = "€"): string {
   if (typeof price !== "number" || price <= 0) return "Price on Request";
@@ -23,11 +24,12 @@ export default async function PropertyDetails({
   }
 
   // Normalize gallery to a strict string[] of URLs
-  const images: string[] = Array.isArray(property.images)
-    ? property.images
-        .map((m: unknown) => getStrapiMediaUrl(m as any))
-        .filter((u: string | undefined): u is string => Boolean(u))
-    : [];
+  const rawImages = Array.isArray(property.images) ? property.images : [];
+  const images: string[] = rawImages
+    .map((m: StrapiMedia | string) =>
+      typeof m === "string" ? m : getStrapiMediaUrl(m)
+    )
+    .filter((u): u is string => Boolean(u));
 
   const heroImage: string = images[0] || "/placeholder.jpg";
 
