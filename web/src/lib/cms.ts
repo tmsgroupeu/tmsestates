@@ -1,4 +1,4 @@
-/* Final Version: ./lib/cms.ts */
+/* eslint-disable @typescript-eslint/no-explicit-any */
 
 import type { StrapiMedia } from "./media";
 
