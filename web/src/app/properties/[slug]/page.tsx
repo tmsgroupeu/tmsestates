@@ -27,9 +27,9 @@ export default async function PropertyDetails({
   const rawImages = Array.isArray(property.images) ? property.images : [];
   const images: string[] = rawImages
     .map((m: StrapiMedia | string) =>
-      typeof m === "string" ? m : getStrapiMediaUrl(m)
+      typeof m === "string" ? m : getStrapiMediaUrl(m) ?? undefined
     )
-    .filter((u): u is string => Boolean(u));
+    .filter((u: string | undefined): u is string => Boolean(u));
 
   const heroImage: string = images[0] || "/placeholder.jpg";
 
