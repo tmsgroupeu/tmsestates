@@ -1,98 +1,139 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
+// src/lib/cms.ts
 
-import type { StrapiMedia } from "./media";
+export type StrapiImageFormat = {
+  url: string;
+  width: number;
+  height: number;
+  size?: number;
+  ext?: string;
+  mime?: string;
+};
+export type StrapiImageAttrs = {
+  url: string;
+  alternativeText?: string;
+  caption?: string;
+  width?: number;
+  height?: number;
+  formats?: {
+    thumbnail?: StrapiImageFormat;
+    small?: StrapiImageFormat;
+    medium?: StrapiImageFormat;
+    large?: StrapiImageFormat;
+  };
+};
+export type MediaSingle = { data: { id: number; attributes: StrapiImageAttrs } | null };
+export type MediaMulti = { data: { id: number; attributes: StrapiImageAttrs }[] };
 
-const STRAPI_URL = process.env.STRAPI_URL || "http://127.0.0.1:1337";
-const STRAPI_TOKEN = process.env.STRAPI_TOKEN;
-
-async function baseFetch(path: string, params: Record<string, string> = {}) {
-  const url = new URL(`/api${path}`, STRAPI_URL);
-  url.search = new URLSearchParams(params).toString();
-
-  const headers: HeadersInit = { "Content-Type": "application/json" };
-  if (STRAPI_TOKEN) {
-    headers["Authorization"] = `Bearer ${STRAPI_TOKEN}`;
-  }
-
-  try {
-    const res = await fetch(url.toString(), {
-      method: "GET",
-      headers,
-      next: { revalidate: 60 }
-    });
-    if (!res.ok) {
-      console.error(`Strapi fetch error: ${res.status} ${res.statusText}`, await res.text());
-      return { data: null, meta: null };
-    }
-    return res.json();
-  } catch (error) {
-    console.error("Failed to fetch from Strapi:", error);
-    return { data: null, meta: null };
-  }
-}
-
-// --- PROPERTY TYPES & FETCHERS ---
-
-export type Property = {
+export type PropertyEntity = {
   id: number;
-  title: string;
-  slug: string;
-  city?: string;
-  address?: string;
-  description?: string;
-  price?: number;
-  currency?: string;
-  bedrooms?: number;
-  bathrooms?: number;
-  area?: number;
-  status?: string;
-  images?: StrapiMedia[];
-  seoTitle?: string;
-  seoDescription?: string;
+  attributes: {
+    title: string;
+    slug: string;
+    price: number;
+    location: string;
+    bedrooms?: number;
+    bathrooms?: number;
+    area?: number; // m²
+    status?: "for-sale" | "for-rent" | "sold";
+    featured?: boolean;
+    cover?: MediaSingle;
+    gallery?: MediaMulti;
+    createdAt: string;
+    updatedAt: string;
+    publishedAt: string | null;
+  };
 };
 
-export async function fetchProperties(params: Record<string, string> = {}): Promise<{ data: Property[]; meta?: any }> {
-  const defaultParams = { populate: "*" };
-  const mergedParams = { ...defaultParams, ...params };
-  const result = await baseFetch("/properties", mergedParams);
-  return { data: result.data || [], meta: result.meta };
-}
-
-export async function fetchPropertyBySlug(slug: string): Promise<Property | null> {
-    const { data } = await fetchProperties({
-        'filters[slug][$eq]': slug,
-        'pagination[pageSize]': '1',
-    });
-    return data?.[0] || null;
-}
-
-// --- ARTICLE TYPES & FETCHERS ---
-
-export type Article = {
-    id: number;
+export type ArticleEntity = {
+  id: number;
+  attributes: {
     title: string;
     slug: string;
     excerpt?: string;
-    content?: string;
-    coverImage?: StrapiMedia; // CORRECTED TO camelCase
-    publishedAt?: string;
+    cover?: MediaSingle;
+    publishedAt: string | null;
+    createdAt: string;
+    updatedAt: string;
+  };
 };
 
-export async function fetchArticles(params: Record<string, string> = {}): Promise<{ data: Article[]; meta?: any }> {
-  const defaultParams = {
-    sort: "publishedAt:desc",
-    "pagination[pageSize]": "3",
-    "populate": "*",
-  };
-  const mergedParams = { ...defaultParams, ...params };
-  const result = await baseFetch("/articles", mergedParams);
-  return { data: result.data || [], meta: result.meta };
+export type Pagination = {
+  page: number;
+  pageSize: number;
+  pageCount: number;
+  total: number;
+};
+export type CollectionResponse<T> = { data: T[]; meta: { pagination: Pagination } };
+
+type QueryParams = Record<string, string>;
+
+const CMS_URL = process.env.CMS_URL as string;
+const STRAPI_TOKEN = process.env.STRAPI_TOKEN as string;
+
+function toQuery(params?: QueryParams): string {
+  if (!params) return "";
+  const usp = new URLSearchParams(params);
+  return `?${usp.toString()}`;
 }
 
-export async function fetchArticleBySlug(slug: string): Promise<Article | null> {
-    const { data } = await fetchArticles({
-        'filters[slug][$eq]': slug,
-        'pagination[pageSize]': '1',
-    });
-    return data?.[0] || null;
+async function request<T>(
+  path: string,
+  params?: QueryParams,
+  init?: Omit<RequestInit, "headers">
+): Promise<T> {
+  const url = `${CMS_URL}/api/${path}${toQuery(params)}`;
+  const res = await fetch(url, {
+    ...init,
+    headers: {
+      Authorization: `Bearer ${STRAPI_TOKEN}`,
+      "Content-Type": "application/json",
+    },
+    next: { revalidate: 60 },
+  });
+  if (!res.ok) {
+    const text = await res.text();
+    throw new Error(`Strapi ${path}: ${res.status} ${text}`);
+  }
+  return (await res.json()) as T;
+}
+
+// --- API functions ---
+
+export async function getFeaturedProperties(limit = 8) {
+  return request<CollectionResponse<PropertyEntity>>("properties", {
+    "filters[featured][$eq]": "true",
+    "sort[0]": "publishedAt:desc",
+    "pagination[pageSize]": String(limit),
+    "populate[0]": "cover",
+    "populate[1]": "gallery",
+    publicationState: "live",
+  });
+}
+
+export async function getAllProperties(limit = 12) {
+  return request<CollectionResponse<PropertyEntity>>("properties", {
+    "sort[0]": "publishedAt:desc",
+    "pagination[pageSize]": String(limit),
+    "populate[0]": "cover",
+    publicationState: "live",
+  });
+}
+
+export async function getPropertyBySlug(slug: string) {
+  const res = await request<CollectionResponse<PropertyEntity>>("properties", {
+    "filters[slug][$eq]": slug,
+    "populate[0]": "cover",
+    "populate[1]": "gallery",
+    publicationState: "live",
+  });
+  return res.data[0] ?? null;
+}
+
+export async function getLatestArticles(limit = 6) {
+  return request<CollectionResponse<ArticleEntity>>("articles", {
+    "sort[0]": "publishedAt:desc",
+    "pagination[pageSize]": String(limit),
+    "populate[0]": "cover",
+    publicationState: "live",
+  });
 }
