@@ -19,10 +19,17 @@ interface ArticleAttr {
 export const revalidate = 3600;        // Rebuild at most once per hour
 export const dynamic = "force-static"; // Generate at build/ISR, cache by default
 
+// Use the public site URL if provided; otherwise fall back to the Vercel URL at build/runtime.
 const BASE_URL =
-  process.env.NEXT_PUBLIC_SITE_URL ?? "https://<your-vercel-domain>.vercel.app";
+  process.env.NEXT_PUBLIC_SITE_URL ??
+  (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : "http://localhost:3000");
+
+// Support both naming conventions for the CMS base URL.
 const API_URL =
-  process.env.NEXT_PUBLIC_API_URL ?? "https://<your-render-app>.onrender.com";
+  process.env.NEXT_PUBLIC_API_URL ??
+  process.env.CMS_URL ??
+  process.env.STRAPI_URL ??
+  "http://127.0.0.1:1337";
 
 // ---- Helpers ----
 async function getJson<T>(url: string): Promise<T | null> {
