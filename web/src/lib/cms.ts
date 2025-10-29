@@ -1,13 +1,18 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-// /web/src/lib/cms.ts
+// src/lib/cms.ts
 
 import type { StrapiMedia } from "./media";
 
-// Accept either CMS_URL (Vercel) or STRAPI_URL
-const BASE_URL = process.env.CMS_URL || process.env.STRAPI_URL || "http://127.0.0.1:1337";
+// Accept either CMS_URL (server), STRAPI_URL (server), or NEXT_PUBLIC_API_URL (client/server)
+const BASE_URL =
+  process.env.CMS_URL ||
+  process.env.STRAPI_URL ||
+  process.env.NEXT_PUBLIC_API_URL ||
+  "http://127.0.0.1:1337";
+
 const STRAPI_TOKEN = process.env.STRAPI_TOKEN || "";
 
-// ----- low-level fetcher (kept exactly like your previous version) -----
+// ----- low-level fetcher (unchanged behavior) -----
 async function baseFetch(path: string, params: Record<string, string> = {}) {
   const url = new URL(`/api${path}`, BASE_URL);
   url.search = new URLSearchParams(params).toString();
@@ -22,8 +27,7 @@ async function baseFetch(path: string, params: Record<string, string> = {}) {
       next: { revalidate: 60 },
     });
     if (!res.ok) {
-      // keep your previous diagnostic logging
-      // (don’t throw so the UI can still render empty states)
+      // keep diagnostic logging; do not throw (UI can render empty states)
       console.error(`Strapi fetch error: ${res.status} ${res.statusText}`, await res.text());
       return { data: null, meta: null };
     }
@@ -34,7 +38,7 @@ async function baseFetch(path: string, params: Record<string, string> = {}) {
   }
 }
 
-// ----------------- YOUR types (unchanged API) -----------------
+// ----------------- Your types (kept) -----------------
 export type Property = {
   id: number;
   title: string;
@@ -63,7 +67,7 @@ export type Article = {
   publishedAt?: string;
 };
 
-// ----------------- ORIGINAL functions (so existing imports work) -----------------
+// ----------------- API functions (compatible with your current usage) -----------------
 export async function fetchProperties(params: Record<string, string> = {}): Promise<{ data: any[]; meta?: any }> {
   const result = await baseFetch("/properties", { populate: "*", ...params });
   return { data: result.data || [], meta: result.meta };
@@ -95,7 +99,7 @@ export async function fetchArticleBySlug(slug: string): Promise<any | null> {
   return data?.[0] || null;
 }
 
-// ----------------- NEW helper names (used in newer pages) -----------------
+// ----------------- Convenience wrappers -----------------
 export async function getAllProperties(limit = 12) {
   return fetchProperties({
     "sort[0]": "publishedAt:desc",
