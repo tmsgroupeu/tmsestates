@@ -1,19 +1,36 @@
-// app/sitemap.ts
+// src/app/sitemap.ts
 import type { MetadataRoute } from "next";
 
-const BASE_URL =
-  process.env.NEXT_PUBLIC_SITE_URL || "https://<your-vercel-domain>.vercel.app";
-const API_URL =
-  process.env.NEXT_PUBLIC_API_URL || "https://<your-render-app>.onrender.com";
+// ---- Types for Strapi v4 responses ----
+type StrapiItem<A> = { id: number; attributes: A };
+type StrapiResponse<A> = { data: StrapiItem<A>[] };
 
-export const revalidate = 3600;        // Rebuild sitemap at most once per hour
+interface PropertyAttr {
+  slug: string;
+  updatedAt?: string;
+}
+
+interface ArticleAttr {
+  slug: string;
+  updatedAt?: string;
+}
+
+// ---- Config ----
+export const revalidate = 3600;        // Rebuild at most once per hour
 export const dynamic = "force-static"; // Generate at build/ISR, cache by default
 
-async function safeJson<T>(url: string): Promise<T | null> {
+const BASE_URL =
+  process.env.NEXT_PUBLIC_SITE_URL ?? "https://<your-vercel-domain>.vercel.app";
+const API_URL =
+  process.env.NEXT_PUBLIC_API_URL ?? "https://<your-render-app>.onrender.com";
+
+// ---- Helpers ----
+async function getJson<T>(url: string): Promise<T | null> {
   try {
     const res = await fetch(url, { next: { revalidate } });
     if (!res.ok) return null;
-    return (await res.json()) as T;
+    const json = (await res.json()) as T;
+    return json;
   } catch {
     return null;
   }
@@ -25,33 +42,39 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { url: `${BASE_URL}/properties`, lastModified: new Date() },
   ];
 
-  // ---- Properties (Strapi v4-friendly) ----
-  const props = await safeJson<any>(
+  // ---- Properties ----
+  const props = await getJson<StrapiResponse<PropertyAttr>>(
     `${API_URL}/api/properties?pagination[pageSize]=200&fields=slug,updatedAt`
   );
-  const propItems =
-    (props?.data ?? []).flatMap((d: any) => {
-      const slug = d?.attributes?.slug ?? d?.slug ?? null;
-      const updated = d?.attributes?.updatedAt ?? d?.updatedAt ?? null;
-      return slug
-        ? [{ url: `${BASE_URL}/properties/${slug}`, lastModified: updated ? new Date(updated) : new Date() }]
-        : [];
-    }) ?? [];
-  urls.push(...propItems);
+  if (props?.data) {
+    for (const item of props.data) {
+      const slug = item.attributes?.slug;
+      if (slug) {
+        const updated = item.attributes?.updatedAt;
+        urls.push({
+          url: `${BASE_URL}/properties/${slug}`,
+          lastModified: updated ? new Date(updated) : new Date(),
+        });
+      }
+    }
+  }
 
-  // ---- Articles (optional) ----
-  const arts = await safeJson<any>(
+  // ---- Articles (optional; keep if you have /insights/[slug]) ----
+  const arts = await getJson<StrapiResponse<ArticleAttr>>(
     `${API_URL}/api/articles?pagination[pageSize]=200&fields=slug,updatedAt`
   );
-  const artItems =
-    (arts?.data ?? []).flatMap((d: any) => {
-      const slug = d?.attributes?.slug ?? d?.slug ?? null;
-      const updated = d?.attributes?.updatedAt ?? d?.updatedAt ?? null;
-      return slug
-        ? [{ url: `${BASE_URL}/insights/${slug}`, lastModified: updated ? new Date(updated) : new Date() }]
-        : [];
-    }) ?? [];
-  urls.push(...artItems);
+  if (arts?.data) {
+    for (const item of arts.data) {
+      const slug = item.attributes?.slug;
+      if (slug) {
+        const updated = item.attributes?.updatedAt;
+        urls.push({
+          url: `${BASE_URL}/insights/${slug}`,
+          lastModified: updated ? new Date(updated) : new Date(),
+        });
+      }
+    }
+  }
 
   return urls;
 }
