@@ -59,6 +59,8 @@
         "images"
       ]
     },
+    "vip": { "type": "boolean", "default": false },
+
     "seoTitle": {
       "type": "string"
     },
