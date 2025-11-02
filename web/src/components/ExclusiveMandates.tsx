@@ -5,9 +5,19 @@ import { Crown } from "lucide-react";
 
 export const revalidate = 900;
 
-type StrapiImg = {
-  data?: { attributes?: { url: string; alternativeText?: string } } | any[];
+/** ---------- Shared Strapi Types ---------- */
+type UploadFileAttributes = {
+  url: string;
+  alternativeText?: string;
 };
+type UploadFileEntity = {
+  id: number;
+  attributes: UploadFileAttributes;
+};
+type MediaRelation = {
+  data: UploadFileEntity | UploadFileEntity[] | null;
+};
+
 type StrapiItem<A> = { id: number; attributes: A };
 type StrapiResponse<A> = { data: StrapiItem<A>[] };
 
@@ -17,12 +27,24 @@ interface PropertyAttr {
   address?: string;
   city?: string;
   vip?: boolean;
-  cover?: StrapiImg;
-  gallery?: StrapiImg;
+  cover?: MediaRelation;
+  gallery?: MediaRelation;
 }
 
+/** ---------- Helpers ---------- */
 const API = process.env.NEXT_PUBLIC_API_URL || "";
 const asUrl = (u?: string) => (!u ? "" : u.startsWith("http") ? u : `${API}${u}`);
+
+function toArray(rel?: MediaRelation): UploadFileEntity[] {
+  if (!rel?.data) return [];
+  return Array.isArray(rel.data) ? rel.data : [rel.data];
+}
+
+function firstImageUrl(p: PropertyAttr): string {
+  const cover = toArray(p.cover)[0]?.attributes.url;
+  const firstGallery = toArray(p.gallery)[0]?.attributes.url;
+  return asUrl(cover || firstGallery || "");
+}
 
 async function fetchVip(): Promise<StrapiItem<PropertyAttr>[]> {
   const params = new URLSearchParams({
@@ -36,31 +58,19 @@ async function fetchVip(): Promise<StrapiItem<PropertyAttr>[]> {
     next: { revalidate },
   });
   if (!res.ok) return [];
-  const json = (await res.json()) as StrapiResponse<PropertyAttr>;
+  const json: StrapiResponse<PropertyAttr> = await res.json();
   return json.data ?? [];
-}
-
-function firstImageUrl(p: PropertyAttr): string {
-  const c = (p.cover as any)?.data?.attributes?.url;
-  const gArr = Array.isArray((p.gallery as any)?.data)
-    ? (p.gallery as any).data
-    : [];
-  const g = gArr[0]?.attributes?.url;
-  return asUrl(c || g || "");
 }
 
 export default async function ExclusiveMandates() {
   const items = await fetchVip();
-
   if (!items.length) return null;
 
   return (
     <section className="mx-auto max-w-7xl px-4 py-12">
       <header className="mb-6 flex items-center gap-2">
         <Crown className="h-5 w-5 text-yellow-500" />
-        <h2 className="text-2xl md:text-3xl font-semibold tracking-tight">
-          Our Premiere Collection
-        </h2>
+        <h2 className="text-2xl md:text-3xl font-semibold tracking-tight">Our Premiere Collection</h2>
       </header>
 
       <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
@@ -77,7 +87,7 @@ export default async function ExclusiveMandates() {
                 aria-label={attributes.title ?? "View property"}
               />
               <div className="relative aspect-[16/10] bg-gray-100">
-                {img ? (
+                {img && (
                   <Image
                     src={img}
                     alt={attributes.title ?? "Property image"}
@@ -85,7 +95,7 @@ export default async function ExclusiveMandates() {
                     className="object-cover transition-transform duration-700 group-hover:scale-[1.03]"
                     sizes="(min-width:1024px) 33vw, (min-width:640px) 50vw, 100vw"
                   />
-                ) : null}
+                )}
                 <div className="absolute left-3 top-3 inline-flex items-center gap-1 rounded-full bg-yellow-500/90 px-3 py-1 text-xs font-semibold text-white backdrop-blur">
                   <Crown className="h-3.5 w-3.5" />
                   VIP
@@ -93,9 +103,7 @@ export default async function ExclusiveMandates() {
               </div>
               <div className="p-4">
                 <h3 className="line-clamp-1 text-lg font-medium">{attributes.title}</h3>
-                <p className="line-clamp-1 text-sm text-ink/60">
-                  {attributes.address || attributes.city || "Cyprus"}
-                </p>
+                <p className="line-clamp-1 text-sm text-ink/60">{attributes.address || attributes.city || "Cyprus"}</p>
                 <div className="mt-3 flex gap-2">
                   <Link
                     href={`/contact?property=${encodeURIComponent(attributes.slug)}`}
