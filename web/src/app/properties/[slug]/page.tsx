@@ -2,16 +2,24 @@
 import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import {
-  Bath, BedDouble, Ruler, MapPin, Crown, Calendar, Phone, Mail
-} from "lucide-react";
+import { Bath, BedDouble, Ruler, MapPin, Crown, Calendar, Phone, Mail } from "lucide-react";
 
 export const revalidate = 900;
 export const dynamic = "force-static";
 
-type StrapiImg = {
-  data?: { attributes?: { url: string; alternativeText?: string } } | any[];
+/** ---------- Shared Strapi Types ---------- */
+type UploadFileAttributes = {
+  url: string;
+  alternativeText?: string;
 };
+type UploadFileEntity = {
+  id: number;
+  attributes: UploadFileAttributes;
+};
+type MediaRelation = {
+  data: UploadFileEntity | UploadFileEntity[] | null;
+};
+
 type StrapiItem<A> = { id: number; attributes: A };
 type StrapiResponse<A> = { data: StrapiItem<A>[] };
 
@@ -26,13 +34,33 @@ interface PropertyAttr {
   bathrooms?: number | null;
   propertyType?: string | null;
   vip?: boolean;
-  cover?: StrapiImg;
-  gallery?: StrapiImg;
+  cover?: MediaRelation;
+  gallery?: MediaRelation;
   updatedAt?: string;
 }
 
+/** ---------- Helpers ---------- */
 const API = process.env.NEXT_PUBLIC_API_URL || "";
 const asUrl = (u?: string) => (!u ? "" : u.startsWith("http") ? u : `${API}${u}`);
+
+function toArray(rel?: MediaRelation): UploadFileEntity[] {
+  if (!rel?.data) return [];
+  return Array.isArray(rel.data) ? rel.data : [rel.data];
+}
+
+function allImages(p: PropertyAttr): { url: string; alt: string }[] {
+  const list = [...toArray(p.cover), ...toArray(p.gallery)];
+  const unique: { url: string; alt: string }[] = [];
+  const seen = new Set<string>();
+  for (const img of list) {
+    const url = asUrl(img.attributes.url);
+    if (url && !seen.has(url)) {
+      seen.add(url);
+      unique.push({ url, alt: img.attributes.alternativeText || p.title || "Property photo" });
+    }
+  }
+  return unique;
+}
 
 async function fetchProperty(slug: string): Promise<StrapiItem<PropertyAttr> | null> {
   const params = new URLSearchParams({
@@ -44,23 +72,8 @@ async function fetchProperty(slug: string): Promise<StrapiItem<PropertyAttr> | n
     next: { revalidate },
   });
   if (!res.ok) return null;
-  const json = (await res.json()) as StrapiResponse<PropertyAttr>;
+  const json: StrapiResponse<PropertyAttr> = await res.json();
   return json?.data?.[0] ?? null;
-}
-
-function allImages(p: PropertyAttr): { url: string; alt: string }[] {
-  const cover = (p.cover as any)?.data?.attributes?.url;
-  const gallery = Array.isArray((p.gallery as any)?.data) ? (p.gallery as any).data : [];
-  const list = [
-    ...(cover ? [{ url: asUrl(cover), alt: p.title ?? "Cover" }] : []),
-    ...gallery.map((g: any) => ({
-      url: asUrl(g?.attributes?.url),
-      alt: g?.attributes?.alternativeText || p.title || "Property photo",
-    })),
-  ];
-  // unique by url
-  const seen = new Set<string>();
-  return list.filter((i) => !!i.url && !seen.has(i.url) && seen.add(i.url));
 }
 
 export default async function Page({ params }: { params: { slug: string } }) {
@@ -77,16 +90,9 @@ export default async function Page({ params }: { params: { slug: string } }) {
         <div className="w-full overflow-x-auto snap-x snap-mandatory no-scrollbar">
           <ul className="flex w-full">
             {imgs.map((img, i) => (
-              <li key={img.url + i} className="relative snap-start shrink-0 w-full basis-full">
+              <li key={`${img.url}-${i}`} className="relative snap-start shrink-0 w-full basis-full">
                 <div className="relative aspect-[16/9] bg-gray-100">
-                  <Image
-                    src={img.url}
-                    alt={img.alt}
-                    fill
-                    className="object-cover"
-                    sizes="100vw"
-                    priority={i === 0}
-                  />
+                  <Image src={img.url} alt={img.alt} fill className="object-cover" sizes="100vw" priority={i === 0} />
                 </div>
               </li>
             ))}
@@ -159,14 +165,8 @@ export default async function Page({ params }: { params: { slug: string } }) {
             <section className="mt-2">
               <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
                 {imgs.slice(1, 9).map((img, i) => (
-                  <div key={img.url + i} className="relative aspect-[4/3] overflow-hidden rounded-xl">
-                    <Image
-                      src={img.url}
-                      alt={img.alt}
-                      fill
-                      className="object-cover"
-                      sizes="(min-width:1024px) 25vw, 50vw"
-                    />
+                  <div key={`${img.url}-thumb-${i}`} className="relative aspect-[4/3] overflow-hidden rounded-xl">
+                    <Image src={img.url} alt={img.alt} fill className="object-cover" sizes="(min-width:1024px) 25vw, 50vw" />
                   </div>
                 ))}
               </div>
@@ -178,9 +178,7 @@ export default async function Page({ params }: { params: { slug: string } }) {
         <aside className="lg:col-span-1">
           <div className="sticky top-6 rounded-2xl bg-white shadow-sm ring-1 ring-black/5 p-5 flex flex-col gap-4">
             <h3 className="text-lg font-semibold">Interested?</h3>
-            <p className="text-sm text-ink/70">
-              We keep pricing discreet. Request price or schedule a private tour.
-            </p>
+            <p className="text-sm text-ink/70">We keep pricing discreet. Request price or schedule a private tour.</p>
 
             <div className="flex flex-col gap-2">
               <Link
