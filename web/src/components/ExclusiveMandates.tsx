@@ -16,34 +16,28 @@ async function fetchVipForDebug(): Promise<string> {
   const fetchUrl = `${API_URL}/api/properties?${params.toString()}`;
 
   try {
-    // Fetch the data, ensuring no cache is used.
     const res = await fetch(fetchUrl, { cache: 'no-store' });
-    // Get the raw text of the response to prevent JSON parsing errors.
     const responseBody = await res.text();
 
-    // Create a detailed report of everything we received from the API call.
     const report = {
       step: "FETCH_ATTEMPT_COMPLETE",
       message: "This is the raw data received by the Vercel server from the Strapi API.",
       url_we_fetched: fetchUrl,
       response_status_code: res.status,
       response_status_text: res.statusText,
-      // Attempt to parse the body as JSON for easier reading, but fall back to raw text if it fails.
       response_body: (() => {
         try { return JSON.parse(responseBody); }
         catch { return responseBody; }
       })()
     };
 
-    // Return the full report as a nicely formatted string.
     return JSON.stringify(report, null, 2);
 
   } catch (error: unknown) {
     const err = error as Error;
-    // If the fetch itself failed (e.g., network error), create an error report.
     const errorReport = {
       step: "FETCH_ATTEMPT_FAILED",
-      message: "A critical exception occurred during the fetch operation. This is likely a network or DNS issue.",
+      message: "A critical exception occurred during the fetch operation.",
       error_name: err.name,
       error_message: err.message,
       error_stack: err.stack,
@@ -52,16 +46,15 @@ async function fetchVipForDebug(): Promise<string> {
   }
 }
 
-// This component will ALWAYS render, showing us the debug information.
 export default async function ExclusiveMandates() {
-  headers(); // Ensures the component is re-rendered on every request.
+  headers();
   const debugInfo = await fetchVipForDebug();
 
   return (
     <div style={{
       margin: '20px auto',
       padding: '20px',
-      border: '3px solid #FFD700', // Gold border
+      border: '3px solid #FFD700',
       backgroundColor: '#1A1A1A',
       color: '#F0F0F0',
       fontFamily: 'monospace',
@@ -75,7 +68,8 @@ export default async function ExclusiveMandates() {
         Exclusive Mandates - Live Debug Output
       </h2>
       <p style={{ color: '#aaa' }}>
-        This box is rendering the direct output from the Vercel server's API call.
+        {/* THIS IS THE CORRECTED LINE */}
+        This box is rendering the direct output from the Vercel server&apos;s API call.
       </p>
       <pre>
         {debugInfo}
