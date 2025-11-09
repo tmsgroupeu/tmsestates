@@ -1,6 +1,6 @@
-// Fully Revamped: web/src/app/properties/[slug]/page.tsx
+// Corrected Version: web/src/app/properties/[slug]/page.tsx
 "use client"
-import { motion } from 'framer-motion';
+import { motion, Variants } from 'framer-motion'; // <-- Import Variants
 import Image from "next/image";
 import Link from "next/link";
 import { Bath, BedDouble, Ruler, MapPin, Crown, Calendar, Phone, Mail } from "lucide-react";
@@ -27,6 +27,13 @@ type Property = {
 const API = process.env.NEXT_PUBLIC_API_URL || "";
 const asUrl = (u?: string) => (!u ? "" : u.startsWith("http") ? u : `${API}${u}`);
 
+async function fetchAllPropertySlugs(): Promise<{ slug: string }[]> {
+  const res = await fetch(`${API}/api/properties?fields[0]=slug`, { next: { revalidate: 3600 } });
+  if (!res.ok) return [];
+  const json = await res.json();
+  return json.data?.map((item: { slug: string }) => ({ slug: item.slug })) ?? [];
+}
+
 async function fetchProperty(slug: string): Promise<Property | null> {
   const params = new URLSearchParams({
     "filters[slug][$eq]": slug,
@@ -36,17 +43,30 @@ async function fetchProperty(slug: string): Promise<Property | null> {
     const res = await fetch(`${API}/api/properties?${params.toString()}`, { next: { revalidate: 3600 } });
     if (!res.ok) return null;
     const json = await res.json();
-    return json?.data?.[0] ?? null; // Adjust based on your API's actual response structure
+    return json?.data?.[0] ?? null;
   } catch (error) {
     console.error("Failed to fetch property:", error);
     return null;
   }
 }
 
-// -- Animation Variants for Framer Motion --
-const sectionVariants = {
+// RESTORED: This is critical for fixing the 404 error
+export async function generateStaticParams() {
+  const slugs = await fetchAllPropertySlugs();
+  return slugs;
+}
+
+// -- CORRECTED: Animation Variants for Framer Motion --
+const sectionVariants: Variants = {
   hidden: { opacity: 0, y: 20 },
-  visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: "easeOut" } }
+  visible: { 
+    opacity: 1, 
+    y: 0, 
+    transition: { 
+      duration: 0.6, 
+      ease: "easeInOut" // <-- Corrected ease value
+    } 
+  }
 };
 
 // -- Reusable UI Components --
@@ -71,21 +91,19 @@ export default function Page({ params }: { params: { slug: string } }) {
   }, [params.slug]);
 
   if (!property) {
-    // You can replace this with a beautiful loading skeleton component
     return <div className="min-h-screen flex items-center justify-center">Loading property...</div>;
   }
   
   const p = property;
   const allImages = p.images?.map(img => ({ url: asUrl(img.url), alt: img.alternativeText || p.title || "Property photo" })) || [];
   const heroImage = allImages[0];
-  const galleryImages = allImages.slice(1, 5); // Take the next 4 images for the gallery
+  const galleryImages = allImages.slice(1, 5);
 
   return (
     <motion.main
       className="min-h-screen bg-paper"
       initial="hidden" animate="visible" variants={{ visible: { transition: { staggerChildren: 0.1 } } }}
     >
-      {/* --- 1. Immersive Hero Image --- */}
       {heroImage && (
         <motion.section variants={sectionVariants} className="relative h-[60vh] w-full">
           <Image src={heroImage.url} alt={heroImage.alt} fill className="object-cover" priority />
@@ -98,11 +116,9 @@ export default function Page({ params }: { params: { slug: string } }) {
         </motion.section>
       )}
 
-      {/* --- 2. Two-Column Layout --- */}
       <div className="mx-auto max-w-7xl px-4 py-12">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 lg:gap-12">
 
-          {/* --- Left Column: The Story --- */}
           <div className="lg:col-span-2 space-y-10">
             <motion.header variants={sectionVariants}>
               <h1 className="text-4xl md:text-5xl font-bold font-montserrat text-navy tracking-tight">{p.title}</h1>
@@ -140,7 +156,6 @@ export default function Page({ params }: { params: { slug: string } }) {
             )}
           </div>
 
-          {/* --- Right Column: Sticky Details --- */}
           <aside className="lg:col-span-1">
             <motion.div variants={sectionVariants} className="sticky top-28 rounded-2xl bg-white shadow-medium ring-1 ring-black/5 p-6 flex flex-col gap-4">
               <h3 className="text-xl font-bold font-montserrat text-navy">Interested in this property?</h3>
