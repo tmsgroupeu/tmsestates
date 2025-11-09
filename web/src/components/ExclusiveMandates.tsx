@@ -26,14 +26,11 @@ function toArray(rel?: MediaRelation): UploadFileEntity[] {
   return Array.isArray(rel.data) ? rel.data : [rel.data];
 }
 
-// ----- ADDED A SAFETY CHECK HERE -----
 function firstImageUrl(p?: PropertyAttr): string {
-  // If the attributes object itself is missing, return empty
   if (!p) return ""; 
   const firstImage = toArray(p.images)[0]?.attributes.url;
   return asUrl(firstImage);
 }
-// ----- END OF CHANGE -----
 
 async function fetchVip(): Promise<StrapiItem<PropertyAttr>[]> {
   if (!API_URL) {
@@ -69,11 +66,7 @@ async function fetchVip(): Promise<StrapiItem<PropertyAttr>[]> {
 export default async function ExclusiveMandates() {
   headers();
   const rawItems = await fetchVip();
-  
-  // ----- ADDED A SAFETY FILTER HERE -----
-  // This removes any items from the list that don't have the 'attributes' property
   const items = rawItems.filter(item => item && item.attributes);
-  // ----- END OF CHANGE -----
   
   if (!items.length) {
     return null;
@@ -87,7 +80,6 @@ export default async function ExclusiveMandates() {
       </header>
       <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
         {items.map(({ id, attributes }) => {
-          // Pass the attributes object to the helper function
           const img = firstImageUrl(attributes);
           return (
             <article key={id} className="group relative overflow-hidden rounded-2xl bg-white shadow-sm ring-1 ring-black/5 hover:shadow-md transition-shadow">
@@ -126,7 +118,7 @@ export default async function ExclusiveMandates() {
                     className="z-10 inline-flex items-center justify-center rounded-xl px-3 py-2 text-sm font-medium text-ink/80 bg-ink/5 hover:bg-ink/10"
                   >
                     Book tour
-                  </ba>
+                  </Link> 
                 </div>
               </div>
             </article>
