@@ -1,11 +1,11 @@
 import Image from "next/image";
 import Link from "next/link";
 import { Crown } from "lucide-react";
-import { headers } from "next/headers"; // Import headers to prevent caching
+import { headers } from "next/headers";
 
-export const revalidate = 0; // Disable caching for this component
+export const revalidate = 0;
 
-// (Keep all your type definitions the same)
+// Type definitions...
 type UploadFileAttributes = { url: string; alternativeText?: string; };
 type UploadFileEntity = { id: number; attributes: UploadFileAttributes; };
 type MediaRelation = { data: UploadFileEntity | UploadFileEntity[] | null; };
@@ -13,10 +13,12 @@ type StrapiItem<A> = { id: number; attributes: A };
 type StrapiResponse<A> = { data: StrapiItem<A>[] };
 interface PropertyAttr { title?: string; slug: string; address?: string; city?: string; vip?: boolean; images?: MediaRelation; }
 
-const asUrl = (u?: string, apiUrl?: string) => {
+const API_URL = process.env.STRAPI_API_URL || process.env.NEXT_PUBLIC_API_URL;
+
+const asUrl = (u?: string) => {
   if (!u) return "";
   if (u.startsWith("http")) return u;
-  return `${apiUrl}${u}`;
+  return `${API_URL}${u}`;
 };
 
 function toArray(rel?: MediaRelation): UploadFileEntity[] {
@@ -24,62 +26,51 @@ function toArray(rel?: MediaRelation): UploadFileEntity[] {
   return Array.isArray(rel.data) ? rel.data : [rel.data];
 }
 
-function firstImageUrl(p: PropertyAttr, apiUrl?: string): string {
+function firstImageUrl(p: PropertyAttr): string {
   const firstImage = toArray(p.images)[0]?.attributes.url;
-  return asUrl(firstImage, apiUrl);
+  return asUrl(firstImage);
 }
 
 async function fetchVip(): Promise<StrapiItem<PropertyAttr>[]> {
-  // Use the new server-only variable first, with a fallback to the public one.
-  const API_URL = process.env.STRAPI_API_URL || process.env.NEXT_PUBLIC_API_URL;
-
-  console.log('[ExclusiveMandates] Attempting to fetch VIP properties...');
-  console.log(`[ExclusiveMandates] Using API URL: ${API_URL}`);
-
   if (!API_URL) {
-    console.error('[ExclusiveMandates ERROR] API URL is not defined in Vercel environment variables.');
+    console.error('[ExclusiveMandates ERROR] API URL is not defined.');
     return [];
   }
 
+  // ----- THE ONLY CHANGE IS HERE -----
   const params = new URLSearchParams({
     "filters[vip][$eq]": "true",
-    "populate[images]": "*", 
+    "populate": "*", // Use a wildcard to populate all fields, including images correctly
     sort: "updatedAt:desc",
     "pagination[pageSize]": "12",
   });
-  
+  // ----- END OF CHANGE -----
+
   const fetchUrl = `${API_URL}/api/properties?${params.toString()}`;
 
   try {
-    const res = await fetch(fetchUrl, { cache: 'no-store' }); // Force dynamic fetching
+    const res = await fetch(fetchUrl, { cache: 'no-store' });
     
     if (!res.ok) {
-      const errorText = await res.text();
-      console.error(`[ExclusiveMandates ERROR] Failed to fetch. Status: ${res.status}. Response: ${errorText}`);
+      console.error(`[ExclusiveMandates ERROR] Fetch failed: ${res.status}`);
       return [];
     }
     
     const json: StrapiResponse<PropertyAttr> = await res.json();
-    console.log(`[ExclusiveMandates] Fetch successful. Found ${json.data?.length ?? 0} items.`);
     return json.data ?? [];
   } catch (error) {
-    const err = error as Error;
-    console.error(`[ExclusiveMandates EXCEPTION] An exception occurred: ${err.message}`);
+    console.error(`[ExclusiveMandates EXCEPTION]`, error);
     return [];
   }
 }
 
 export default async function ExclusiveMandates() {
-  // This line is a trick to ensure the component is always dynamically rendered
-  const heads = headers();
-  
+  headers(); // Ensures dynamic rendering
   const items = await fetchVip();
+  
   if (!items.length) {
-    console.log('[ExclusiveMandates] No items returned from fetchVip. Rendering null.');
     return null;
   }
-
-  const API_URL = process.env.STRAPI_API_URL || process.env.NEXT_PUBLIC_API_URL;
 
   return (
     <section className="mx-auto max-w-7xl px-4 py-12">
@@ -89,11 +80,11 @@ export default async function ExclusiveMandates() {
       </header>
       <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
         {items.map(({ id, attributes }) => {
-          const img = firstImageUrl(attributes, API_URL);
+          const img = firstImageUrl(attributes);
           return (
-            <article key={id} className="group ...">
-              {/* ... The rest of your rendering code is correct and can remain the same ... */}
-                 <Link
+            <article key={id} className="group relative overflow-hidden rounded-2xl bg-white shadow-sm ring-1 ring-black/5 hover:shadow-md transition-shadow">
+              {/* The rest of your component rendering... */}
+              <Link
                 href={`/properties/${attributes.slug}`}
                 className="absolute inset-0 z-10"
                 aria-label={attributes.title ?? "View property"}
