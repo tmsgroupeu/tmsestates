@@ -1,26 +1,16 @@
-// web/src/components/ExclusiveMandates.tsx
 import Image from "next/image";
 import Link from "next/link";
 import { Crown } from "lucide-react";
 
+// The revalidate value is not used in this debug version but kept for consistency
 export const revalidate = 900;
 
-/** ---------- Shared Strapi Types ---------- */
-type UploadFileAttributes = {
-  url: string;
-  alternativeText?: string;
-};
-type UploadFileEntity = {
-  id: number;
-  attributes: UploadFileAttributes;
-};
-type MediaRelation = {
-  data: UploadFileEntity | UploadFileEntity[] | null;
-};
-
+// --- Type definitions (unchanged) ---
+type UploadFileAttributes = { url: string; alternativeText?: string; };
+type UploadFileEntity = { id: number; attributes: UploadFileAttributes; };
+type MediaRelation = { data: UploadFileEntity | UploadFileEntity[] | null; };
 type StrapiItem<A> = { id: number; attributes: A };
 type StrapiResponse<A> = { data: StrapiItem<A>[] };
-
 interface PropertyAttr {
   title?: string;
   slug: string;
@@ -30,23 +20,31 @@ interface PropertyAttr {
   cover?: MediaRelation;
   gallery?: MediaRelation;
 }
-
-/** ---------- Helpers ---------- */
 const API = process.env.NEXT_PUBLIC_API_URL || "";
 const asUrl = (u?: string) => (!u ? "" : u.startsWith("http") ? u : `${API}${u}`);
-
 function toArray(rel?: MediaRelation): UploadFileEntity[] {
   if (!rel?.data) return [];
   return Array.isArray(rel.data) ? rel.data : [rel.data];
 }
-
 function firstImageUrl(p: PropertyAttr): string {
   const cover = toArray(p.cover)[0]?.attributes.url;
   const firstGallery = toArray(p.gallery)[0]?.attributes.url;
   return asUrl(cover || firstGallery || "");
 }
+// --- End of helpers ---
 
-async function fetchVip(): Promise<StrapiItem<PropertyAttr>[]> {
+async function fetchVip(): Promise<{ items: StrapiItem<PropertyAttr>[]; debug: string[] }> {
+  const debug = [];
+  const API = process.env.NEXT_PUBLIC_API_URL || "";
+
+  debug.push(`Attempting to fetch VIP properties...`);
+  debug.push(`1. NEXT_PUBLIC_API_URL is: "${API}"`);
+
+  if (!API) {
+    debug.push("CRITICAL ERROR: The API URL is not set in Vercel's environment variables.");
+    return { items: [], debug };
+  }
+
   const params = new URLSearchParams({
     "filters[vip][$eq]": "true",
     "populate[cover]": "*",
@@ -54,25 +52,59 @@ async function fetchVip(): Promise<StrapiItem<PropertyAttr>[]> {
     sort: "updatedAt:desc",
     "pagination[pageSize]": "12",
   });
-  const res = await fetch(`${API}/api/properties?${params.toString()}`, {
-    next: { revalidate },
-  });
-  if (!res.ok) return [];
-  const json: StrapiResponse<PropertyAttr> = await res.json();
-  return json.data ?? [];
+  
+  const fetchUrl = `${API}/api/properties?${params.toString()}`;
+  debug.push(`2. Fetching from this URL: ${fetchUrl}`);
+
+  try {
+    // We set revalidate to 0 to bypass the cache completely for this test
+    const res = await fetch(fetchUrl, { next: { revalidate: 0 } });
+
+    debug.push(`3. Response status code: ${res.status}`);
+    debug.push(`4. Response 'ok' property: ${res.ok}`);
+
+    if (!res.ok) {
+      const errorText = await res.text();
+      debug.push(`5. Fetch failed. Raw response: ${errorText}`);
+      return { items: [], debug };
+    }
+
+    const json: StrapiResponse<PropertyAttr> = await res.json();
+    debug.push(`5. Fetch successful. Got ${json.data?.length ?? 0} items.`);
+    return { items: json.data ?? [], debug };
+  } catch (error: any) {
+    debug.push(`6. An exception occurred during fetch: ${error.message}`);
+    return { items: [], debug };
+  }
 }
 
 export default async function ExclusiveMandates() {
-  const items = await fetchVip();
-  if (!items.length) return null;
+  const { items, debug } = await fetchVip();
 
+  if (!items.length) {
+    // This will now render a visible debug box on your live website
+    return (
+      <section className="mx-auto max-w-7xl px-4 py-12">
+        <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative" role="alert">
+          <strong className="font-bold">Debug Information:</strong>
+          <span className="block sm:inline"> The Premiere Collection failed to load.</span>
+          <ul className="mt-3 list-disc list-inside text-left text-sm">
+            {debug.map((msg, i) => (
+              <li key={i}>{msg}</li>
+            ))}
+          </ul>
+        </div>
+      </section>
+    );
+  }
+
+  // --- Original rendering logic (unchanged) ---
   return (
     <section className="mx-auto max-w-7xl px-4 py-12">
       <header className="mb-6 flex items-center gap-2">
         <Crown className="h-5 w-5 text-yellow-500" />
         <h2 className="text-2xl md:text-3xl font-semibold tracking-tight">Our Premiere Collection</h2>
       </header>
-
       <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
         {items.map(({ id, attributes }) => {
           const img = firstImageUrl(attributes);
