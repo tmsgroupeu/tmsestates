@@ -1,3 +1,4 @@
+// web/src/components/ExclusiveMandates.tsx
 import Image from "next/image";
 import Link from "next/link";
 import { Crown } from "lucide-react";
@@ -5,7 +6,6 @@ import { headers } from "next/headers";
 
 export const revalidate = 0;
 
-// Update the types to reflect the flat structure
 type StrapiItem = {
   id: number;
   title?: string;
@@ -15,6 +15,7 @@ type StrapiItem = {
   vip?: boolean;
   images?: { url: string; alternativeText?: string }[];
 };
+
 type StrapiResponse = { data: StrapiItem[] };
 
 const API_URL = process.env.STRAPI_API_URL || process.env.NEXT_PUBLIC_API_URL;
@@ -26,52 +27,59 @@ const asUrl = (u?: string) => {
 };
 
 function firstImageUrl(item?: StrapiItem): string {
-  if (!item || !item.images || item.images.length === 0) return ""; 
+  if (!item?.images?.length) return "";
   return asUrl(item.images[0].url);
 }
 
 async function fetchVip(): Promise<StrapiItem[]> {
   if (!API_URL) return [];
-
   const params = new URLSearchParams({
     "filters[vip][$eq]": "true",
-    "populate": "*",
+    populate: "*",
     sort: "updatedAt:desc",
   });
 
-  const fetchUrl = `${API_URL}/api/properties?${params.toString()}`;
-
   try {
-    const res = await fetch(fetchUrl, { cache: 'no-store' });
+    const res = await fetch(`${API_URL}/api/properties?${params.toString()}`, {
+      cache: "no-store",
+    });
     if (!res.ok) return [];
-    
     const json: StrapiResponse = await res.json();
     return json.data ?? [];
-  } catch (error) {
+  } catch {
     return [];
   }
 }
 
 export default async function ExclusiveMandates() {
-  headers();
+  headers(); // keep for edge/runtime consistency
   const items = await fetchVip();
-  
-  if (!items || !items.length) {
-    return null;
-  }
+  if (!items?.length) return null;
 
   return (
-    <section className="mx-auto max-w-7xl px-4 py-12">
-      <header className="mb-6 flex items-center gap-2">
-        <Crown className="h-5 w-5 text-yellow-500" />
-        <h2 className="text-2xl md:text-3xl font-semibold tracking-tight">Our Premiere Collection</h2>
+    <section className="section">
+      <header className="mb-8 flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4">
+        <div className="flex items-center gap-2">
+          <Crown className="h-5 w-5 text-[color:var(--gold)]" />
+          <h2 className="text-2xl md:text-3xl font-semibold tracking-tight text-[color:var(--navy)]">
+            Our Premiere Collection
+          </h2>
+        </div>
+        <p className="text-sm text-[color:var(--muted-foreground)] max-w-xl">
+          A confidential selection of high-spec residences entrusted exclusively to TMS Estates.
+        </p>
       </header>
-      <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+
+      {/* Mobile carousel / desktop grid */}
+      <div className="stack-cards-carousel md:grid-cols-2 lg:grid-cols-3">
         {items.map((item) => {
           const img = firstImageUrl(item);
           return (
-            <article key={item.id} className="group relative overflow-hidden rounded-2xl bg-white shadow-sm ring-1 ring-black/5 hover:shadow-md transition-shadow">
-               <Link
+            <article
+              key={item.id}
+              className="group relative overflow-hidden rounded-2xl bg-white shadow-soft ring-1 ring-black/5 hover:shadow-medium transition-all duration-300"
+            >
+              <Link
                 href={`/properties/${item.slug}`}
                 className="absolute inset-0 z-10"
                 aria-label={item.title ?? "View property"}
@@ -82,28 +90,32 @@ export default async function ExclusiveMandates() {
                     src={img}
                     alt={item.title ?? "Property image"}
                     fill
-                    className="object-cover transition-transform duration-700 group-hover:scale-[1.03]"
-                    sizes="(min-width:1024px) 33vw, (min-width:640px) 50vw, 100vw"
+                    className="object-cover transition-transform duration-700 group-hover:scale-[1.04]"
+                    sizes="(min-width:1024px) 33vw, (min-width:640px) 50vw, 80vw"
                   />
                 )}
-                <div className="absolute left-3 top-3 inline-flex items-center gap-1 rounded-full bg-yellow-500/90 px-3 py-1 text-xs font-semibold text-white backdrop-blur">
+                <div className="absolute left-3 top-3 inline-flex items-center gap-1 rounded-full bg-[color:var(--gold)]/95 px-3 py-1 text-[9px] font-semibold uppercase tracking-[0.16em] text-white shadow-sm">
                   <Crown className="h-3.5 w-3.5" />
                   VIP
                 </div>
               </div>
-              <div className="p-4">
-                <h3 className="line-clamp-1 text-lg font-medium">{item.title}</h3>
-                <p className="line-clamp-1 text-sm text-ink/60">{item.address || item.city || "Cyprus"}</p>
+              <div className="p-4 space-y-2">
+                <h3 className="line-clamp-1 text-lg font-medium text-[color:var(--navy)]">
+                  {item.title}
+                </h3>
+                <p className="line-clamp-1 text-sm text-[color:var(--muted-foreground)]">
+                  {item.address || item.city || "Cyprus"}
+                </p>
                 <div className="mt-3 flex gap-2">
                   <Link
                     href={`/contact?property=${encodeURIComponent(item.slug)}`}
-                    className="z-10 inline-flex items-center justify-center rounded-xl px-4 py-2 text-sm font-medium text-white bg-[rgb(var(--gold-rgb,184,134,11))] hover:opacity-95"
+                    className="z-10 inline-flex items-center justify-center rounded-xl px-4 py-2 text-xs font-semibold text-[color:var(--ink)] bg-[color:var(--gold)] hover:brightness-110"
                   >
                     Request price
                   </Link>
                   <Link
                     href={`/contact?type=tour&property=${encodeURIComponent(item.slug)}`}
-                    className="z-10 inline-flex items-center justify-center rounded-xl px-3 py-2 text-sm font-medium text-ink/80 bg-ink/5 hover:bg-ink/10"
+                    className="z-10 inline-flex items-center justify-center rounded-xl px-3 py-2 text-xs font-medium text-[color:var(--ink)]/80 bg-[color:var(--ink)]/4 hover:bg-[color:var(--ink)]/8"
                   >
                     Book tour
                   </Link>
