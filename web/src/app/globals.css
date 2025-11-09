@@ -1,5 +1,3 @@
-/* Enhanced: ./globals.css */
-
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -11,11 +9,11 @@
 
   /* Core Palette */
   --navy: #0A2342;
-  --gold: #D4AF37; /* A slightly richer, more classic gold */
+  --gold: #D4AF37;
   --gold-rgb: 212, 175, 55;
   --ink: #111318;
-  --paper: #F9F9F9; /* A slightly warmer white */
-  
+  --paper: #F9F9F9;
+
   /* Semantic Colors */
   --background: var(--paper);
   --foreground: var(--ink);
@@ -26,14 +24,16 @@
   --text-on-dark: #F0F2F5;
 
   /* System */
-  --radius: 1rem; /* 16px */
+  --radius: 1rem;
   --transition-base: 300ms cubic-bezier(0.25, 0.46, 0.45, 0.94);
-  --shadow-soft: 0 4px 6px -1px rgb(0 0 0 / 0.05), 0 2px 4px -2px rgb(0 0 0 / 0.05);
-  --shadow-medium: 0 10px 15px -3px rgb(0 0 0 / 0.07), 0 4px 6px -4px rgb(0 0 0 / 0.07);
+  --shadow-soft: 0 4px 6px -1px rgb(0 0 0 / 0.05),
+    0 2px 4px -2px rgb(0 0 0 / 0.05);
+  --shadow-medium: 0 10px 15px -3px rgb(0 0 0 / 0.07),
+    0 4px 6px -4px rgb(0 0 0 / 0.07);
 }
 
 body {
-  @apply bg-background text-foreground;
+  @apply bg-[color:var(--background)] text-[color:var(--foreground)];
   font-family: var(--font-inter);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
@@ -51,9 +51,10 @@ body {
   border: 1px solid rgba(255, 255, 255, 0.12);
   @apply rounded-xl;
 }
+
 .glass-dark {
   backdrop-filter: saturate(140%) blur(12px);
-  background: rgba(10, 35, 66, 0.3); /* Using navy with alpha */
+  background: rgba(10, 35, 66, 0.3);
   border: 1px solid rgba(255, 255, 255, 0.1);
   @apply rounded-xl;
 }
@@ -62,50 +63,92 @@ body {
 @layer components {
   .btn {
     @apply inline-flex items-center justify-center rounded-lg px-6 py-3 font-semibold tracking-wide transition-all duration-300 ease-out;
-    @apply focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-background focus-visible:ring-gold;
+    @apply focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-background;
+    @apply focus-visible:ring-[color:var(--gold)];
   }
+
   .btn-primary {
-    @apply bg-primary text-primary-foreground shadow-sm hover:brightness-110 active:scale-[0.98] transform-gpu;
+    @apply bg-[color:var(--primary)] text-[color:var(--primary-foreground)] shadow-sm;
+    @apply hover:brightness-110 active:scale-[0.98] transform-gpu;
   }
-  
+
   .btn-outline {
-    @apply border border-gold text-navy bg-transparent;
+    @apply border border-[color:var(--gold)] text-[color:var(--navy)] bg-transparent;
     transition-property: background-color, color, transform;
   }
+
   .btn-outline:hover {
-    background-color: rgba(var(--gold-rgb), 0.1);
+    background-color: rgba(var(--gold-rgb), 0.08);
   }
 
   .btn-outline-dark {
-     @apply text-white bg-transparent;
-     border: 1px solid rgba(255, 255, 255, 0.5);
-     transition-property: background-color, color, transform;
+    @apply text-white bg-transparent;
+    border: 1px solid rgba(255, 255, 255, 0.5);
+    transition-property: background-color, color, transform;
   }
+
   .btn-outline-dark:hover {
     background-color: rgba(255, 255, 255, 0.1);
-    border-color: rgba(255, 255, 255, 0.8);
+    border-color: rgba(255, 255, 255, 0.85);
   }
 }
 
-/* Marquee Animation for Property Carousel */
+/* Mobile-first card carousel:
+   - On small screens: horizontal swipe
+   - On md+ : becomes a grid when combined with md:grid-cols-* utilities
+*/
+.stack-cards-carousel {
+  display: flex;
+  gap: 1rem;
+  overflow-x: auto;
+  padding-bottom: 0.5rem;
+  scroll-snap-type: x mandatory;
+  -webkit-overflow-scrolling: touch;
+}
+
+.stack-cards-carousel::-webkit-scrollbar {
+  display: none;
+}
+
+.stack-cards-carousel > * {
+  scroll-snap-align: start;
+  flex: 0 0 80%;
+  max-width: 80%;
+}
+
+@media (min-width: 768px) {
+  .stack-cards-carousel {
+    display: grid;
+    overflow-x: visible;
+    scroll-snap-type: none;
+    padding-bottom: 0;
+    gap: 1.5rem;
+  }
+
+  .stack-cards-carousel > * {
+    flex: initial;
+    max-width: none;
+  }
+}
+
+/* Marquee Animation (used for looping showcases) */
 @keyframes scroll {
   from {
     transform: translateX(0);
   }
   to {
-    /* Half the duplicated content's width + the gap */
-    transform: translateX(calc(-100% - 1.5rem)); 
+    transform: translateX(calc(-100% - 1.5rem));
   }
 }
 
 .scrolling-wrapper {
-  /* Adjust animation duration for speed. Longer duration = slower scroll. */
   animation: scroll 90s linear infinite;
 }
 
 /* Subtle hop animation for footer icons */
 @keyframes hop {
-  0%, 100% {
+  0%,
+  100% {
     transform: translateY(0);
   }
   50% {
