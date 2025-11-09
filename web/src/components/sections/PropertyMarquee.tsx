@@ -15,22 +15,21 @@ type Item = {
 };
 
 export default function PropertyMarquee({ items }: { items: Item[] }) {
-  // Ensure we have enough items to loop smoothly
   const list = useMemo(() => {
     const src = items?.length ? items : [];
     if (src.length >= 8) return src;
-    // tile to avoid gaps
-    return Array.from({ length: Math.ceil(8 / Math.max(src.length, 1)) })
+    return Array.from({
+      length: Math.ceil(8 / Math.max(src.length || 1, 1)),
+    })
       .flatMap(() => src)
       .slice(0, 8);
   }, [items]);
 
-  const row = [...list, ...list]; // duplicate for seamless loop
+  const row = [...list, ...list];
 
   return (
     <div className="relative">
-      {/* Edge fades */}
-      <div className="pointer-events-none absolute inset-y-0 left-0 w-24 bg-gradient-to-r from-paper to-transparent" />
+      <div className="pointer-events-none absolute inset-y-0 left-0 w-24 bg-gradient-to-r from-[color:var(--paper)] to-transparent" />
       <div className="pointer-events-none absolute inset-y-0 right-0 w-24 bg-gradient-to-l from-white to-transparent" />
 
       <div className="overflow-hidden">
@@ -43,13 +42,20 @@ export default function PropertyMarquee({ items }: { items: Item[] }) {
               aria-label={it.title}
             >
               <div
-                className="h-40 w-64 min-w-64 overflow-hidden rounded-xl border border-ink/10 bg-white/70 backdrop-blur shadow-sm transition hover:shadow-lg"
-                style={{ backgroundImage: `url(${it.coverUrl ?? "/placeholders/property.jpg"})`, backgroundSize: "cover", backgroundPosition: "center" }}
+                className="h-40 w-64 min-w-64 overflow-hidden rounded-xl border border-black/10 bg-white/70 backdrop-blur shadow-sm transition group-hover/item:shadow-lg"
+                style={{
+                  backgroundImage: `url(${it.coverUrl ?? "/placeholders/property.jpg"})`,
+                  backgroundSize: "cover",
+                  backgroundPosition: "center",
+                }}
               />
               <div className="mt-3">
-                <p className="line-clamp-1 text-sm font-semibold text-ink">{it.title}</p>
-                <p className="line-clamp-1 text-xs text-ink/60">{it.city || "—"}</p>
-                <p className="mt-1 text-xs font-semibold text-ink">{formatPrice(it.price, it.currency)}</p>
+                <p className="line-clamp-1 text-sm font-semibold text-[color:var(--ink)]">
+                  {it.title}
+                </p>
+                <p className="line-clamp-1 text-xs text-[color:var(--ink)]/60">
+                  {it.city || "—"}
+                </p>
               </div>
             </Link>
           ))}
@@ -61,7 +67,7 @@ export default function PropertyMarquee({ items }: { items: Item[] }) {
           display: flex;
           gap: 16px;
           will-change: transform;
-          animation: scroll 60s linear infinite; /* slow & elegant */
+          animation: scroll 60s linear infinite;
         }
         .marquee:hover {
           animation-play-state: paused;
@@ -69,27 +75,18 @@ export default function PropertyMarquee({ items }: { items: Item[] }) {
         .marquee-card {
           display: flex;
           flex-direction: column;
-          width: 16rem; /* 256px */
+          width: 16rem;
           text-decoration: none;
         }
         @keyframes scroll {
-          0% { transform: translateX(0); }
-          100% { transform: translateX(-50%); } /* because we duplicated the row */
+          0% {
+            transform: translateX(0);
+          }
+          100% {
+            transform: translateX(-50%);
+          }
         }
       `}</style>
     </div>
   );
-}
-
-function formatPrice(price?: number | null, currency?: string | null) {
-  if (!price) return "Price on request";
-  try {
-    return new Intl.NumberFormat(undefined, {
-      style: "currency",
-      currency: currency || "EUR",
-      maximumFractionDigits: 0,
-    }).format(price);
-  } catch {
-    return `€${price.toLocaleString()}`;
-  }
 }
