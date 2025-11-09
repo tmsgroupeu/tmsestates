@@ -17,13 +17,14 @@ export default function Home() {
       
       {/* This remains the main scrolling container */}
       <div className="relative z-10">
-
-        {/* --- LANE 1: SOLID --- */}
+      {/* --- LANE 1: TRANSPARENT --- */}
+        <WhyChooseUs />
+        
+        {/* --- LANE 2: SOLID --- */}
         <div className="bg-background">
           <ExclusiveMandates />
         </div>
-        {/* --- LANE 2: TRANSPARENT --- */}
-        <WhyChooseUs />
+        
 
         {/* --- LANE 3: TRANSPARENT (Property Carousel) --- */}
         <MarketInsights />
