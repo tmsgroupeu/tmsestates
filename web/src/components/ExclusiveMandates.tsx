@@ -35,12 +35,12 @@ function firstImageUrl(p: PropertyAttr): string {
 
 async function fetchVip(): Promise<{ items: StrapiItem<PropertyAttr>[]; debug: string[] }> {
   const debug = [];
-  const API = process.env.NEXT_PUBLIC_API_URL || "";
+  const API_URL = process.env.NEXT_PUBLIC_API_URL || "";
 
   debug.push(`Attempting to fetch VIP properties...`);
-  debug.push(`1. NEXT_PUBLIC_API_URL is: "${API}"`);
+  debug.push(`1. NEXT_PUBLIC_API_URL is: "${API_URL}"`);
 
-  if (!API) {
+  if (!API_URL) {
     debug.push("CRITICAL ERROR: The API URL is not set in Vercel's environment variables.");
     return { items: [], debug };
   }
@@ -53,7 +53,7 @@ async function fetchVip(): Promise<{ items: StrapiItem<PropertyAttr>[]; debug: s
     "pagination[pageSize]": "12",
   });
   
-  const fetchUrl = `${API}/api/properties?${params.toString()}`;
+  const fetchUrl = `${API_URL}/api/properties?${params.toString()}`;
   debug.push(`2. Fetching from this URL: ${fetchUrl}`);
 
   try {
@@ -72,8 +72,10 @@ async function fetchVip(): Promise<{ items: StrapiItem<PropertyAttr>[]; debug: s
     const json: StrapiResponse<PropertyAttr> = await res.json();
     debug.push(`5. Fetch successful. Got ${json.data?.length ?? 0} items.`);
     return { items: json.data ?? [], debug };
-  } catch (error: any) {
-    debug.push(`6. An exception occurred during fetch: ${error.message}`);
+  } catch (error) {
+    // Correctly handle the unknown error type
+    const err = error as Error;
+    debug.push(`6. An exception occurred during fetch: ${err.message}`);
     return { items: [], debug };
   }
 }
@@ -139,7 +141,7 @@ export default async function ExclusiveMandates() {
                 <div className="mt-3 flex gap-2">
                   <Link
                     href={`/contact?property=${encodeURIComponent(attributes.slug)}`}
-                    className="z-10 inline-flex items-center justify-center rounded-xl px-4 py-2 text-sm font-medium text-white bg-[rgb(var(--gold-rgb,184,134,11))] hover:opacity-95"
+                    className="z-10 inline-flex items-center justify-center rounded-xl px-4 py-2 text-sm font-medium text-white bg-[rgb(var(--gold-rgb,184,1b4,11))] hover:opacity-95"
                   >
                     Request price
                   </Link>
