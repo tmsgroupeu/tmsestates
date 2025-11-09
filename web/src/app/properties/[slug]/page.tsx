@@ -1,29 +1,15 @@
-// web/src/app/properties/[slug]/page.tsx
+// Fully Revamped: web/src/app/properties/[slug]/page.tsx
+"use client"
+import { motion } from 'framer-motion';
 import Image from "next/image";
 import Link from "next/link";
-import { notFound } from "next/navigation";
 import { Bath, BedDouble, Ruler, MapPin, Crown, Calendar, Phone, Mail } from "lucide-react";
+import { useEffect, useState } from 'react';
 
-export const revalidate = 900;
-export const dynamic = "force-static";
-
-/** ---------- Shared Strapi Types ---------- */
-type UploadFileAttributes = {
-  url: string;
-  alternativeText?: string;
-};
-type UploadFileEntity = {
+// --- Type Definitions (Flattened Structure) ---
+type StrapiMedia = { url: string; alternativeText?: string };
+type Property = {
   id: number;
-  attributes: UploadFileAttributes;
-};
-type MediaRelation = {
-  data: UploadFileEntity | UploadFileEntity[] | null;
-};
-
-type StrapiItem<A> = { id: number; attributes: A };
-type StrapiResponse<A> = { data: StrapiItem<A>[] };
-
-interface PropertyAttr {
   title?: string;
   slug: string;
   description?: string;
@@ -34,200 +20,152 @@ interface PropertyAttr {
   bathrooms?: number | null;
   propertyType?: string | null;
   vip?: boolean;
-  cover?: MediaRelation;
-  gallery?: MediaRelation;
+  images?: StrapiMedia[];
   updatedAt?: string;
-}
+};
 
-/** ---------- Helpers ---------- */
 const API = process.env.NEXT_PUBLIC_API_URL || "";
 const asUrl = (u?: string) => (!u ? "" : u.startsWith("http") ? u : `${API}${u}`);
 
-function toArray(rel?: MediaRelation): UploadFileEntity[] {
-  if (!rel?.data) return [];
-  return Array.isArray(rel.data) ? rel.data : [rel.data];
-}
-
-function allImages(p: PropertyAttr): { url: string; alt: string }[] {
-  const list = [...toArray(p.cover), ...toArray(p.gallery)];
-  const unique: { url: string; alt: string }[] = [];
-  const seen = new Set<string>();
-  for (const img of list) {
-    const url = asUrl(img.attributes.url);
-    if (url && !seen.has(url)) {
-      seen.add(url);
-      unique.push({ url, alt: img.attributes.alternativeText || p.title || "Property photo" });
-    }
-  }
-  return unique;
-}
-
-async function fetchProperty(slug: string): Promise<StrapiItem<PropertyAttr> | null> {
+async function fetchProperty(slug: string): Promise<Property | null> {
   const params = new URLSearchParams({
     "filters[slug][$eq]": slug,
-    "populate[cover]": "*",
-    "populate[gallery]": "*",
+    "populate": "*",
   });
-  const res = await fetch(`${API}/api/properties?${params.toString()}`, {
-    next: { revalidate },
-  });
-  if (!res.ok) return null;
-  const json: StrapiResponse<PropertyAttr> = await res.json();
-  return json?.data?.[0] ?? null;
+  try {
+    const res = await fetch(`${API}/api/properties?${params.toString()}`, { next: { revalidate: 3600 } });
+    if (!res.ok) return null;
+    const json = await res.json();
+    return json?.data?.[0] ?? null; // Adjust based on your API's actual response structure
+  } catch (error) {
+    console.error("Failed to fetch property:", error);
+    return null;
+  }
 }
 
-export default async function Page({ params }: { params: { slug: string } }) {
-  const item = await fetchProperty(params.slug);
-  if (!item) return notFound();
-  const p = item.attributes;
-  const imgs = allImages(p);
-  const title = p.title ?? "Property";
+// -- Animation Variants for Framer Motion --
+const sectionVariants = {
+  hidden: { opacity: 0, y: 20 },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: "easeOut" } }
+};
+
+// -- Reusable UI Components --
+const StatCard = ({ icon: Icon, label, value }: { icon: React.ComponentType<{ className?: string }>, label: string, value: string | number | null | undefined }) => {
+    if (value === null || value === undefined) return null;
+    return (
+        <div className="rounded-2xl bg-white/60 backdrop-blur p-4 ring-1 ring-black/5">
+            <div className="text-ink/60 text-sm font-medium">{label}</div>
+            <div className="mt-1 flex items-center gap-2 text-xl font-semibold">
+                <Icon className="h-5 w-5 text-gold" /> {value}
+            </div>
+        </div>
+    );
+};
+
+// -- Main Page Component --
+export default function Page({ params }: { params: { slug: string } }) {
+  const [property, setProperty] = useState<Property | null>(null);
+
+  useEffect(() => {
+    fetchProperty(params.slug).then(setProperty);
+  }, [params.slug]);
+
+  if (!property) {
+    // You can replace this with a beautiful loading skeleton component
+    return <div className="min-h-screen flex items-center justify-center">Loading property...</div>;
+  }
+  
+  const p = property;
+  const allImages = p.images?.map(img => ({ url: asUrl(img.url), alt: img.alternativeText || p.title || "Property photo" })) || [];
+  const heroImage = allImages[0];
+  const galleryImages = allImages.slice(1, 5); // Take the next 4 images for the gallery
 
   return (
-    <main className="min-h-screen bg-[var(--background,theme(colors.gray.50))]">
-      {/* Media header */}
-      <section className="relative">
-        <div className="w-full overflow-x-auto snap-x snap-mandatory no-scrollbar">
-          <ul className="flex w-full">
-            {imgs.map((img, i) => (
-              <li key={`${img.url}-${i}`} className="relative snap-start shrink-0 w-full basis-full">
-                <div className="relative aspect-[16/9] bg-gray-100">
-                  <Image src={img.url} alt={img.alt} fill className="object-cover" sizes="100vw" priority={i === 0} />
-                </div>
-              </li>
-            ))}
-          </ul>
-        </div>
-        {p.vip ? (
-          <div className="absolute left-4 top-4 inline-flex items-center gap-1 rounded-full bg-yellow-500/90 px-3 py-1 text-xs font-semibold text-white backdrop-blur">
-            <Crown className="h-3.5 w-3.5" />
-            VIP Listing
-          </div>
-        ) : null}
-      </section>
-
-      {/* Body */}
-      <section className="mx-auto grid max-w-7xl grid-cols-1 gap-8 px-4 py-8 lg:grid-cols-3">
-        {/* Left: content */}
-        <article className="lg:col-span-2 flex flex-col gap-6">
-          <header className="flex flex-col gap-2">
-            <h1 className="text-3xl md:text-4xl font-semibold tracking-tight">{title}</h1>
-            <p className="flex items-center gap-2 text-ink/60">
-              <MapPin className="h-4 w-4" />
-              <span>{p.address || p.city || "Cyprus"}</span>
-            </p>
-          </header>
-
-          {/* Essentials */}
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-            {p.bedrooms != null && (
-              <div className="rounded-2xl bg-white/60 backdrop-blur p-4 ring-1 ring-black/5">
-                <div className="text-ink/60 text-xs">Bedrooms</div>
-                <div className="mt-1 flex items-center gap-2 text-lg font-medium">
-                  <BedDouble className="h-5 w-5" /> {p.bedrooms}
-                </div>
-              </div>
-            )}
-            {p.bathrooms != null && (
-              <div className="rounded-2xl bg-white/60 backdrop-blur p-4 ring-1 ring-black/5">
-                <div className="text-ink/60 text-xs">Bathrooms</div>
-                <div className="mt-1 flex items-center gap-2 text-lg font-medium">
-                  <Bath className="h-5 w-5" /> {p.bathrooms}
-                </div>
-              </div>
-            )}
-            {p.area != null && (
-              <div className="rounded-2xl bg-white/60 backdrop-blur p-4 ring-1 ring-black/5">
-                <div className="text-ink/60 text-xs">Area</div>
-                <div className="mt-1 flex items-center gap-2 text-lg font-medium">
-                  <Ruler className="h-5 w-5" /> {p.area} m²
-                </div>
-              </div>
-            )}
-            {p.propertyType && (
-              <div className="rounded-2xl bg-white/60 backdrop-blur p-4 ring-1 ring-black/5">
-                <div className="text-ink/60 text-xs">Type</div>
-                <div className="mt-1 text-lg font-medium">{p.propertyType}</div>
-              </div>
-            )}
-          </div>
-
-          {/* Description */}
-          {p.description && (
-            <section className="prose prose-neutral max-w-none prose-p:leading-relaxed">
-              <h2 className="text-xl font-semibold">About this property</h2>
-              <p className="mt-2 text-ink/75">{p.description}</p>
-            </section>
-          )}
-
-          {/* Secondary gallery (thumbnails) */}
-          {imgs.length > 1 && (
-            <section className="mt-2">
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-                {imgs.slice(1, 9).map((img, i) => (
-                  <div key={`${img.url}-thumb-${i}`} className="relative aspect-[4/3] overflow-hidden rounded-xl">
-                    <Image src={img.url} alt={img.alt} fill className="object-cover" sizes="(min-width:1024px) 25vw, 50vw" />
-                  </div>
-                ))}
-              </div>
-            </section>
-          )}
-        </article>
-
-        {/* Right: sticky actions */}
-        <aside className="lg:col-span-1">
-          <div className="sticky top-6 rounded-2xl bg-white shadow-sm ring-1 ring-black/5 p-5 flex flex-col gap-4">
-            <h3 className="text-lg font-semibold">Interested?</h3>
-            <p className="text-sm text-ink/70">We keep pricing discreet. Request price or schedule a private tour.</p>
-
-            <div className="flex flex-col gap-2">
-              <Link
-                href={`/contact?property=${encodeURIComponent(p.slug)}`}
-                className="inline-flex items-center justify-center gap-2 rounded-xl px-4 py-2.5 font-medium text-white bg-[rgb(var(--gold-rgb,184,134,11))] hover:opacity-95"
-              >
-                <Mail className="h-4 w-4" />
-                Request price
-              </Link>
-              <Link
-                href={`/contact?type=tour&property=${encodeURIComponent(p.slug)}`}
-                className="inline-flex items-center justify-center gap-2 rounded-xl px-4 py-2.5 font-medium text-ink/80 bg-ink/5 hover:bg-ink/10"
-              >
-                <Calendar className="h-4 w-4" />
-                Book a tour
-              </Link>
-              <a
-                href={`tel:+35700000000`}
-                className="inline-flex items-center justify-center gap-2 rounded-xl px-4 py-2.5 font-medium text-ink/80 bg-ink/5 hover:bg-ink/10"
-              >
-                <Phone className="h-4 w-4" />
-                Call us
-              </a>
+    <motion.main
+      className="min-h-screen bg-paper"
+      initial="hidden" animate="visible" variants={{ visible: { transition: { staggerChildren: 0.1 } } }}
+    >
+      {/* --- 1. Immersive Hero Image --- */}
+      {heroImage && (
+        <motion.section variants={sectionVariants} className="relative h-[60vh] w-full">
+          <Image src={heroImage.url} alt={heroImage.alt} fill className="object-cover" priority />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-black/10 to-transparent" />
+          {p.vip && (
+             <div className="absolute left-6 top-6 inline-flex items-center gap-2 rounded-full bg-gold/90 px-4 py-2 text-sm font-semibold text-white backdrop-blur-md">
+                <Crown className="h-4 w-4" /> VIP Listing
             </div>
+          )}
+        </motion.section>
+      )}
 
-            <div className="mt-2 rounded-xl bg-ink/5 p-3 text-xs text-ink/60">
-              Ref: <span className="font-mono">{p.slug}</span>
-            </div>
+      {/* --- 2. Two-Column Layout --- */}
+      <div className="mx-auto max-w-7xl px-4 py-12">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 lg:gap-12">
+
+          {/* --- Left Column: The Story --- */}
+          <div className="lg:col-span-2 space-y-10">
+            <motion.header variants={sectionVariants}>
+              <h1 className="text-4xl md:text-5xl font-bold font-montserrat text-navy tracking-tight">{p.title}</h1>
+              <p className="mt-3 flex items-center gap-2 text-lg text-muted-foreground">
+                <MapPin className="h-5 w-5 text-gold" />
+                <span>{p.address || p.city || "Cyprus"}</span>
+              </p>
+            </motion.header>
+
+            <motion.div variants={sectionVariants} className="grid grid-cols-2 md:grid-cols-4 gap-4">
+              <StatCard icon={BedDouble} label="Bedrooms" value={p.bedrooms} />
+              <StatCard icon={Bath} label="Bathrooms" value={p.bathrooms} />
+              <StatCard icon={Ruler} label="Area (m²)" value={p.area} />
+              <StatCard icon={Calendar} label="Type" value={p.propertyType} />
+            </motion.div>
+            
+            {p.description && (
+              <motion.section variants={sectionVariants} className="prose prose-lg max-w-none text-ink/80 leading-relaxed">
+                 <h2 className="text-2xl font-semibold font-montserrat text-navy">About This Property</h2>
+                 <p>{p.description}</p>
+              </motion.section>
+            )}
+
+            {galleryImages.length > 0 && (
+              <motion.section variants={sectionVariants}>
+                <h2 className="text-2xl font-semibold font-montserrat text-navy mb-4">Gallery</h2>
+                <div className="grid grid-cols-2 gap-4">
+                  {galleryImages.map((img, i) => (
+                    <div key={i} className={`relative aspect-[4/3] overflow-hidden rounded-2xl ${i === 0 ? 'col-span-2' : ''}`}>
+                      <Image src={img.url} alt={img.alt} fill className="object-cover" sizes="(min-width: 1024px) 33vw, 50vw"/>
+                    </div>
+                  ))}
+                </div>
+              </motion.section>
+            )}
           </div>
-        </aside>
-      </section>
 
-      {/* Mobile sticky footer CTAs */}
-      <div className="fixed inset-x-0 bottom-0 z-40 border-t border-black/10 bg-white/80 backdrop-blur supports-[backdrop-filter]:bg-white/60 p-3 lg:hidden">
-        <div className="mx-auto flex max-w-7xl gap-2 px-1">
-          <Link
-            href={`/contact?property=${encodeURIComponent(p.slug)}`}
-            className="flex-1 inline-flex items-center justify-center gap-2 rounded-xl px-4 py-2.5 font-medium text-white bg-[rgb(var(--gold-rgb,184,134,11))]"
-          >
-            Request price
-          </Link>
-          <Link
-            href={`/contact?type=tour&property=${encodeURIComponent(p.slug)}`}
-            className="flex-1 inline-flex items-center justify-center gap-2 rounded-xl px-4 py-2.5 font-medium text-ink/80 bg-ink/5"
-          >
-            Book tour
-          </Link>
+          {/* --- Right Column: Sticky Details --- */}
+          <aside className="lg:col-span-1">
+            <motion.div variants={sectionVariants} className="sticky top-28 rounded-2xl bg-white shadow-medium ring-1 ring-black/5 p-6 flex flex-col gap-4">
+              <h3 className="text-xl font-bold font-montserrat text-navy">Interested in this property?</h3>
+              <p className="text-sm text-muted-foreground">Contact us for pricing, viewings, and more information.</p>
+              
+              <div className="flex flex-col gap-3 mt-2">
+                <Link href={`/contact?property=${encodeURIComponent(p.slug)}`} className="btn btn-primary gap-2">
+                  <Mail className="h-4 w-4" /> Request Price
+                </Link>
+                <Link href={`/contact?type=tour&property=${encodeURIComponent(p.slug)}`} className="btn btn-outline">
+                  <Calendar className="h-4 w-4" /> Book a Tour
+                </Link>
+                <a href={`tel:+35700000000`} className="btn btn-outline">
+                  <Phone className="h-4 w-4" /> Call Us
+                </a>
+              </div>
+
+               <div className="mt-3 rounded-xl bg-muted p-3 text-center text-xs text-muted-foreground">
+                Reference: <span className="font-mono">{p.slug}</span>
+               </div>
+            </motion.div>
+          </aside>
+
         </div>
       </div>
-    </main>
+    </motion.main>
   );
 }
