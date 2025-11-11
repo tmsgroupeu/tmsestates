@@ -1,9 +1,7 @@
-/* ✅ Final Version: ./app/page.tsx */
-
+// src/app/page.tsx
 import HeroInteractive from "@/components/HeroInteractive";
-import LimassolAdvantage from "@/components/LimassolAdvantage";
 import ExclusiveMandates from "@/components/ExclusiveMandates";
-import WhyChooseUs from "@/components/sections/OurExpertise";
+import LimassolAdvantage from "@/components/LimassolAdvantage";
 import MarketInsights from "@/components/sections/MarketInsights";
 import TestimonialsGlass from "@/components/Testimonials";
 import CTAContact from "@/components/CTAContact";
@@ -13,38 +11,42 @@ import Footer from "@/components/Footer";
 export default function Home() {
   return (
     <>
-      <HeroInteractive />
-      
-      {/* This remains the main scrolling container */}
-      <div className="relative z-10">
-      {/* --- LANE 1: TRANSPARENT --- */}
-        <WhyChooseUs />
-        
-        {/* --- LANE 2: SOLID --- */}
-        <div className="bg-background">
-          <ExclusiveMandates />
-        </div>
-        
+      {/* Hero: first impression + primary CTA */}
+      <section id="hero">
+        <HeroInteractive />
+      </section>
 
-        {/* --- LANE 3: TRANSPARENT (Property Carousel) --- */}
+      {/* Exclusive Mandates: main product */}
+      <section id="featured" aria-label="Exclusive property mandates">
+        <ExclusiveMandates />
+      </section>
+
+      {/* Why + Insights: trust & authority */}
+      <section id="insights" aria-label="Insights and expertise">
+        <InsightsAndWhy />
+      </section>
+
+      {/* Limassol Advantage: location story */}
+      <section id="advantage" aria-label="Why Limassol">
+        <LimassolAdvantage />
+      </section>
+
+      {/* Market insights (charts / stats) */}
+      <section aria-label="Market insights">
         <MarketInsights />
+      </section>
 
-        {/* --- LANE 4: SOLID --- */}
-        <div className="bg-background">
-          <InsightsAndWhy />
-          <LimassolAdvantage />
-        </div>
-
-        {/* --- LANE 5: TRANSPARENT (Testimonials) --- */}
-        {/* Per your request, this is now transparent just before the final contact section. */}
+      {/* Social proof */}
+      <section aria-label="Client testimonials">
         <TestimonialsGlass />
+      </section>
 
-        {/* --- LANE 6: SOLID (Final Sections) --- */}
-        <div className="bg-background">
-          <Footer />
-        </div>
-        
-      </div>
+      {/* Contact / Lead capture */}
+      <section id="contact" aria-label="Contact TMS Estates">
+        <CTAContact />
+      </section>
+
+      <Footer />
     </>
   );
 }
