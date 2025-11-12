@@ -1,32 +1,33 @@
-/* ✨ Final Version: ./src/components/ui/ContactBubble.tsx */
+/* ./src/components/ui/ContactBubble.tsx */
 
 "use client";
 
-import { useState, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { MessageCircle, Mail, Send, X } from 'lucide-react'; // Removed 'Plus' import
-import Link from 'next/link';
+import { useState, useEffect } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import { MessageCircle, Mail, Send, X } from "lucide-react";
 
-// Define the contact channels
+// Contact channels (update hrefs with real values when ready)
 const channels = [
-
-  { href: 'https://wa.me/YOUR_WHATSAPP_NUMBER', icon: MessageCircle, label: 'WhatsApp' },
-  { href: 'https://t.me/YOUR_TELEGRAM_USERNAME', icon: Send, label: 'Telegram' },
-  { href: 'mailto:info@tmsestates.com', icon: Mail, label: 'Email' },
+  { href: "https://wa.me/YOUR_WHATSAPP_NUMBER", icon: MessageCircle, label: "WhatsApp" },
+  { href: "https://t.me/YOUR_TELEGRAM_USERNAME", icon: Send, label: "Telegram" },
+  { href: "mailto:info@tmsestates.com", icon: Mail, label: "Email" },
 ];
 
-export default function ContactBubble({ footerId }: { footerId: string }) {
+type ContactBubbleProps = {
+  /** The id of the footer element to detect visibility and hide the bubble near the footer */
+  footerId?: string;
+};
+
+export default function ContactBubble({ footerId = "footer" }: ContactBubbleProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [isFooterVisible, setIsFooterVisible] = useState(false);
 
   useEffect(() => {
     const footer = document.getElementById(footerId);
-    if (!footer) return;
+    if (!footer || typeof IntersectionObserver === "undefined") return;
 
     const observer = new IntersectionObserver(
-      ([entry]) => {
-        setIsFooterVisible(entry.isIntersecting);
-      },
+      ([entry]) => setIsFooterVisible(entry.isIntersecting),
       { threshold: 0.5 }
     );
 
@@ -42,7 +43,7 @@ export default function ContactBubble({ footerId }: { footerId: string }) {
           initial={{ opacity: 0, scale: 0.8, y: 20 }}
           animate={{ opacity: 1, scale: 1, y: 0 }}
           exit={{ opacity: 0, scale: 0.8, y: 20 }}
-          transition={{ type: 'spring', stiffness: 300, damping: 20 }}
+          transition={{ type: "spring", stiffness: 300, damping: 20 }}
         >
           {/* Expanded Bubbles */}
           <AnimatePresence>
@@ -63,13 +64,13 @@ export default function ContactBubble({ footerId }: { footerId: string }) {
                     href={channel.href}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="flex items-center gap-3 bg-white pl-4 pr-5 py-2 rounded-full shadow-lg group hover:bg-muted transition-colors"
+                    className="group flex items-center gap-3 rounded-full bg-white pl-4 pr-5 py-2 shadow-lg transition-colors hover:bg-muted"
                     variants={{ visible: { opacity: 1, x: 0 }, hidden: { opacity: 0, x: 20 } }}
                     whileHover={{ scale: 1.05 }}
                     aria-label={`Contact via ${channel.label}`}
                   >
                     <span className="text-sm font-semibold text-navy">{channel.label}</span>
-                    <channel.icon className="w-5 h-5 text-navy" />
+                    <channel.icon className="h-5 w-5 text-navy" />
                   </motion.a>
                 ))}
               </motion.div>
@@ -78,8 +79,8 @@ export default function ContactBubble({ footerId }: { footerId: string }) {
 
           {/* Main Toggle Button */}
           <motion.button
-            onClick={() => setIsOpen(!isOpen)}
-            className="w-16 h-16 bg-gold text-navy rounded-full shadow-2xl flex items-center justify-center focus:outline-none focus:ring-2 focus:ring-gold focus:ring-offset-2"
+            onClick={() => setIsOpen((v) => !v)}
+            className="flex h-16 w-16 items-center justify-center rounded-full bg-gold text-navy shadow-2xl focus:outline-none focus:ring-2 focus:ring-gold focus:ring-offset-2"
             whileHover={{ scale: 1.1 }}
             whileTap={{ scale: 0.95 }}
             aria-expanded={isOpen}
@@ -87,13 +88,12 @@ export default function ContactBubble({ footerId }: { footerId: string }) {
           >
             <AnimatePresence mode="popLayout">
               <motion.div
-                key={isOpen ? 'close' : 'open'}
+                key={isOpen ? "close" : "open"}
                 initial={{ rotate: -90, scale: 0 }}
                 animate={{ rotate: 0, scale: 1 }}
                 exit={{ rotate: 90, scale: 0 }}
-                transition={{ type: 'spring', stiffness: 400, damping: 20 }}
+                transition={{ type: "spring", stiffness: 400, damping: 20 }}
               >
-                {/* ✅ FIX: Replaced the generic Plus icon with the intuitive MessageCircle icon */}
                 {isOpen ? <X size={28} /> : <MessageCircle size={28} />}
               </motion.div>
             </AnimatePresence>
