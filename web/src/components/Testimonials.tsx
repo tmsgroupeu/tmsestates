@@ -1,5 +1,4 @@
-// web/src/components/Testimonials.tsx
-
+// web/src/components/Testimonials.tsx (or TestimonialsGlass.tsx)
 "use client";
 
 import { motion } from "framer-motion";
@@ -28,49 +27,40 @@ const testimonials = [
 
 export default function TestimonialsGlass() {
   return (
-    <section
-      className="w-full bg-slate-950/0 py-16"
-      aria-label="Client testimonials"
-    >
-      <div className="mx-auto flex max-w-5xl flex-col gap-8 px-6">
-        <div>
-          <p className="text-xs font-semibold uppercase tracking-[0.22em] text-sky-400/85">
-            Client Success Stories
-          </p>
-          <h2 className="mt-2 text-2xl font-semibold text-slate-50 md:text-3xl">
-            Real feedback from buyers, sellers & investors.
-          </h2>
-          <p className="mt-2 text-sm text-slate-300/85">
-            Built on trust, clarity and quiet execution across Cyprus.
-          </p>
-        </div>
+    <section className="section text-white pt-16 pb-24 md:pt-24 md:pb-32">
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true }}
+        transition={{ duration: 0.5 }}
+        className="text-center mb-12"
+      >
+        <h2 className="text-4xl sm:text-5xl font-bold font-montserrat drop-shadow-md">
+          Client Success Stories
+        </h2>
+        <p className="mt-4 text-lg text-white/90 drop-shadow-sm max-w-3xl mx-auto">
+          Real feedback from buyers, sellers and investors across Cyprus.
+        </p>
+      </motion.div>
 
-        <div className="grid gap-4 md:grid-cols-3">
-          {testimonials.map((t, i) => (
-            <motion.article
-              key={t.name + i}
-              initial={{ opacity: 0, y: 16 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, amount: 0.3 }}
-              transition={{ delay: i * 0.08, duration: 0.4 }}
-              className="
-                relative flex h-full flex-col gap-3
-                rounded-3xl bg-slate-900/85 p-4
-                shadow-[0_18px_70px_rgba(0,0,0,0.9)]
-                ring-1 ring-sky-500/12
-              "
-            >
-              <Quote className="h-4 w-4 text-sky-400/90" />
-              <p className="text-xs leading-relaxed text-slate-200">
-                “{t.quote}”
-              </p>
-              <div className="mt-2 text-[10px]">
-                <p className="font-semibold text-sky-300">{t.name}</p>
-                <p className="text-slate-400">{t.role}</p>
-              </div>
-            </motion.article>
-          ))}
-        </div>
+      <div className="stack-cards-carousel md:grid-cols-3 gap-6">
+        {testimonials.map((t, i) => (
+          <motion.div
+            key={t.name}
+            initial={{ opacity: 0, y: 12 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ delay: 0.1 + i * 0.1 }}
+            className="glass-dark p-6 rounded-2xl flex flex-col"
+          >
+            <Quote className="w-8 h-8 text-[color:var(--gold)]/60 mb-4" />
+            <p className="text-white/90 flex-grow">“{t.quote}”</p>
+            <div className="mt-4 border-t border-white/10 pt-4">
+              <div className="font-semibold text-white">{t.name}</div>
+              <div className="text-sm text-white/60">{t.role}</div>
+            </div>
+          </motion.div>
+        ))}
       </div>
     </section>
   );
