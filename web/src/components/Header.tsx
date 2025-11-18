@@ -43,7 +43,7 @@ export default function Header() {
 
   return (
     <>
-      <motion.header 
+      <motion.header
         className="fixed top-0 left-0 right-0 z-50 backdrop-blur-lg"
         variants={headerVariants}
         animate={isScrolled ? "scrolled" : "top"}
@@ -52,9 +52,9 @@ export default function Header() {
         <div className="section h-full flex items-center justify-between !py-0">
           <Link href="/" className="relative flex-shrink-0">
             <motion.div layout transition={{ type: 'spring', stiffness: 300, damping: 30 }}>
-                <Image 
-                    src="/tms-logo.svg" 
-                    alt="TMS Estates Logo" 
+                <Image
+                    src="/tms-logo.svg"
+                    alt="TMS Estates Logo"
                     width={isScrolled ? 180 : 210}
                     height={isScrolled ? 45 : 52}
                     className="transition-all duration-300"
@@ -62,12 +62,12 @@ export default function Header() {
                 />
             </motion.div>
           </Link>
-          
+
           <nav className="hidden md:flex items-center gap-x-8">
             {navLinks.map(link => (
-              <a 
-                key={link.href} 
-                href={link.href} 
+              <a
+                key={link.href}
+                href={link.href}
                 className={`text-sm font-semibold tracking-wider uppercase transition-colors duration-300 ${
                   isScrolled ? 'text-navy hover:text-gold' : 'text-white/90 hover:text-white'
                 }`}
@@ -76,7 +76,7 @@ export default function Header() {
               </a>
             ))}
           </nav>
-          
+
           <div className="md:hidden">
               <button onClick={toggleMenu} className={`p-2 transition-colors ${isScrolled ? 'text-navy' : 'text-white'}`}>
                 <Menu size={28}/>
@@ -84,7 +84,7 @@ export default function Header() {
           </div>
         </div>
       </motion.header>
-      
+
       {/* Mobile Menu Overlay */}
       <AnimatePresence>
         {isMenuOpen && (
@@ -102,10 +102,10 @@ export default function Header() {
               <button onClick={toggleMenu} className="absolute top-6 right-6 text-muted-foreground"><X size={32}/></button>
               <nav className="flex flex-col gap-8 mt-24">
                 {navLinks.map((link, i) => (
-                  <motion.a 
-                    key={link.href} 
-                    href={link.href} 
-                    onClick={toggleMenu} 
+                  <motion.a
+                    key={link.href}
+                    href={link.href}
+                    onClick={toggleMenu}
                     className="text-navy font-bold text-3xl hover:text-gold transition-colors"
                     initial={{ opacity: 0, x: 20 }}
                     animate={{ opacity: 1, x: 0 }}
