@@ -1,4 +1,4 @@
-// NEW FILE: web/src/components/PropertyPageClient.tsx
+// UPDATED: web/src/components/PropertyPageClient.tsx
 "use client";
 import { motion, Variants } from 'framer-motion';
 import Image from "next/image";
@@ -28,13 +28,13 @@ const asUrl = (u?: string) => (!u ? "" : u.startsWith("http") ? u : `${API}${u}`
 
 const sectionVariants: Variants = {
   hidden: { opacity: 0, y: 20 },
-  visible: { 
-    opacity: 1, 
-    y: 0, 
-    transition: { 
-      duration: 0.6, 
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: {
+      duration: 0.6,
       ease: "easeInOut"
-    } 
+    }
   }
 };
 
@@ -54,7 +54,7 @@ export default function PropertyPageClient({ property }: { property: Property })
   if (!property) {
     return <div className="min-h-screen flex items-center justify-center">Property not found.</div>;
   }
-  
+
   const p = property;
   const allImages = p.images?.map(img => ({ url: asUrl(img.url), alt: img.alternativeText || p.title || "Property photo" })) || [];
   const heroImage = allImages[0];
