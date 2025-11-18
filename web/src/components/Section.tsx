@@ -14,8 +14,8 @@ const sectionVariants: Variants = {
 
 const itemVariants: Variants = {
   hidden: { opacity: 0, y: 20 },
-  visible: { 
-    opacity: 1, 
+  visible: {
+    opacity: 1,
     y: 0,
     transition: { duration: 0.6, ease: [0.25, 1, 0.5, 1] }
   }
@@ -38,9 +38,9 @@ export default function Section({ id, className, children, title, subtitle, vari
   const subtitleColor = variant === 'dark' ? 'text-white/80' : 'text-muted-foreground';
 
   return (
-    <motion.section 
-      id={id} 
-      ref={ref} 
+    <motion.section
+      id={id}
+      ref={ref}
       className={`section ${className || ''}`}
       initial="hidden"
       animate={inView ? "visible" : "hidden"}
@@ -49,15 +49,15 @@ export default function Section({ id, className, children, title, subtitle, vari
       {(title || subtitle) && (
         <div className="text-center mb-12 max-w-3xl mx-auto">
           {title && (
-            <motion.h2 
-              variants={itemVariants} 
+            <motion.h2
+              variants={itemVariants}
               className={`text-4xl font-bold sm:text-5xl font-montserrat ${titleColor}`}
             >
               {title}
             </motion.h2>
           )}
           {subtitle && (
-            <motion.p 
+            <motion.p
               variants={itemVariants}
               className={`mt-4 text-lg ${subtitleColor}`}
             >
@@ -66,7 +66,7 @@ export default function Section({ id, className, children, title, subtitle, vari
           )}
         </div>
       )}
-      
+
       <motion.div variants={itemVariants}>
         {children}
       </motion.div>
