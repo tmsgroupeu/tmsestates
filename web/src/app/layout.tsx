@@ -1,7 +1,8 @@
-// src/app/layout.tsx
+// UPDATED: src/app/layout.tsx
 import type { Metadata } from "next";
 import { Inter, Montserrat } from "next/font/google";
 import Header from "@/components/Header";
+import Footer from "@/components/Footer"; // Import the Footer
 import ContactBubble from "@/components/ui/ContactBubble";
 import "./globals.css";
 
@@ -31,6 +32,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <body>
         <Header />
         <main>{children}</main>
+        <Footer /> {/* ✅ ADD THE FOOTER HERE */}
         <ContactBubble footerId="page-footer" />
       </body>
     </html>
