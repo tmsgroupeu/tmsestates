@@ -6,9 +6,7 @@ import type { SearchParams } from "@/lib/types";
 
 export const revalidate = 3600;
 
-// This page now accepts search parameters for server-side filtering
 export default async function PropertiesPage({ searchParams }: { searchParams: SearchParams }) {
-  // Construct filter parameters for the Strapi API call
   const params: Record<string, string> = {
     "pagination[pageSize]": "99",
     "sort[0]": "updatedAt:desc",
@@ -18,17 +16,14 @@ export default async function PropertiesPage({ searchParams }: { searchParams: S
   if (searchParams.min) params["filters[price][$gte]"] = searchParams.min;
   if (searchParams.max) params["filters[price][$lte]"] = searchParams.max;
 
-
   const { data: properties } = await fetchProperties(params);
-
-  // For the city filter dropdown, we fetch all unique cities
   const { data: allProperties } = await fetchProperties({ "pagination[pageSize]": "200", "fields[0]": "city" });
   const cities = [...new Set(allProperties.map(p => p.city).filter(Boolean))];
 
   return (
     <main className="min-h-screen bg-paper">
-      {/* --- Header Section --- */}
       <section className="bg-white border-b border-muted">
+        {/* ✅ FIX: Added extra top padding to the inner div */}
         <div className="section text-center !pt-32 !pb-12 md:!pt-40 md:!pb-16">
           <h1 className="text-4xl md:text-5xl font-bold font-montserrat text-navy">
             Discover Our Collection
@@ -39,12 +34,11 @@ export default async function PropertiesPage({ searchParams }: { searchParams: S
         </div>
       </section>
 
-      {/* --- Filters Section --- */}
+      {/* Filters Section now sits below the header correctly */}
       <section className="section !py-6 sticky top-[96px] z-30 bg-paper/80 backdrop-blur-md">
         <Filters cities={cities} />
       </section>
 
-      {/* --- Grid Section --- */}
       <section className="section !pt-8">
         {properties && properties.length > 0 ? (
           <div className="stack-cards-carousel md:grid-cols-2 lg:grid-cols-3">

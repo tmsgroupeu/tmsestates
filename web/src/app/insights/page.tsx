@@ -1,19 +1,19 @@
 // UPDATED: web/src/app/insights/page.tsx
 import ArticleCard from "@/components/ui/ArticleCard";
-import { fetchArticles, Article } from "@/lib/cms"; // Assuming Article type is exported
+import { fetchArticles, Article } from "@/lib/cms";
 
-export const revalidate = 3600; // Revalidate this page every hour
+export const revalidate = 3600;
 
 export default async function InsightsPage() {
   const { data: articles } = await fetchArticles({
-    'pagination[pageSize]': '99', // Fetch all articles
+    'pagination[pageSize]': '99',
   });
 
   return (
     <main className="min-h-screen bg-paper">
-      {/* --- 1. Elegant Header --- */}
       <section className="bg-white border-b border-muted">
-        <div className="section text-center !py-16 md:!py-20">
+        {/* ✅ FIX: Added extra top padding to the inner div */}
+        <div className="section text-center !pt-32 !pb-16 md:!pt-40 md:!pb-20">
           <h1 className="text-4xl md:text-5xl font-bold font-montserrat text-navy">Market Insights</h1>
           <p className="mt-4 text-lg text-muted-foreground max-w-2xl mx-auto">
             Your definitive guide to the Cyprus real estate market, with expert analysis, trends, and investment advice.
@@ -21,7 +21,6 @@ export default async function InsightsPage() {
         </div>
       </section>
 
-      {/* --- 2. Articles Grid --- */}
       <section className="section">
         {articles && articles.length > 0 ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
