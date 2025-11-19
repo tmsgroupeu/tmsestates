@@ -159,3 +159,12 @@ body {
 .hop-animation {
   animation: hop 2.5s ease-in-out infinite;
 }
+
+/* This will fix text overflow on both the property and article pages. */
+.prose p,
+.prose li,
+.prose a {
+  overflow-wrap: break-word;
+  word-wrap: break-word; /* legacy fallback */
+  word-break: break-word; /* another fallback */
+}
