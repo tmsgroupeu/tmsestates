@@ -39,10 +39,10 @@ export default function Home() {
         {/* Per your request, this is now transparent just before the final contact section. */}
         <TestimonialsGlass />
 
-        {/* --- LANE 6: SOLID (Final Sections) --- */}
+        /* {/* --- LANE 6: SOLID (Final Sections) --- */}
         <div className="bg-background">
           <Footer />
-        </div>
+        </div> */
         
       </div>
     </>
