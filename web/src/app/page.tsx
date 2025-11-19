@@ -41,7 +41,6 @@ export default function Home() {
 
         {/* --- LANE 6: SOLID (Final Sections) --- */}
         <div className="bg-background">
-          <Footer />
         </div>
         
       </div>
