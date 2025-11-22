@@ -118,7 +118,7 @@ export default function HeroInteractive() {
             className="mt-8 max-w-2xl mx-auto text-lg font-light text-white/80 md:text-xl leading-relaxed"
           >
             Discover a curated portfolio of prestigious residences and high-yield investments 
-            in the Mediterranean's most dynamic metropolis.
+            in the Mediterranean&apos;s most dynamic metropolis.
           </motion.p>
 
           {/* Buttons */}
