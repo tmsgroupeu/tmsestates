@@ -6,9 +6,7 @@ import ExclusiveMandates from "@/components/ExclusiveMandates";
 import WhyChooseUs from "@/components/sections/OurExpertise";
 import MarketInsights from "@/components/sections/MarketInsights";
 import TestimonialsGlass from "@/components/Testimonials";
-import CTAContact from "@/components/CTAContact";
 import InsightsAndWhy from "@/components/sections/InsightsAndWhy";
-import Footer from "@/components/Footer";
 
 export default function Home() {
   return (
