@@ -1,5 +1,6 @@
-/* UPDATED: src/app/page.tsx */
-import ScrollyVideo from "@/components/ui/ScrollyVideo"; // ✅ CHANGED
+/* FINAL LAYOUT: src/app/page.tsx */
+
+import ScrollyVideo from "@/components/ui/ScrollyVideo"; 
 import HeroInteractive from "@/components/HeroInteractive";
 import GlassSection from "@/components/ui/GlassSection";
 
@@ -9,48 +10,54 @@ import MarketInsights from "@/components/sections/MarketInsights";
 import LimassolAdvantage from "@/components/LimassolAdvantage";
 import TestimonialsGlass from "@/components/Testimonials";
 import InsightsAndWhy from "@/components/sections/InsightsAndWhy";
-import CTAContact from "@/components/CTAContact";
+// Removed CTAContact as requested
 
 export default function Home() {
   return (
     <main className="relative min-h-[300vh]"> 
-      {/* Increased height so we have room to 'scrub' the video */}
       
-      {/* 1. THE VIDEO ENGINE */}
+      {/* 1. GLOBAL BACKGROUND (Video) */}
       <ScrollyVideo />
 
-      {/* 2. SCROLL CONTENT */}
-      <div className="relative z-10 w-full flex flex-col items-center pb-32">
+      <div className="relative z-10 w-full flex flex-col items-center pb-0">
 
-        {/* HERO */}
+        {/* SCENE 1: HERO */}
         <HeroInteractive />
 
-        {/* FLOATING GLASS SECTIONS */}
-        <GlassSection>
+        {/* SCENE 2: COMPACT ADVANTAGE (Floating Glass) */}
+        <div className="w-full max-w-7xl px-4 mb-24">
            <WhyChooseUs />
-        </GlassSection>
+        </div>
 
-        <GlassSection>
+        {/* SCENE 3: EXCLUSIVE MANDATES (Floating Glass) */}
+        <GlassSection className="mb-32">
            <ExclusiveMandates />
         </GlassSection>
 
-        {/* SOLID GROUND */}
-        <div className="w-full bg-[#F9F9F9] rounded-t-[50px] shadow-2xl mt-12 pt-24 pb-20">
-           <div className="max-w-7xl mx-auto px-6 space-y-24">
+        {/* SCENE 4: SELECTED LISTINGS (White Strip) */}
+        {/* Full width white background */}
+        <div className="w-full bg-white shadow-2xl py-20">
+           <div className="max-w-[1400px] mx-auto"> {/* Wider container for carousel */}
               <MarketInsights />
-              
-              <div className="bg-white rounded-3xl p-8 border border-gray-100 shadow-sm">
-                <LimassolAdvantage />
-              </div>
-              
-              <InsightsAndWhy />
-              
-              <div className="bg-navy rounded-3xl p-8 overflow-hidden relative">
-                  <TestimonialsGlass />
-              </div>
-
-              <CTAContact />
            </div>
+        </div>
+
+        {/* SCENE 5: LIMASSOL STATS (Transparent / Video Background) */}
+        {/* Text inside this component must be White */}
+        <div className="w-full max-w-7xl px-6 py-32">
+            <LimassolAdvantage /> 
+        </div>
+
+        {/* SCENE 6: INSIGHTS & WHY (White Strip) */}
+        <div className="w-full bg-white shadow-2xl py-24">
+           <div className="max-w-7xl mx-auto px-6">
+              <InsightsAndWhy />
+           </div>
+        </div>
+
+        {/* SCENE 7: TESTIMONIALS (Transparent / Video Background) */}
+        <div className="w-full max-w-7xl px-6 py-32 mb-20">
+            <TestimonialsGlass />
         </div>
 
       </div>
