@@ -1,27 +1,19 @@
-/* UPDATED: src/components/HeroInteractive.tsx */
 "use client";
 
 import { useRef } from "react";
 import Link from "next/link";
 import { motion, useScroll, useTransform } from "framer-motion";
-import { ArrowRight } from "lucide-react";
 
 export default function HeroInteractive() {
   const containerRef = useRef<HTMLDivElement>(null);
-
-  // Track scroll position of the window
   const { scrollY } = useScroll();
 
-  // PARALLAX EXIT:
-  // As scrollY goes from 0px to 400px, move text up by -200px and fade opacity to 0
   const yText = useTransform(scrollY, [0, 400], [0, -150]);
   const opacityText = useTransform(scrollY, [0, 300], [1, 0]);
 
   return (
-    // 'h-screen' ensures it fills the view initially. 'pointer-events-none' lets clicks pass through if needed
     <section ref={containerRef} className="relative h-screen w-full flex flex-col items-center justify-center">
       
-      {/* Content Container */}
       <motion.div 
         style={{ y: yText, opacity: opacityText }} 
         className="relative z-10 px-4 text-center max-w-5xl mx-auto"
@@ -31,29 +23,26 @@ export default function HeroInteractive() {
            animate={{ opacity: 1, y: 0 }}
            transition={{ duration: 1, delay: 0.2 }}
         >
-          {/* Location Pill */}
           <div className="mb-6 flex justify-center">
             <span className="inline-flex items-center rounded-full border border-white/20 bg-white/5 px-5 py-2 text-[11px] font-bold uppercase tracking-[0.2em] text-white backdrop-blur-md shadow-lg">
               Limassol, Cyprus
             </span>
           </div>
 
-          {/* Headline */}
           <h1 className="font-montserrat text-5xl font-bold tracking-tight text-white sm:text-6xl md:text-7xl lg:text-8xl drop-shadow-2xl mb-8">
             Living Elevated.
             <br />
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#FBF5E8] to-[var(--gold)]">
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#FBF5E8] to-[#D4AF37]">
               Defining Luxury.
             </span>
           </h1>
 
-          {/* Subheading */}
+          {/* ✅ FIXED: Corrected &apos; and closing tags */}
           <p className="max-w-2xl mx-auto text-lg font-light text-white/90 md:text-xl leading-relaxed drop-shadow-md mb-12">
             Discover a curated portfolio of prestigious residences and high-yield investments 
             in the Mediterranean&apos;s most dynamic metropolis.
-          </motion.div>
+          </p>
 
-          {/* Buttons */}
           <div className="flex flex-wrap items-center justify-center gap-5">
             <Link
               href="/properties"
@@ -73,7 +62,7 @@ export default function HeroInteractive() {
 
       {/* Scroll Indicator */}
       <motion.div 
-        style={{ opacity: opacityText }} // Hide arrow as we scroll
+        style={{ opacity: opacityText }} 
         className="absolute bottom-12 left-1/2 -translate-x-1/2"
       >
          <div className="flex flex-col items-center gap-3">
