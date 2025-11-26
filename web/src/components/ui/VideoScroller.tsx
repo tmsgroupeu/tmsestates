@@ -1,69 +1,69 @@
-/* NEW FILE: src/components/ui/VideoScroller.tsx */
 "use client";
 
-import { useRef, useEffect } from "react";
-import { useScroll, useTransform, useSpring, motion } from "framer-motion";
+import { useRef, useEffect, useState } from "react";
+import { useScroll, useSpring, useMotionValueEvent } from "framer-motion";
 
 export default function VideoScroller() {
   const containerRef = useRef<HTMLDivElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
+  const [duration, setDuration] = useState(0);
 
-  // Track scroll for the ENTIRE height of the scrollytelling section
+  // Track scroll of the main window vs this component
   const { scrollYProgress } = useScroll({
-    target: containerRef,
-    offset: ["start start", "end end"],
+    // We want the video to scrub from start of page until end of page
+    offset: ["start start", "end end"] 
   });
 
-  // Smooth out the scroll value so the video doesn't jitter
+  // --- THE LAG FIX ---
+  // We use a 'spring' to dampen the scroll values.
+  // stiffness: lower = smoother/slower catchup
+  // damping: higher = less bouncy
   const smoothProgress = useSpring(scrollYProgress, {
-    damping: 15,
-    stiffness: 50,
-    mass: 0.2
+    stiffness: 100, 
+    damping: 30,    
+    mass: 1
   });
 
   useEffect(() => {
     const video = videoRef.current;
-    // Sync function to update video frame
-    const updateVideo = (latest: number) => {
-      if (video && video.duration) {
-        // Be careful: video.currentTime is inherently "step-based"
-        const targetTime = video.duration * latest;
-        if (isFinite(targetTime)) {
-          video.currentTime = targetTime;
-        }
-      }
-    };
+    if (video) {
+      // Wait for metadata to know total duration
+      const onLoadedMetadata = () => setDuration(video.duration);
+      video.addEventListener("loadedmetadata", onLoadedMetadata);
+      return () => video.removeEventListener("loadedmetadata", onLoadedMetadata);
+    }
+  }, []);
 
-    // Subscribe to spring updates
-    const unsubscribe = smoothProgress.on("change", updateVideo);
-    return () => unsubscribe();
-  }, [smoothProgress]);
+  // Update video time when the spring value changes
+  useMotionValueEvent(smoothProgress, "change", (latest) => {
+    if (videoRef.current && duration) {
+      // Determine target time
+      const targetTime = latest * duration;
+      
+      // Update only if finite and within bounds
+      if (Number.isFinite(targetTime)) {
+        videoRef.current.currentTime = targetTime;
+      }
+    }
+  });
 
   return (
-    // We make this container very tall (e.g. 300vh) so we have scrolling room
-    <div ref={containerRef} className="relative h-[300vh]"> 
-      
-      <div className="sticky top-0 h-screen w-full overflow-hidden bg-navy">
-        <video
-          ref={videoRef}
-          className="h-full w-full object-cover"
-          src="https://videos.pexels.com/video-files/7578552/7578552-uhd_2560_1440_30fps.mp4" // REPLACE with your 'walkthrough' video
-          muted
-          playsInline
-          preload="auto"
-        />
-        <div className="absolute inset-0 bg-navy/30" />
-        
-        {/* Global Overlay Gradient for Readability */}
-        <div className="absolute inset-0 bg-gradient-to-b from-navy/80 via-transparent to-navy/90 pointer-events-none" />
-      </div>
-
-      {/* 
-        This "Grain" div adds that texture you wanted. 
-        It stays fixed over the video. 
-      */}
-      <div className="bg-noise" />
-
+    <div className="fixed inset-0 w-full h-full z-0 overflow-hidden">
+      <video
+        ref={videoRef}
+        className="h-full w-full object-cover scale-[1.02]" // Slight scale avoids edge pixel issues
+        // Use a high-quality but compressed MP4
+        src="https://videos.pexels.com/video-files/7578552/7578552-uhd_2560_1440_30fps.mp4" 
+        muted
+        playsInline
+        preload="auto" // Critical for smoother seeking
+      />
+      {/* Cinematic Darken Overlay */}
+      <div className="absolute inset-0 bg-navy/20" />
+      {/* Noise Texture */}
+      <div className="absolute inset-0 opacity-[0.03] pointer-events-none" 
+           style={{ backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E")` }} 
+      />
     </div>
   );
 }
