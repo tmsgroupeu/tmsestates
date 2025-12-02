@@ -20,55 +20,49 @@ export default function VideoScroller() {
     restDelta: 0.001
   });
 
+  // Detect Mobile
   useEffect(() => {
-    // Detect Mobile Device on mount
     const checkMobile = () => {
-      // 768px is the standard breakpoint for tablets/phones
-      setIsMobile(window.matchMedia("(max-width: 768px)").matches);
+      // 1024px covers iPad Pros and large tablets which often struggle with scrubbing
+      setIsMobile(window.matchMedia("(max-width: 1024px)").matches);
     };
     checkMobile();
     window.addEventListener("resize", checkMobile);
     return () => window.removeEventListener("resize", checkMobile);
   }, []);
 
+  // Handle Video Logic
   useEffect(() => {
     const video = videoRef.current;
     if (!video) return;
 
-    // --- MOBILE LOGIC: AUTOPLAY LOOP ---
-    if (isMobile) {
-        // On mobile, we just play the video normally. 
-        // This is much smoother and battery efficient.
-        video.loop = true;
-        // Try to play immediately
-        const playPromise = video.play();
-        if (playPromise !== undefined) {
-            playPromise.catch((error) => {
-                // Auto-play was prevented.
-                // This is normal on Low Power Mode.
-                console.log("Autoplay prevented:", error);
-            });
-        }
-        // Force ready state
-        setIsReady(true);
-        return; // Exit, do not attach scrolly listener
-    }
+    // Fix for React/iOS hydration issues: ensure muted is set on the DOM element
+    video.defaultMuted = true;
+    video.muted = true;
 
     // --- DESKTOP LOGIC: SCROLL SCRUBBING ---
-    // Ensure video is paused so we can control frames manually
-    video.pause();
-
-    const updateVideo = (latest: number) => {
-      if (video && video.duration && !isNaN(video.duration)) {
-        const targetTime = video.duration * latest;
-        if (Number.isFinite(targetTime)) {
+    if (!isMobile) {
+      // If we are on Desktop, we STOP the default autoplay so we can scrub it
+      video.pause();
+      
+      const updateVideo = (latest: number) => {
+        if (video.duration && !isNaN(video.duration)) {
+          const targetTime = video.duration * latest;
+          if (Number.isFinite(targetTime)) {
             video.currentTime = targetTime;
+          }
         }
-      }
-    };
+      };
 
-    const unsubscribe = smoothProgress.on("change", updateVideo);
-    return () => unsubscribe();
+      const unsubscribe = smoothProgress.on("change", updateVideo);
+      return () => unsubscribe();
+    }
+    
+    // --- MOBILE LOGIC ---
+    // On mobile, we do nothing JS-wise. 
+    // We rely 100% on the autoPlay/loop attributes in the HTML tag below.
+    // This is the most reliable way to beat iOS blockers.
+    
   }, [smoothProgress, isMobile]);
 
   return (
@@ -79,17 +73,25 @@ export default function VideoScroller() {
             className={`absolute inset-0 z-20 bg-navy transition-opacity duration-1000 ${isReady ? 'opacity-0' : 'opacity-100'}`} 
         />
 
-        {/* VIDEO ELEMENT */}
+        {/* 
+            CRITICAL FOR MOBILE: 
+            autoPlay, loop, muted, playsInline MUST be present in the JSX.
+        */}
         <video
           ref={videoRef}
           className="h-full w-full object-cover"
           src="/assets/hero-scroller.mp4" 
-          muted
-          playsInline // CRITICAL for iOS to play without fullscreen
+          
+          autoPlay={true}     // 1. Force start
+          loop={true}         // 2. Loop forever
+          muted={true}        // 3. Audio off (Required for Autoplay)
+          playsInline={true}  // 4. Do not fullscreen on iOS
+          
           preload="auto"
-          // Add a static image just in case video fails entirely (Low Power Mode)
           poster="https://images.pexels.com/photos/1732414/pexels-photo-1732414.jpeg" 
-          onLoadedMetadata={() => setIsReady(true)}
+          
+          // Use onCanPlay to detect readiness instead of loadedMetadata for better mobile response
+          onCanPlay={() => setIsReady(true)}
         />
 
         {/* Gradient Overlay for Text Readability */}
