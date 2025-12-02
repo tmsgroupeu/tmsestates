@@ -1,18 +1,25 @@
-/* FINAL VERSION: src/components/ui/VideoScroller.tsx */
+/* UPDATED: src/components/ui/VideoScroller.tsx */
 "use client";
 
 import { useRef, useEffect, useState } from "react";
-import { useScroll, useSpring } from "framer-motion";
+import { useScroll, useSpring, useTransform, motion } from "framer-motion";
 
 export default function VideoScroller() {
   const videoRef = useRef<HTMLVideoElement>(null);
-  const [isReady, setIsReady] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
 
   // 1. Track GLOBAL window scroll
   const { scrollYProgress } = useScroll();
 
-  // 2. Physics smoother (Spring)
+  // 2. CREATE THE FADE EFFECT
+  // [0, 0.05] means: At 0% scroll (top), Opacity is 1. At 5% scroll, Opacity is 0.
+  // This makes the static image fade out immediately as you start scrolling.
+  const imageOpacity = useTransform(scrollYProgress, [0, 0.05], [1, 0]);
+  
+  // This helps hide the overlay completely so it doesn't block clicks later
+  const pointerEvents = useTransform(scrollYProgress, (v) => v > 0.05 ? 'none' : 'auto');
+
+  // 3. Physics smoother (Spring) for the Video Scrubbing
   const smoothProgress = useSpring(scrollYProgress, {
     damping: 20,
     stiffness: 60,
@@ -34,13 +41,12 @@ export default function VideoScroller() {
     const video = videoRef.current;
     if (!video) return;
 
-    // Ensure audio is properly killed for browser compliance
+    // Mobile/Browser safety
     video.defaultMuted = true;
     video.muted = true;
 
     // --- DESKTOP LOGIC ---
     if (!isMobile) {
-      // Pause immediately so we can control frames
       video.pause();
       
       const updateVideo = (latest: number) => {
@@ -53,74 +59,61 @@ export default function VideoScroller() {
       };
 
       const unsubscribe = smoothProgress.on("change", updateVideo);
-      
-      // Force ready state for desktop immediately
-      setIsReady(true);
       return () => unsubscribe();
     }
     
     // --- MOBILE LOGIC ---
-    // If we are here, we let the HTML attributes handle playback.
-    // However, we listen for 'suspend' or 'play' events to manage the poster visibility.
-    const handleMobilePlay = () => setIsReady(true);
-    
-    video.addEventListener("play", handleMobilePlay);
-    video.addEventListener("playing", handleMobilePlay);
-
-    // If mobile autoplays, good. If not, the poster handles it.
-    
-    return () => {
-        video.removeEventListener("play", handleMobilePlay);
-        video.removeEventListener("playing", handleMobilePlay);
-    };
+    // We let the HTML attributes handle the autoplay loop.
+    // The "Static Image" overlay handles the transition gracefully.
     
   }, [smoothProgress, isMobile]);
 
   return (
-    <div className="fixed inset-0 h-screen w-full z-0 pointer-events-none overflow-hidden bg-navy">
+    <div className="fixed inset-0 h-screen w-full z-0 overflow-hidden bg-navy">
       
-        {/* Loading/Poster Overlay: 
-            This div holds the Static Image. 
-            It fades out ONLY when the video is actually ready and playing/scrubbing. 
-            This prevents the "Two House" glitch.
+        {/* 
+            1. STATIC HIGH-QUALITY POSTER 
+            Controlled by Framer Motion.
+            It sits ON TOP (z-20) of the video.
+            It fades out based on scroll position.
         */}
-        <div 
-            className={`absolute inset-0 z-20 transition-opacity duration-700 ${isReady ? 'opacity-0' : 'opacity-100'}`}
+        <motion.div 
+            style={{ opacity: imageOpacity, pointerEvents: pointerEvents }}
+            className="absolute inset-0 z-20"
         >
-             {/* 
-                ✅ YOUR NEW MATCHING POSTER
-                This ensures that even if video is blocked, it looks like the right house.
-             */}
              <img 
                src="/assets/hero-poster.jpg" 
                alt="Background Preview" 
                className="h-full w-full object-cover"
              />
+             {/* Matching overlay to ensure text is readable on the static image too */}
              <div className="absolute inset-0 bg-navy/20" />
-        </div>
+        </motion.div>
 
-        {/* VIDEO ELEMENT */}
+
+        {/* 
+            2. THE VIDEO ENGINE (Background)
+            z-0. Sits behind the poster.
+            Revealed when user scrolls.
+        */}
         <video
           ref={videoRef}
           className="h-full w-full object-cover"
           src="/assets/hero-scroller.mp4" 
           
-          // Attributes for Mobile Autoplay success
+          // Attributes for Mobile Autoplay
           autoPlay={true}     
           loop={true}         
           muted={true}        
           playsInline={true}  
           
           preload="auto"
-          // We DO NOT use the poster attribute on the video tag itself anymore 
-          // because we are handling the poster manually with the div above for smoother transitions.
+          // Important: We do NOT use the poster attribute here anymore
+          // because our motion.div above handles the poster logic dynamically.
         />
 
-        {/* Gradient Overlay for Text Readability */}
-        <div className="absolute inset-0 bg-navy/20 z-10" />
-
-        {/* Global Grain Texture */}
-        <div className="bg-noise z-10" />
+        {/* Global Grain Texture (On top of everything) */}
+        <div className="bg-noise z-10 pointer-events-none" />
     </div>
   );
 }
