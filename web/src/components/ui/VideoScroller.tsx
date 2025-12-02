@@ -1,4 +1,4 @@
-/* UPDATED: src/components/ui/VideoScroller.tsx */
+/* FINAL VERSION: src/components/ui/VideoScroller.tsx */
 "use client";
 
 import { useRef, useEffect, useState } from "react";
@@ -23,7 +23,6 @@ export default function VideoScroller() {
   // Detect Mobile
   useEffect(() => {
     const checkMobile = () => {
-      // 1024px covers iPad Pros and large tablets which often struggle with scrubbing
       setIsMobile(window.matchMedia("(max-width: 1024px)").matches);
     };
     checkMobile();
@@ -31,18 +30,17 @@ export default function VideoScroller() {
     return () => window.removeEventListener("resize", checkMobile);
   }, []);
 
-  // Handle Video Logic
   useEffect(() => {
     const video = videoRef.current;
     if (!video) return;
 
-    // Fix for React/iOS hydration issues: ensure muted is set on the DOM element
+    // Ensure audio is properly killed for browser compliance
     video.defaultMuted = true;
     video.muted = true;
 
-    // --- DESKTOP LOGIC: SCROLL SCRUBBING ---
+    // --- DESKTOP LOGIC ---
     if (!isMobile) {
-      // If we are on Desktop, we STOP the default autoplay so we can scrub it
+      // Pause immediately so we can control frames
       video.pause();
       
       const updateVideo = (latest: number) => {
@@ -55,43 +53,67 @@ export default function VideoScroller() {
       };
 
       const unsubscribe = smoothProgress.on("change", updateVideo);
+      
+      // Force ready state for desktop immediately
+      setIsReady(true);
       return () => unsubscribe();
     }
     
     // --- MOBILE LOGIC ---
-    // On mobile, we do nothing JS-wise. 
-    // We rely 100% on the autoPlay/loop attributes in the HTML tag below.
-    // This is the most reliable way to beat iOS blockers.
+    // If we are here, we let the HTML attributes handle playback.
+    // However, we listen for 'suspend' or 'play' events to manage the poster visibility.
+    const handleMobilePlay = () => setIsReady(true);
+    
+    video.addEventListener("play", handleMobilePlay);
+    video.addEventListener("playing", handleMobilePlay);
+
+    // If mobile autoplays, good. If not, the poster handles it.
+    
+    return () => {
+        video.removeEventListener("play", handleMobilePlay);
+        video.removeEventListener("playing", handleMobilePlay);
+    };
     
   }, [smoothProgress, isMobile]);
 
   return (
     <div className="fixed inset-0 h-screen w-full z-0 pointer-events-none overflow-hidden bg-navy">
       
-        {/* Loading Overlay */}
-        <div 
-            className={`absolute inset-0 z-20 bg-navy transition-opacity duration-1000 ${isReady ? 'opacity-0' : 'opacity-100'}`} 
-        />
-
-        {/* 
-            CRITICAL FOR MOBILE: 
-            autoPlay, loop, muted, playsInline MUST be present in the JSX.
+        {/* Loading/Poster Overlay: 
+            This div holds the Static Image. 
+            It fades out ONLY when the video is actually ready and playing/scrubbing. 
+            This prevents the "Two House" glitch.
         */}
+        <div 
+            className={`absolute inset-0 z-20 transition-opacity duration-700 ${isReady ? 'opacity-0' : 'opacity-100'}`}
+        >
+             {/* 
+                ✅ YOUR NEW MATCHING POSTER
+                This ensures that even if video is blocked, it looks like the right house.
+             */}
+             <img 
+               src="/assets/hero-poster.jpg" 
+               alt="Background Preview" 
+               className="h-full w-full object-cover"
+             />
+             <div className="absolute inset-0 bg-navy/20" />
+        </div>
+
+        {/* VIDEO ELEMENT */}
         <video
           ref={videoRef}
           className="h-full w-full object-cover"
           src="/assets/hero-scroller.mp4" 
           
-          autoPlay={true}     // 1. Force start
-          loop={true}         // 2. Loop forever
-          muted={true}        // 3. Audio off (Required for Autoplay)
-          playsInline={true}  // 4. Do not fullscreen on iOS
+          // Attributes for Mobile Autoplay success
+          autoPlay={true}     
+          loop={true}         
+          muted={true}        
+          playsInline={true}  
           
           preload="auto"
-          poster="https://images.pexels.com/photos/1732414/pexels-photo-1732414.jpeg" 
-          
-          // Use onCanPlay to detect readiness instead of loadedMetadata for better mobile response
-          onCanPlay={() => setIsReady(true)}
+          // We DO NOT use the poster attribute on the video tag itself anymore 
+          // because we are handling the poster manually with the div above for smoother transitions.
         />
 
         {/* Gradient Overlay for Text Readability */}
