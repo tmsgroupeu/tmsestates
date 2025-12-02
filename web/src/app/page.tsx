@@ -1,66 +1,75 @@
-/* FINAL LAYOUT: src/app/page.tsx */
+/* UPDATED: src/app/page.tsx */
 
-import ScrollyVideo from "@/components/ui/ScrollyVideo"; 
+import VideoScroller from "@/components/ui/VideoScroller";
 import HeroInteractive from "@/components/HeroInteractive";
-import GlassSection from "@/components/ui/GlassSection";
-
-import WhyChooseUs from "@/components/sections/OurExpertise";
 import ExclusiveMandates from "@/components/ExclusiveMandates";
+import WhyChooseUs from "@/components/sections/OurExpertise";
 import MarketInsights from "@/components/sections/MarketInsights";
-import LimassolAdvantage from "@/components/LimassolAdvantage";
 import TestimonialsGlass from "@/components/Testimonials";
+import CTAContact from "@/components/CTAContact";
 import InsightsAndWhy from "@/components/sections/InsightsAndWhy";
-// Removed CTAContact as requested
+import LimassolAdvantage from "@/components/LimassolAdvantage";
 
 export default function Home() {
   return (
-    <main className="relative min-h-[300vh]"> 
+    <main className="bg-navy">
       
-      {/* 1. GLOBAL BACKGROUND (Video) */}
-      <ScrollyVideo />
+      {/* 
+         THE VIDEO SCROLLER CONTAINER 
+         The video plays as you scroll through this container.
+      */}
+      <div className="relative">
+        
+        {/* The Moving Background */}
+        <VideoScroller />
 
-      <div className="relative z-10 w-full flex flex-col items-center pb-0">
+        {/* --- FLOATING CONTENT LAYERS --- */}
+        {/* We place content at absolute positions so it appears over the video */}
+        <div className="absolute top-0 left-0 w-full h-full z-10 pointer-events-none">
+          
+          {/* 1. HERO TEXT (Video Start - Exterior) */}
+          {/* pointer-events-auto allows buttons to work */}
+          <div className="h-screen flex items-center justify-center pointer-events-auto">
+             <HeroInteractive /> 
+          </div>
 
-        {/* SCENE 1: HERO */}
-        <HeroInteractive />
+          {/* 2. WHY US / EXPERTISE (Video Middle - Entering House) */}
+          {/* Positioned at 110vh (just after the first scroll) */}
+          <div className="absolute top-[110vh] w-full px-6 flex justify-center md:justify-end md:pr-20 pointer-events-auto">
+            <div className="max-w-2xl w-full glass-panel p-10 rounded-3xl transform hover:-translate-y-2 transition-transform duration-500">
+               <WhyChooseUs />
+            </div>
+          </div>
 
-        {/* SCENE 2: COMPACT ADVANTAGE (Floating Glass) */}
-        <div className="w-full max-w-7xl px-4 mb-24">
-           <WhyChooseUs />
+          {/* 3. EXCLUSIVE MANDATES (Video End - View/Interior) */}
+          {/* Positioned at 210vh */}
+          <div className="absolute top-[210vh] w-full px-6 pointer-events-auto">
+             <div className="max-w-7xl mx-auto glass-panel rounded-3xl overflow-hidden p-8">
+               <div className="mb-8">
+                 <span className="text-[10px] uppercase tracking-widest text-gold font-bold">The Collection</span>
+                 <h2 className="text-white text-3xl font-montserrat font-bold mt-2">Exclusive Opportunities</h2>
+               </div>
+               <ExclusiveMandates />
+             </div>
+          </div>
+
         </div>
-
-        {/* SCENE 3: EXCLUSIVE MANDATES (Floating Glass) */}
-        <GlassSection className="mb-32">
-           <ExclusiveMandates />
-        </GlassSection>
-
-        {/* SCENE 4: SELECTED LISTINGS (White Strip) */}
-        {/* Full width white background */}
-        <div className="w-full bg-white shadow-2xl py-20">
-           <div className="max-w-[1400px] mx-auto"> {/* Wider container for carousel */}
-              <MarketInsights />
-           </div>
-        </div>
-
-        {/* SCENE 5: LIMASSOL STATS (Transparent / Video Background) */}
-        {/* Text inside this component must be White */}
-        <div className="w-full max-w-7xl px-6 py-32">
-            <LimassolAdvantage /> 
-        </div>
-
-        {/* SCENE 6: INSIGHTS & WHY (White Strip) */}
-        <div className="w-full bg-white shadow-2xl py-24">
-           <div className="max-w-7xl mx-auto px-6">
-              <InsightsAndWhy />
-           </div>
-        </div>
-
-        {/* SCENE 7: TESTIMONIALS (Transparent / Video Background) */}
-        <div className="w-full max-w-7xl px-6 py-32 mb-20">
-            <TestimonialsGlass />
-        </div>
-
       </div>
+
+      {/* --- SOLID FOOTER SECTIONS --- */}
+      {/* After the video sequence ends, we return to solid paper/white background */}
+      <div className="relative z-20 bg-paper rounded-t-[3rem] shadow-[0_-50px_100px_rgba(0,0,0,0.5)] -mt-32 pt-32 pb-20">
+         <div className="max-w-7xl mx-auto px-6">
+            <MarketInsights />
+            <InsightsAndWhy />
+            <LimassolAdvantage />
+            <TestimonialsGlass />
+            <div className="mt-20">
+              <CTAContact />
+            </div>
+         </div>
+      </div>
+
     </main>
   );
 }
