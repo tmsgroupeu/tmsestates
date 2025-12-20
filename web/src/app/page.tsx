@@ -60,13 +60,13 @@ export default function Home() {
            <MarketInsights />
         </div>
 
-        {/* --- SCENE 5: THE LIVING ROOM (Insights) --- */}
-        {/* Split layout: Empty left side lets video show, Glass Panel on right */}
-        <div className="w-full max-w-7xl px-6 grid grid-cols-1 lg:grid-cols-2 gap-12 mb-60">
-           <div className="hidden lg:block">
-              {/* Empty visual space for the 'Living Room' video view */}
-           </div>
-           <div className="apple-glass rounded-3xl p-8 lg:p-12 shadow-2xl backdrop-blur-xl">
+        {/* --- SCENE 5: THE LIVING ROOM (Insights HUD) --- */}
+        {/* 
+            UPDATE: Now Centered (max-w-6xl mx-auto).
+            It acts as a floating control panel in the center of the video. 
+        */}
+        <div className="w-full px-6 mb-60 flex justify-center items-center min-h-[50vh]">
+           <div className="w-full max-w-6xl apple-glass rounded-3xl p-8 md:p-12 shadow-2xl backdrop-blur-xl">
               <InsightsAndWhy />
            </div>
         </div>
