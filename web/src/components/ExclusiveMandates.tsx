@@ -46,36 +46,29 @@ export default async function ExclusiveMandates() {
   if (!items?.length) return null;
 
   return (
-    <div className="w-full">
-      {/* Header: White text for Glass effect */}
-      <div className="mb-8 flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
-        <div>
-          <div className="inline-flex items-center gap-2 rounded-full bg-white/10 border border-white/20 px-3 py-1 text-[9px] font-semibold uppercase tracking-[0.18em] text-white backdrop-blur-md shadow-sm">
-            <Crown className="h-3.5 w-3.5 text-[color:var(--gold)]" />
-            Exclusive Mandates
-          </div>
-          <h2 className="mt-3 text-3xl font-bold tracking-tight text-white drop-shadow-lg md:text-4xl">
-            Our Premiere Collection
-          </h2>
-          <p className="mt-2 max-w-xl text-sm text-white/80 drop-shadow-md">
-            A confidential portfolio of exceptional residences entrusted solely to TMS Estates.
-          </p>
+    <section className="relative z-10 mx-auto max-w-7xl px-6">
+      {/* Header Floating on Glass/Video */}
+      <div className="mb-10 text-center md:text-left">
+        <div className="inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/5 px-3 py-1 text-[9px] font-bold uppercase tracking-widest text-white backdrop-blur-md">
+          <Crown className="h-3 w-3 text-[var(--gold)]" />
+          The Collection
         </div>
+        <h2 className="mt-4 text-3xl font-bold font-montserrat text-white drop-shadow-lg md:text-4xl">
+          Exclusive Mandates
+        </h2>
       </div>
 
-      {/* ✅ FIX: Grid layout restored so cards aren't huge */}
+      {/* Cards: Solid White for Readability */}
       <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
         {items.map((item) => {
           const img = firstImageUrl(item);
           return (
             <article
               key={item.id}
-              // ✅ FIX: White background restored for the card itself
-              className="group relative overflow-hidden rounded-2xl bg-white shadow-lg transition-all duration-500 hover:-translate-y-2 hover:shadow-2xl"
+              className="group relative overflow-hidden rounded-2xl bg-white shadow-xl transition-all duration-500 hover:-translate-y-2 hover:shadow-2xl"
             >
               <Link href={`/properties/${item.slug}`} className="absolute inset-0 z-10" />
-              
-              <div className="relative aspect-[16/10] overflow-hidden bg-gray-200">
+              <div className="relative aspect-[4/3] overflow-hidden bg-gray-200">
                 {img && (
                   <Image
                     src={img}
@@ -88,7 +81,6 @@ export default async function ExclusiveMandates() {
                   <Crown className="h-3 w-3" /> VIP
                 </div>
               </div>
-
               <div className="relative p-5">
                 <h3 className="line-clamp-1 text-lg font-bold text-[var(--navy)]">
                   {item.title}
@@ -96,14 +88,14 @@ export default async function ExclusiveMandates() {
                 <p className="mt-1 line-clamp-1 text-sm text-gray-500">
                   {item.address || item.city || "Cyprus"}
                 </p>
-                <div className="mt-4 flex items-center gap-2 text-[10px] font-semibold uppercase tracking-wider text-[var(--gold)]">
-                  View Details →
+                <div className="mt-4 flex items-center gap-2 text-[10px] font-bold uppercase tracking-wider text-[var(--gold)] group-hover:text-[var(--navy)] transition-colors">
+                  View Residence →
                 </div>
               </div>
             </article>
           );
         })}
       </div>
-    </div>
+    </section>
   );
 }
