@@ -7,7 +7,6 @@ import ExclusiveMandates from "@/components/ExclusiveMandates";
 import MarketInsights from "@/components/sections/MarketInsights";
 import LimassolAdvantage from "@/components/LimassolAdvantage";
 import TestimonialsGlass from "@/components/Testimonials";
-import CTAContact from "@/components/CTAContact";
 import InsightsAndWhy from "@/components/sections/InsightsAndWhy";
 
 export default function Home() {
@@ -18,67 +17,67 @@ export default function Home() {
       <VideoScroller />
 
       {/* 2. THE CONTENT LAYER */}
-      <div className="relative z-10 w-full">
+      <div className="relative z-10 w-full flex flex-col items-center">
         
-        {/* --- 0vh - 100vh: THE EXTERIOR (Hero) --- */}
-        <div className="h-screen w-full flex items-center justify-center">
+        {/* --- SCENE 1: THE ARRIVAL (Hero) --- */}
+        <div className="h-screen w-full flex items-center justify-center mb-20">
           <HeroInteractive />
         </div>
 
-        {/* --- 100vh - 200vh: THE APPROACH (Why Us & Mandates) --- */}
-        <div className="relative py-24 space-y-32">
-           <div className="px-6">
+        {/* --- SCENE 2: THE REPUTATION (Why Us & Mandates) --- */}
+        {/* Added specific max-width and margins to frame the video */}
+        <div className="w-full max-w-7xl px-6 flex flex-col gap-32 mb-40">
+           <div>
               <WhyChooseUs />
            </div>
-           
-           <div className="px-6">
+           <div>
               <ExclusiveMandates />
            </div>
         </div>
 
-        {/* --- THE DOOR OPENING MOMENT --- */}
-        {/* We leave a huge gap here visually so the user scrolls "into" the house.
-            The Listings float at the bottom like a dashboard. */}
-        <div className="relative h-[80vh] flex flex-col justify-end pb-20">
-           {/* Section Title Floating in the air, allowing video visibility */}
-           <div className="absolute top-10 w-full text-center px-6">
-              <h2 className="text-4xl md:text-5xl font-montserrat font-bold text-white drop-shadow-[0_4px_10px_rgba(0,0,0,0.5)]">
+        {/* --- SCENE 3: THE GRAND ENTRANCE (Door Opening) --- */}
+        {/* 
+           CRITICAL UPDATE:
+           We created a massive transparent gap (py-60) here.
+           This forces the user to scroll through the video (door opening)
+           before seeing the listings. 
+        */}
+        <div className="w-full py-40 md:py-60 flex flex-col items-center justify-center text-center">
+           {/* The "Welcome Home" Text - Now distinct and readable */}
+           <div className="mb-12">
+              <h2 className="text-4xl md:text-6xl font-montserrat font-bold text-white drop-shadow-2xl">
                  Welcome Home.
               </h2>
-              <p className="text-white/80 mt-2 text-lg drop-shadow-md">
-                 Step inside our curated selection.
+              <p className="text-white/90 mt-4 text-xl font-light tracking-wide drop-shadow-lg max-w-2xl mx-auto">
+                 Step inside our curated selection of properties.
               </p>
-           </div>
-
-           {/* The Filmstrip Carousel (Glass HUD style) */}
-           <div className="w-full">
-              <MarketInsights />
            </div>
         </div>
 
-        {/* --- THE LIVING ROOM (Insights) --- */}
-        {/* We shift content to the Right Sidebar to let the room 'breathe' on the left */}
-        <div className="relative min-h-screen flex items-center px-6 py-24">
-           <div className="w-full max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-12">
-              <div className="hidden lg:block">
-                 {/* LEFT SIDE IS EMPTY: To show the Living Room video details */}
-              </div>
-              <div className="apple-glass rounded-3xl p-8 lg:p-12 shadow-2xl backdrop-blur-xl">
-                 <InsightsAndWhy />
-              </div>
+        {/* --- SCENE 4: THE GALLERY (Filmstrip) --- */}
+        {/* This sits AFTER the gap, giving the listings their own stage */}
+        <div className="w-full mb-60">
+           <MarketInsights />
+        </div>
+
+        {/* --- SCENE 5: THE LIVING ROOM (Insights) --- */}
+        {/* Split layout: Empty left side lets video show, Glass Panel on right */}
+        <div className="w-full max-w-7xl px-6 grid grid-cols-1 lg:grid-cols-2 gap-12 mb-60">
+           <div className="hidden lg:block">
+              {/* Empty visual space for the 'Living Room' video view */}
+           </div>
+           <div className="apple-glass rounded-3xl p-8 lg:p-12 shadow-2xl backdrop-blur-xl">
+              <InsightsAndWhy />
            </div>
         </div>
         
-        {/* --- THE TERRACE/POOL (Stats & Finale) --- */}
-        <div className="relative py-24 px-6 space-y-24">
+        {/* --- SCENE 6: THE TERRACE (Stats & Testimonials) --- */}
+        <div className="w-full max-w-7xl px-6 space-y-40 mb-40">
            <LimassolAdvantage />
            <TestimonialsGlass />
         </div>
 
-        {/* --- FOOTER --- */}
-        <div className="bg-navy pt-24 pb-12 rounded-t-[3rem] shadow-[0_-20px_60px_rgba(0,0,0,0.4)]">
-           <CTAContact />
-        </div>
+        {/* Note: The Footer comes automatically from layout.tsx after this main div closes */}
 
       </div>
     </main>
