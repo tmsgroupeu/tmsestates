@@ -3,34 +3,63 @@
 @tailwind utilities;
 
 :root {
+  --font-inter: 'Inter', sans-serif;
+  --font-montserrat: 'Montserrat', sans-serif;
+  
   --navy: #0A2342;
   --gold: #D4AF37;
   --ink: #111318;
   --paper: #F9F9F9;
+
+  /* Global defaults */
+  --background: var(--navy);
+  --foreground: white;
 }
 
 body {
-  @apply bg-navy text-white; /* Default to dark for this immersive page */
+  background-color: var(--background);
+  color: var(--foreground);
   font-family: var(--font-inter);
 }
 
-/* Hide Scrollbar for Chrome, Safari and Opera (for immersion) */
-.no-scrollbar::-webkit-scrollbar {
-  display: none;
-}
-/* Hide scrollbar for IE, Edge and Firefox */
-.no-scrollbar {
-  -ms-overflow-style: none;  /* IE and Edge */
-  scrollbar-width: none;  /* Firefox */
+/* --- TEXTURES --- */
+.bg-noise {
+  position: fixed;
+  top: 0; left: 0; width: 100%; height: 100%;
+  pointer-events: none; z-index: 50;
+  opacity: 0.04;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
 }
 
-/* --- THE APPLE GLASS EFFECT --- */
+/* --- GLASS EFFECTS --- */
 .apple-glass {
-  background: rgba(20, 30, 50, 0.4); /* Very subtle dark tint */
-  backdrop-filter: saturate(180%) blur(20px); /* Heavy blur is key to the premium look */
-  -webkit-backdrop-filter: saturate(180%) blur(20px);
-  border: 1px solid rgba(255, 255, 255, 0.1); /* Thin white border */
+  background: rgba(10, 25, 45, 0.4); /* Dark Navy Tint */
+  backdrop-filter: saturate(180%) blur(24px);
+  -webkit-backdrop-filter: saturate(180%) blur(24px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
   box-shadow: 
-    0 4px 30px rgba(0, 0, 0, 0.1),
-    inset 0 0 0 1px rgba(255, 255, 255, 0.05); /* Inner light ring */
+    0 4px 30px rgba(0, 0, 0, 0.2),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.05);
+}
+
+/* --- UTILITIES --- */
+.no-scrollbar::-webkit-scrollbar { display: none; }
+.no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+/* Prose fixes */
+.prose p, .prose li, .prose a {
+  overflow-wrap: break-word;
+  word-wrap: break-word;
+  word-break: break-word;
+}
+
+/* Swiper Nav Overrides */
+.swiper-button-next, .swiper-button-prev {
+  background-color: white !important;
+  width: 44px !important; height: 44px !important;
+  border-radius: 9999px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+}
+.swiper-button-next::after, .swiper-button-prev::after {
+  font-size: 16px !important; font-weight: bold; color: var(--navy);
 }
