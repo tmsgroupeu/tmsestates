@@ -14,56 +14,71 @@ const features = [
 ];
 
 export default async function InsightsAndWhy() {
+  // Fetch 2 latest articles
   const { data: articles } = await fetchArticles({ "pagination[pageSize]": "2", sort: "publishedAt:desc" });
 
   return (
-    <div className="flex flex-col gap-12 text-white">
+    <div className="flex flex-col text-white">
       
-      {/* 1. Header Block */}
-      <div>
-         <h2 className="text-3xl font-bold font-montserrat mb-2">Informed Decisions</h2>
-         <p className="text-white/70 text-sm">Strategic intelligence for the modern investor.</p>
+      {/* 1. Header Block - Centered */}
+      <div className="text-center mb-10 md:mb-14">
+         <h2 className="text-3xl md:text-4xl font-bold font-montserrat mb-3">Informed Decisions</h2>
+         <p className="text-white/70 text-sm md:text-base max-w-2xl mx-auto">
+            Market intelligence and strategic advantages for the modern investor.
+         </p>
       </div>
 
-      {/* 2. Latest Insights (Vertical Stack) */}
-      <div>
-        <h3 className="text-xs font-bold uppercase tracking-widest text-[var(--gold)] mb-6 border-b border-white/10 pb-2">
-          Market Intelligence
-        </h3>
-        <div className="space-y-4">
-          {articles.map((article: Article) => (
-             /* Wrapping CompactCard to override its internal colors via CSS cascading if needed, 
-                but assuming CompactCard needs to be updated or handled here */
-             <div key={article.id} className="bg-white/5 rounded-lg p-3 hover:bg-white/10 transition-colors border border-white/5">
-                 <CompactArticleCard article={article} />
-             </div>
-          ))}
-        </div>
-        <div className="mt-6 text-right">
-          <Link href="/insights" className="text-xs font-bold uppercase text-white hover:text-[var(--gold)] transition-colors">
-            View All Reports →
-          </Link>
-        </div>
-      </div>
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16">
+        
+        {/* 2. Latest Insights (Left Column) */}
+        <div>
+          <div className="flex items-center justify-between border-b border-white/10 pb-4 mb-6">
+            <h3 className="text-xs font-bold uppercase tracking-widest text-[var(--gold)]">
+              Market Intelligence
+            </h3>
+            <Link href="/insights" className="text-[10px] font-bold uppercase text-white/60 hover:text-white transition-colors">
+              View All →
+            </Link>
+          </div>
 
-      {/* 3. The Cyprus Advantage (Compact Grid) */}
-      <div>
-        <h3 className="text-xs font-bold uppercase tracking-widest text-[var(--gold)] mb-6 border-b border-white/10 pb-2">
-          The Ecosystem
-        </h3>
-        <div className="grid grid-cols-2 gap-4">
-          {features.map((f) => (
-            <div key={f.title} className="group p-3 rounded-lg border border-white/5 bg-white/5 hover:bg-white/10 transition-all">
-              <div className="mb-2 text-[var(--gold)] group-hover:scale-110 transition-transform origin-left">
-                <f.icon size={18} />
+          <div className="space-y-4">
+            {articles.map((article: Article) => (
+               <div key={article.id} className="bg-white/5 rounded-xl p-4 hover:bg-white/10 transition-colors border border-white/5 group">
+                   <CompactArticleCard article={article} />
+               </div>
+            ))}
+            {articles.length === 0 && (
+                <div className="text-center py-8 text-white/40 italic text-sm border border-dashed border-white/10 rounded-xl">
+                    New reports coming soon.
+                </div>
+            )}
+          </div>
+        </div>
+
+        {/* 3. The Cyprus Advantage (Right Column) */}
+        <div>
+          <div className="border-b border-white/10 pb-4 mb-6">
+            <h3 className="text-xs font-bold uppercase tracking-widest text-[var(--gold)]">
+              The Ecosystem
+            </h3>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            {features.map((f) => (
+              <div key={f.title} className="flex items-start gap-4 p-4 rounded-xl border border-white/5 bg-white/5 hover:bg-white/10 transition-all group">
+                <div className="mt-1 text-[var(--gold)] group-hover:scale-110 transition-transform origin-center">
+                  <f.icon size={20} />
+                </div>
+                <div>
+                  <h4 className="text-xs font-bold text-white font-montserrat uppercase tracking-wide">{f.title}</h4>
+                  <p className="text-[11px] text-white/60 mt-1 leading-relaxed">{f.desc}</p>
+                </div>
               </div>
-              <h4 className="text-xs font-bold text-white font-montserrat">{f.title}</h4>
-              <p className="text-[10px] text-white/60 mt-0.5 leading-snug">{f.desc}</p>
-            </div>
-          ))}
+            ))}
+          </div>
         </div>
-      </div>
 
+      </div>
     </div>
   );
 }
