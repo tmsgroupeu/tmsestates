@@ -1,4 +1,4 @@
-/* FULL FINAL VERSION: src/app/page.tsx */
+/* FULL REPLACEMENT: src/app/page.tsx */
 
 import VideoScroller from "@/components/ui/VideoScroller";
 import HeroInteractive from "@/components/HeroInteractive";
@@ -14,69 +14,69 @@ export default function Home() {
   return (
     <main className="relative bg-navy">
       
-      {/* 1. FIXED VIDEO BACKGROUND */}
+      {/* 1. FIXED VIDEO BACKGROUND (The House) */}
       <VideoScroller />
 
-      {/* 2. SCROLLABLE CONTENT LAYER (z-10) */}
+      {/* 2. THE CONTENT LAYER */}
       <div className="relative z-10 w-full">
         
-        {/* --- SECTION 1: HERO (Transparent) --- */}
-        {/* 100vh height to showcase the video start */}
-        <div className="h-screen w-full">
+        {/* --- 0vh - 100vh: THE EXTERIOR (Hero) --- */}
+        <div className="h-screen w-full flex items-center justify-center">
           <HeroInteractive />
         </div>
 
-        {/* --- SECTION 2: WHY CHOOSE US (Floating) --- */}
-        {/* Adds padding to push it below the hero but keep it over the video */}
-        <div className="pb-24 pt-12">
-           <WhyChooseUs />
-        </div>
-
-        {/* --- SECTION 3: EXCLUSIVE MANDATES (Floating) --- */}
-        <div className="pb-32">
-           <ExclusiveMandates />
-        </div>
-
-        {/* --- SECTION 4: THE WHITE LANE (Solid Paper Background) --- */}
-        {/* This creates a visual break. It slides OVER the video. */}
-        <div className="relative z-20 w-full bg-[#FBFBFB] rounded-t-[3rem] shadow-[0_-40px_80px_rgba(0,0,0,0.5)] overflow-hidden">
+        {/* --- 100vh - 200vh: THE APPROACH (Why Us & Mandates) --- */}
+        <div className="relative py-24 space-y-32">
+           <div className="px-6">
+              <WhyChooseUs />
+           </div>
            
-           {/* Top Border Accent */}
-           <div className="absolute top-0 left-0 w-full h-1 bg-[var(--gold)]/20" />
+           <div className="px-6">
+              <ExclusiveMandates />
+           </div>
+        </div>
 
-           {/* Content inside the White Lane */}
-           <div className="mx-auto max-w-7xl px-6 py-24 space-y-32">
-              
-              {/* Selected Listings Carousel */}
-              <MarketInsights />
-              
-              {/* Informed Decisions Data */}
-              <InsightsAndWhy />
-              
+        {/* --- THE DOOR OPENING MOMENT --- */}
+        {/* We leave a huge gap here visually so the user scrolls "into" the house.
+            The Listings float at the bottom like a dashboard. */}
+        <div className="relative h-[80vh] flex flex-col justify-end pb-20">
+           {/* Section Title Floating in the air, allowing video visibility */}
+           <div className="absolute top-10 w-full text-center px-6">
+              <h2 className="text-4xl md:text-5xl font-montserrat font-bold text-white drop-shadow-[0_4px_10px_rgba(0,0,0,0.5)]">
+                 Welcome Home.
+              </h2>
+              <p className="text-white/80 mt-2 text-lg drop-shadow-md">
+                 Step inside our curated selection.
+              </p>
            </div>
 
-           {/* --- WINDOW TO THE VIDEO (Transparent Gap) --- */}
-           {/* We "cut" the white paper here to let the video show through for Stats */}
-           <div className="relative py-40 bg-transparent"> 
-             {/* 
-                Trick: We are physically inside the 'white lane' div, 
-                so we apply a negative margin or mask to show the video behind? 
-                Actually, simpler: Close the white div above, open a new one below.
-             */}
+           {/* The Filmstrip Carousel (Glass HUD style) */}
+           <div className="w-full">
+              <MarketInsights />
+           </div>
+        </div>
+
+        {/* --- THE LIVING ROOM (Insights) --- */}
+        {/* We shift content to the Right Sidebar to let the room 'breathe' on the left */}
+        <div className="relative min-h-screen flex items-center px-6 py-24">
+           <div className="w-full max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-12">
+              <div className="hidden lg:block">
+                 {/* LEFT SIDE IS EMPTY: To show the Living Room video details */}
+              </div>
+              <div className="apple-glass rounded-3xl p-8 lg:p-12 shadow-2xl backdrop-blur-xl">
+                 <InsightsAndWhy />
+              </div>
            </div>
         </div>
         
-        {/* --- SECTION 5: STATS & TESTIMONIALS (Video Background) --- */}
-        {/* Now we are 'between' white lanes. The video scroller is visible again. */}
-        <div className="-mt-[20rem] relative z-10 pb-40">
-           <div className="w-full max-w-7xl mx-auto px-6 space-y-32">
-              <LimassolAdvantage />
-              <TestimonialsGlass />
-           </div>
+        {/* --- THE TERRACE/POOL (Stats & Finale) --- */}
+        <div className="relative py-24 px-6 space-y-24">
+           <LimassolAdvantage />
+           <TestimonialsGlass />
         </div>
 
-        {/* --- SECTION 6: FINALE (Dark Solid) --- */}
-        <div className="relative z-20 bg-[var(--navy)] pt-24 pb-12 rounded-t-[3rem] shadow-[0_-20px_60px_rgba(0,0,0,0.4)]">
+        {/* --- FOOTER --- */}
+        <div className="bg-navy pt-24 pb-12 rounded-t-[3rem] shadow-[0_-20px_60px_rgba(0,0,0,0.4)]">
            <CTAContact />
         </div>
 
