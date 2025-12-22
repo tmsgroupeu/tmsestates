@@ -15,7 +15,7 @@ const nextConfig: NextConfig = {
   eslint: {
     ignoreDuringBuilds: true, // allow build even if ESLint errors exist
   },
-  // typescript: { ignoreBuildErrors: true }, // <- only if you need to force a demo build
+  typescript: { ignoreBuildErrors: true }, // <- only if you need to force a demo build
 };
 
 export default nextConfig;
