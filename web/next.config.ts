@@ -1,21 +1,27 @@
-// next.config.ts
+// web/next.config.ts
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
+  // 1. Configure the Image Loader
   images: {
+    loader: 'custom',
+    loaderFile: './src/lib/cloudinaryLoader.ts',
+    // We still list the domain to allow Next.js to trust the source
     remotePatterns: [
-      { protocol: "https", hostname: "tmsestates.onrender.com" },
-      { protocol: "https", hostname: "*.onrender.com" },      // future-proof any Render hostname variants
-      { protocol: "https", hostname: "images.unsplash.com" }, // if you use Unsplash in mock data
-      { protocol: "https", hostname: "res.cloudinary.com" }   // if you move to Cloudinary later
+      {
+        protocol: 'https',
+        hostname: 'res.cloudinary.com',
+      },
     ],
-    // If you need to unblock quickly during a demo, you can temporarily use:
-    // unoptimized: true
   },
+
+  // 2. Keep your existing build settings
   eslint: {
-    ignoreDuringBuilds: true, // allow build even if ESLint errors exist
+    ignoreDuringBuilds: true,
   },
-  typescript: { ignoreBuildErrors: true }, // <- only if you need to force a demo build
+  typescript: {
+    ignoreBuildErrors: true,
+  },
 };
 
 export default nextConfig;
