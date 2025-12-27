@@ -11,6 +11,7 @@ const nextConfig: NextConfig = {
       },
     ],
   },
+  // Ensure we bypass strict linting for the demo
   eslint: {
     ignoreDuringBuilds: true,
   },
