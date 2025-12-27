@@ -122,13 +122,13 @@ export default function AIChatWidget() {
               <div className="relative flex items-center">
                 <input
                   className="w-full rounded-full border border-white/10 bg-white/5 py-3 pl-4 pr-12 text-sm text-white placeholder-white/30 focus:border-[#D4AF37] focus:outline-none focus:ring-1 focus:ring-[#D4AF37] transition-all"
-                  value={input}
+                  value={input || ''}
                   onChange={handleInputChange}
                   placeholder="Ask about properties..."
                 />
                 <button
                   type="submit"
-                  disabled={isLoading || !input.trim()}
+                  disabled={isLoading || !(input || '').trim()}
                   className="absolute right-2 flex h-8 w-8 items-center justify-center rounded-full bg-[#D4AF37] text-[#0A2342] transition-transform hover:scale-105 disabled:opacity-50 disabled:hover:scale-100"
                 >
                   <Send size={14} />
