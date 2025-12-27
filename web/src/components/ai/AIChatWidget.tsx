@@ -1,7 +1,6 @@
 /* UPDATED: src/components/ai/AIChatWidget.tsx */
 "use client";
 
-// ✅ FIX 1: Import the 'Message' type
 import { useChat, type Message } from '@ai-sdk/react';
 import { useState, useRef, useEffect } from 'react';
 import { X, Send, Sparkles, User, Bot } from 'lucide-react';
@@ -12,7 +11,8 @@ import MiniPropertyCard from './MiniPropertyCard';
 export default function AIChatWidget() {
   const [isOpen, setIsOpen] = useState(false);
   
-  const { messages, input, handleInputChange, handleSubmit, isLoading } = useChat({
+  // 1. Destructure 'append' to handle suggestion button clicks properly
+  const { messages, input, handleInputChange, handleSubmit, isLoading, append } = useChat({
     maxSteps: 3, 
   });
   
@@ -22,8 +22,18 @@ export default function AIChatWidget() {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages]);
 
+  // 2. Handler for suggestion buttons
+  const handleSuggestionClick = async (text: string) => {
+    // Immediately send the message to the AI
+    await append({
+        role: 'user',
+        content: text
+    });
+  };
+
   return (
-    <div className="fixed bottom-6 right-24 z-50 flex flex-col items-end font-sans">
+    // ✅ FIX: Increased z-index to 9999 to ensure it sits above ALL video/glass layers
+    <div className="fixed bottom-6 right-24 z-[9999] flex flex-col items-end font-sans">
       
       <AnimatePresence>
         {isOpen && (
@@ -31,7 +41,7 @@ export default function AIChatWidget() {
             initial={{ opacity: 0, y: 20, scale: 0.95 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 20, scale: 0.95 }}
-            className="mb-4 w-[90vw] max-w-[380px] h-[500px] flex flex-col overflow-hidden rounded-2xl border border-white/20 bg-[#0A2342]/90 shadow-2xl backdrop-blur-xl"
+            className="mb-4 w-[90vw] max-w-[380px] h-[500px] flex flex-col overflow-hidden rounded-2xl border border-white/20 bg-[#0A2342]/95 shadow-2xl backdrop-blur-xl"
           >
             {/* Header */}
             <div className="flex items-center justify-between border-b border-white/10 bg-white/5 p-4 shrink-0">
@@ -59,13 +69,23 @@ export default function AIChatWidget() {
                   <p className="text-sm font-medium">Welcome to TMS Estates.</p>
                   <p className="text-xs">I can check our live database for you. Try asking:</p>
                   <div className="flex flex-wrap justify-center gap-2">
-                    <button onClick={() => handleInputChange({ target: { value: "Show me villas in Paphos" } } as any)} className="text-[10px] border border-white/10 rounded-full px-3 py-1 hover:bg-white/10 transition">Villas in Paphos</button>
-                    <button onClick={() => handleInputChange({ target: { value: "Apartments near Limassol" } } as any)} className="text-[10px] border border-white/10 rounded-full px-3 py-1 hover:bg-white/10 transition">Limassol Apartments</button>
+                    {/* ✅ FIX: Use handleSuggestionClick instead of hacking the input */}
+                    <button 
+                        onClick={() => handleSuggestionClick("Show me villas in Paphos")} 
+                        className="text-[10px] border border-white/10 rounded-full px-3 py-1 hover:bg-white/10 hover:text-white transition cursor-pointer"
+                    >
+                        Villas in Paphos
+                    </button>
+                    <button 
+                        onClick={() => handleSuggestionClick("Apartments near Limassol")} 
+                        className="text-[10px] border border-white/10 rounded-full px-3 py-1 hover:bg-white/10 hover:text-white transition cursor-pointer"
+                    >
+                        Limassol Apartments
+                    </button>
                   </div>
                 </div>
               )}
               
-              {/* ✅ FIX 2: Explicitly type 'm' as Message */}
               {messages.map((m: Message) => (
                 <div key={m.id} className={`mb-4 flex gap-3 ${m.role === 'user' ? 'flex-row-reverse' : ''}`}>
                   
@@ -85,12 +105,10 @@ export default function AIChatWidget() {
                         </div>
                     )}
 
-                    {/* ✅ FIX 3: Handle tool invocations safely */}
                     {m.toolInvocations?.map((toolInvocation) => {
                       const { toolName, toolCallId, state } = toolInvocation;
 
                       if (state === 'result' && toolName === 'show_property') {
-                        // Cast result to any to avoid strict typing issues on the dynamic result for now
                         const result = toolInvocation.result as any;
                         if (!result || result.error) return null;
                         
@@ -118,16 +136,19 @@ export default function AIChatWidget() {
               <div ref={messagesEndRef} />
             </div>
 
+            {/* Input Area */}
             <form onSubmit={handleSubmit} className="border-t border-white/10 p-3 bg-[#0A2342] shrink-0">
               <div className="relative flex items-center">
                 <input
+                  // ✅ FIX: Ensure input is never undefined to prevent crashes
                   className="w-full rounded-full border border-white/10 bg-white/5 py-3 pl-4 pr-12 text-sm text-white placeholder-white/30 focus:border-[#D4AF37] focus:outline-none focus:ring-1 focus:ring-[#D4AF37] transition-all"
-                  value={input || ''}
+                  value={input || ''} 
                   onChange={handleInputChange}
                   placeholder="Ask about properties..."
                 />
                 <button
                   type="submit"
+                  // ✅ FIX: Ensure disabled logic handles undefined input safely
                   disabled={isLoading || !(input || '').trim()}
                   className="absolute right-2 flex h-8 w-8 items-center justify-center rounded-full bg-[#D4AF37] text-[#0A2342] transition-transform hover:scale-105 disabled:opacity-50 disabled:hover:scale-100"
                 >
