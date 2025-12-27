@@ -1,15 +1,13 @@
+/* UPDATED: src/app/api/chat/route.ts */
 import { openai } from '@ai-sdk/openai';
 import { streamText, tool } from 'ai';
 import { fetchProperties } from '@/lib/cms';
 import { z } from 'zod';
 
-// Allow streaming responses up to 30 seconds
 export const maxDuration = 30;
 
-// ✅ HARDCODED FALLBACK: Ensures connection to Render if Env Vars fail on Vercel
 const API_URL = process.env.STRAPI_API_URL || "https://tmsestates.onrender.com";
 
-// Helper to ensure image URLs are absolute
 const getFullImageUrl = (url: string) => {
   if (!url) return null;
   if (url.startsWith('http')) return url;
@@ -20,83 +18,73 @@ export async function POST(req: Request) {
   try {
     const { messages } = await req.json();
 
-    console.log("🤖 AI Chat Started. Connecting to Strapi at:", API_URL);
-
-    // --- 1. FETCH CONTEXT (The "Memory") ---
+    // 1. Fetch "Memory"
     let properties = [];
     try {
-      // We explicitly fetch only safe fields that definitely exist.
-      // ❌ REMOVED "propertyType" to fix the 400 Bad Request error.
       const response = await fetchProperties({
         "pagination[pageSize]": "100",
         "fields[0]": "title",
         "fields[1]": "city",
         "fields[2]": "slug",
         "fields[3]": "bedrooms",
+        // propertyType removed to prevent 400 error
       });
-      
       properties = response.data || [];
-      console.log(`✅ Success: Fetched ${properties.length} properties for AI Context.`);
-    } catch (fetchError) {
-      console.error("❌ Error fetching properties from Strapi:", fetchError);
-      // We continue even if fetch fails, so the AI can at least apologize politely
+    } catch (error) {
+      console.error("Strapi fetch error:", error);
     }
 
-    // Format the data into a text block the AI can read
     const propertyContext = properties.length > 0 
       ? properties.map((p: any) => `
           - Title: "${p.title}"
           - Location: ${p.city}
           - Beds: ${p.bedrooms}
-          - Slug ID: ${p.slug}
+          - Slug: ${p.slug}
         `).join('\n')
-      : "System Notification: The property database is currently empty or unreachable.";
+      : "Database temporarily unavailable.";
 
-    // --- 2. DEFINE PERSONA ---
+    // 2. THE STRICT PERSONA
     const systemPrompt = `
-      You are the Senior AI Concierge for TMS Estates in Cyprus.
+      You are a Senior Sales Representative for TMS Estates, a luxury real estate agency in Cyprus.
       
-      YOUR LIVE PORTFOLIO INDEX:
+      YOUR GOAL:
+      Help the user find a property from OUR portfolio and get them to book a consultation.
+
+      YOUR KNOWLEDGE BASE (Our Live Portfolio):
       ${propertyContext}
 
-      RULES:
-      1. TONE: Sophisticated, professional, concise, and helpful.
-      2. SEARCH STRATEGY: When the user asks for a property (e.g., "villas in Limassol"), check your PORTFOLIO INDEX above.
-      3. VISUALS: If you find a matching property in the index, you MUST use the 'show_property' tool to display it. Do not just list the name.
-      4. RECOMMENDATIONS: You can call the 'show_property' tool multiple times to show different options.
-      5. FALLBACK: If the portfolio is empty or has no matches, politely apologize, explain you are checking the live database, and ask for their specific criteria to pass to a human agent.
+      STRICT BRAND RULES:
+      1. **NO COMPETITORS:** Never mention other agencies, websites, or general market listings. If it's not in the list above, we don't represent it.
+      2. **NO REPETITION:** When you recommend a property, you MUST use the 'show_property' tool. 
+         - **CRITICAL:** Do NOT write the details (beds, location, title) in your text message. The Card will show that.
+         - Your text should just be a polite hook. 
+         - BAD: "I have the Azure Villa. It has 5 beds and is in Limassol." [Card]
+         - GOOD: "Based on your needs, I highly recommend this exclusive villa." [Card]
+      3. **PROFESSIONAL TONE:** You are helpful, discreet, and sophisticated. Use "We" and "Our portfolio".
+      4. **THE PIVOT:** If a user asks for something we don't have (e.g. "Cheap studio in Nicosia"), politely say: "Our portfolio focuses on luxury residences in Limassol and Paphos. However, may I suggest looking at..." and show a relevant high-end option.
     `;
 
-    // --- 3. STREAM RESPONSE WITH TOOLS ---
+    // 3. Stream
     const result = streamText({
-      model: openai('gpt-4o-mini'), // Fast, cheap, smart enough
+      model: openai('gpt-4o-mini'),
       system: systemPrompt,
       messages,
       tools: {
-        // Define the tool: "Show Property Card"
         show_property: tool({
-          description: 'Display a visual property card to the user. Use this whenever recommending a specific property.',
+          description: 'Show a visual property card. Use this immediately when a property matches.',
           parameters: z.object({
-            slug: z.string().describe('The slug ID of the property to show'),
+            slug: z.string().describe('The slug of the property'),
           }),
-          // The logic to run when the AI calls this tool
           execute: async ({ slug }) => {
-            console.log("🛠️ Tool Triggered: show_property for", slug);
-            
-            // Fetch FULL details (images, etc) only for the specific property requested
+            // Fetch details for the card
             const { data } = await fetchProperties({
               "filters[slug][$eq]": slug,
               "populate": "*",
             });
-            
             const p = data?.[0];
             
-            if (!p) {
-              console.log("❌ Property not found in DB for slug:", slug);
-              return { error: 'Property details not found.' };
-            }
+            if (!p) return { error: 'Property not found' };
 
-            // Return the structured data for the UI card
             return {
               id: p.id,
               title: p.title,
@@ -104,7 +92,6 @@ export async function POST(req: Request) {
               slug: p.slug,
               bedrooms: p.bedrooms,
               area: p.area,
-              // Smartly grab the first image and ensure full URL
               imageUrl: getFullImageUrl(p.images?.[0]?.url || p.coverImage?.url) || '/placeholder.jpg',
             };
           },
@@ -115,7 +102,6 @@ export async function POST(req: Request) {
     return result.toDataStreamResponse();
 
   } catch (error: any) {
-    console.error("CRITICAL API ERROR:", error);
-    return new Response(JSON.stringify({ error: "Internal Server Error" }), { status: 500 });
+    return new Response(JSON.stringify({ error: error.message }), { status: 500 });
   }
 }

@@ -3,7 +3,7 @@
 
 import { useChat } from '@ai-sdk/react';
 import { useState, useRef, useEffect } from 'react';
-import { X, Send, Sparkles, User, Bot } from 'lucide-react';
+import { X, Send, Sparkles, User, Headset } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import ReactMarkdown from 'react-markdown';
 import MiniPropertyCard from './MiniPropertyCard';
@@ -111,7 +111,7 @@ export default function AIChatWidget() {
               {messages.map((m: any) => (
                 <div key={m.id} className={`mb-4 flex gap-3 ${m.role === 'user' ? 'flex-row-reverse' : ''}`}>
                   <div className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-full ${m.role === 'user' ? 'bg-white/10' : 'bg-[#D4AF37]/20 text-[#D4AF37]'}`}>
-                    {m.role === 'user' ? <User size={14} /> : <Bot size={16} />}
+                    {m.role === 'user' ? <User size={14} /> : <Headset size={18} />}
                   </div>
                   <div className={`flex flex-col gap-2 max-w-[85%]`}>
                     {m.content && (
