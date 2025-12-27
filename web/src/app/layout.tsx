@@ -5,6 +5,7 @@ import Header from "@/components/Header";
 import Footer from "@/components/Footer"; // Import the Footer
 import ContactBubble from "@/components/ui/ContactBubble";
 import "./globals.css";
+import AIChatWidget from "@/components/ai/AIChatWidget";
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
 const montserrat = Montserrat({
@@ -34,6 +35,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <main>{children}</main>
         <Footer /> {/* ✅ ADD THE FOOTER HERE */}
         <ContactBubble footerId="page-footer" />
+
+        <AIChatWidget />
+
       </body>
     </html>
   );
