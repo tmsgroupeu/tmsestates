@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev --turbopack",
-    "build": "next build --turbopack",
+    "build": "next build",
     "start": "next start",
     "lint": "eslint"
   },
@@ -16,7 +16,7 @@
     "embla-carousel-react": "^8.5.1",
     "framer-motion": "^11.13.1",
     "lucide-react": "^0.468.0",
-    "next": "15.1.0",
+    "next": "15.1.4",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "react-icons": "^5.4.0",
