@@ -11,9 +11,17 @@ import MiniPropertyCard from './MiniPropertyCard';
 export default function AIChatWidget() {
   const [isOpen, setIsOpen] = useState(false);
   
-  // 1. Destructure 'append' to handle suggestion button clicks properly
-  const { messages, input, handleInputChange, handleSubmit, isLoading, append } = useChat({
+  // 1. Create LOCAL state for the input. 
+  // This guarantees the user can type immediately, regardless of the AI SDK status.
+  const [localInput, setLocalInput] = useState('');
+
+  // 2. Destructure 'append' and 'messages'
+  const { messages, isLoading, append } = useChat({
     maxSteps: 3, 
+    api: '/api/chat', // Explicitly state the route just in case
+    onError: (error) => {
+      console.error("AI Error:", error);
+    }
   });
   
   const messagesEndRef = useRef<HTMLDivElement>(null);
@@ -22,9 +30,24 @@ export default function AIChatWidget() {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages]);
 
-  // 2. Handler for suggestion buttons
+  // 3. Handle Form Submission manually
+  const handleFormSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!localInput.trim() || isLoading) return;
+
+    const text = localInput;
+    setLocalInput(''); // Clear input immediately for better UX
+
+    // Send to AI
+    await append({
+      role: 'user',
+      content: text,
+    });
+  };
+
+  // 4. Handle Suggestion Clicks
   const handleSuggestionClick = async (text: string) => {
-    // Immediately send the message to the AI
+    setLocalInput(''); // Clear any pending text
     await append({
         role: 'user',
         content: text
@@ -32,7 +55,6 @@ export default function AIChatWidget() {
   };
 
   return (
-    // ✅ FIX: Increased z-index to 9999 to ensure it sits above ALL video/glass layers
     <div className="fixed bottom-6 right-24 z-[9999] flex flex-col items-end font-sans">
       
       <AnimatePresence>
@@ -69,16 +91,17 @@ export default function AIChatWidget() {
                   <p className="text-sm font-medium">Welcome to TMS Estates.</p>
                   <p className="text-xs">I can check our live database for you. Try asking:</p>
                   <div className="flex flex-wrap justify-center gap-2">
-                    {/* ✅ FIX: Use handleSuggestionClick instead of hacking the input */}
                     <button 
+                        type="button" // Explicit type to prevent form submit issues
                         onClick={() => handleSuggestionClick("Show me villas in Paphos")} 
-                        className="text-[10px] border border-white/10 rounded-full px-3 py-1 hover:bg-white/10 hover:text-white transition cursor-pointer"
+                        className="text-[10px] border border-white/10 rounded-full px-3 py-1 hover:bg-white/10 hover:text-white transition cursor-pointer z-50 relative"
                     >
                         Villas in Paphos
                     </button>
                     <button 
+                        type="button"
                         onClick={() => handleSuggestionClick("Apartments near Limassol")} 
-                        className="text-[10px] border border-white/10 rounded-full px-3 py-1 hover:bg-white/10 hover:text-white transition cursor-pointer"
+                        className="text-[10px] border border-white/10 rounded-full px-3 py-1 hover:bg-white/10 hover:text-white transition cursor-pointer z-50 relative"
                     >
                         Limassol Apartments
                     </button>
@@ -88,13 +111,11 @@ export default function AIChatWidget() {
               
               {messages.map((m: Message) => (
                 <div key={m.id} className={`mb-4 flex gap-3 ${m.role === 'user' ? 'flex-row-reverse' : ''}`}>
-                  
                   <div className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-full ${m.role === 'user' ? 'bg-white/10' : 'bg-[#D4AF37]/20 text-[#D4AF37]'}`}>
                     {m.role === 'user' ? <User size={14} /> : <Bot size={16} />}
                   </div>
 
                   <div className={`flex flex-col gap-2 max-w-[85%]`}>
-                    
                     {m.content && (
                         <div className={`rounded-2xl px-4 py-2 text-sm leading-relaxed ${
                             m.role === 'user' 
@@ -105,6 +126,7 @@ export default function AIChatWidget() {
                         </div>
                     )}
 
+                    {/* Tool Results */}
                     {m.toolInvocations?.map((toolInvocation) => {
                       const { toolName, toolCallId, state } = toolInvocation;
 
@@ -137,20 +159,19 @@ export default function AIChatWidget() {
             </div>
 
             {/* Input Area */}
-            <form onSubmit={handleSubmit} className="border-t border-white/10 p-3 bg-[#0A2342] shrink-0">
+            <form onSubmit={handleFormSubmit} className="border-t border-white/10 p-3 bg-[#0A2342] shrink-0 relative z-50">
               <div className="relative flex items-center">
                 <input
-                  // ✅ FIX: Ensure input is never undefined to prevent crashes
                   className="w-full rounded-full border border-white/10 bg-white/5 py-3 pl-4 pr-12 text-sm text-white placeholder-white/30 focus:border-[#D4AF37] focus:outline-none focus:ring-1 focus:ring-[#D4AF37] transition-all"
-                  value={input || ''} 
-                  onChange={handleInputChange}
+                  // ✅ FIX: Bound to local state, guaranteed to work
+                  value={localInput} 
+                  onChange={(e) => setLocalInput(e.target.value)}
                   placeholder="Ask about properties..."
                 />
                 <button
                   type="submit"
-                  // ✅ FIX: Ensure disabled logic handles undefined input safely
-                  disabled={isLoading || !(input || '').trim()}
-                  className="absolute right-2 flex h-8 w-8 items-center justify-center rounded-full bg-[#D4AF37] text-[#0A2342] transition-transform hover:scale-105 disabled:opacity-50 disabled:hover:scale-100"
+                  disabled={isLoading || !localInput.trim()}
+                  className="absolute right-2 flex h-8 w-8 items-center justify-center rounded-full bg-[#D4AF37] text-[#0A2342] transition-transform hover:scale-105 disabled:opacity-50 disabled:hover:scale-100 cursor-pointer"
                 >
                   <Send size={14} />
                 </button>
@@ -164,7 +185,7 @@ export default function AIChatWidget() {
         onClick={() => setIsOpen(!isOpen)}
         whileHover={{ scale: 1.05 }}
         whileTap={{ scale: 0.95 }}
-        className="flex h-14 w-14 items-center justify-center rounded-full bg-[#D4AF37] text-[#0A2342] shadow-[0_0_20px_rgba(212,175,55,0.4)] transition-shadow hover:shadow-[0_0_30px_rgba(212,175,55,0.6)]"
+        className="flex h-14 w-14 items-center justify-center rounded-full bg-[#D4AF37] text-[#0A2342] shadow-[0_0_20px_rgba(212,175,55,0.4)] transition-shadow hover:shadow-[0_0_30px_rgba(212,175,55,0.6)] cursor-pointer relative z-[10000]"
       >
         {isOpen ? <X size={24} /> : <Sparkles size={24} />}
       </motion.button>
