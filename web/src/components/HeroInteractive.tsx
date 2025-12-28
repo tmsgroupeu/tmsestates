@@ -18,7 +18,6 @@ export default function HeroInteractive() {
   const yText = useTransform(scrollYProgress, [0, 0.5], ["0%", "-50%"]);
   const opacityText = useTransform(scrollYProgress, [0, 0.5], [1, 0]);
   
-  // ✅ FIX: Fade out the scroll indicator quickly (0% -> 15% scroll)
   const opacityIndicator = useTransform(scrollYProgress, [0, 0.15], [1, 0]);
 
   const containerVariants = {
@@ -45,7 +44,7 @@ export default function HeroInteractive() {
           variants={containerVariants}
           initial="hidden"
           animate="visible"
-          className="max-w-5xl mx-auto"
+          className="max-w-5xl mx-auto flex flex-col items-center" // ✅ ADDED flex-col and items-center for main alignment
         >
           {/* Headline */}
           <motion.h1
@@ -95,16 +94,15 @@ export default function HeroInteractive() {
 
       {/* --- SCROLL INDICATOR --- */}
       {/* 
-         ✅ FIX: 
-         1. Added `style={{ opacity: opacityIndicator }}` to make it disappear on scroll.
-         2. Ensured perfect centering with `left-1/2 -translate-x-1/2`.
+         ✅ FIX: Removed `absolute` positioning. 
+         Now it flows directly after the buttons and centers with `mx-auto`
       */}
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 2.5, duration: 1 }}
         style={{ opacity: opacityIndicator }} 
-        className="absolute bottom-10 left-1/2 z-20 -translate-x-1/2"
+        className="mt-16 mx-auto z-20" // ✅ Adjusted margin-top and removed absolute/left/transform
       >
         <div className="flex flex-col items-center gap-3">
           <span className="text-[10px] uppercase tracking-[0.2em] text-white/60 font-medium whitespace-nowrap">
