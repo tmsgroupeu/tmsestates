@@ -10,7 +10,7 @@ import { NextIntlClientProvider } from 'next-intl';
 import { getMessages } from 'next-intl/server';
 import { notFound } from 'next/navigation';
 import { routing } from '@/i18n/routing';
-import "@/app/globals.css";
+import "@/app/globals.css"; // Ensure this path is correct
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
 const montserrat = Montserrat({
@@ -24,21 +24,22 @@ export const metadata: Metadata = {
   description: "The definitive guide to luxury real estate in Limassol.",
 };
 
-// Params is now required for the layout to know the locale
-export default async function LocaleLayout({
-  children,
-  params: { locale }
-}: {
+// ✅ FIX: Define the props type correctly for Next.js 15 (params is a Promise)
+type Props = {
   children: React.ReactNode;
-  params: { locale: string };
-}) {
+  params: Promise<{ locale: string }>;
+};
+
+export default async function LocaleLayout({ children, params }: Props) {
+  // ✅ FIX: Await the params before using them
+  const { locale } = await params;
+
   // Ensure that the incoming `locale` is valid
   if (!routing.locales.includes(locale as any)) {
     notFound();
   }
 
-  // Providing all messages to the client
-  // side is the easiest way to get started
+  // Provide all messages to the client side
   const messages = await getMessages();
 
   // Determine direction (Right-to-Left for Arabic)
