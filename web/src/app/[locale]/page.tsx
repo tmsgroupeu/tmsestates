@@ -1,4 +1,4 @@
-/* FULL REPLACEMENT: src/app/page.tsx */
+/* FULL REPLACEMENT: src/app/[locale]/page.tsx */
 
 import VideoScroller from "@/components/ui/VideoScroller";
 import HeroInteractive from "@/components/HeroInteractive";
@@ -55,24 +55,26 @@ export default function Home() {
         </div>
 
         {/* --- SCENE 4: THE GALLERY (Filmstrip) --- */}
-        {/* This sits AFTER the gap, giving the listings their own stage */}
-        <div className="w-full mb-60">
+        {/* ✅ FIX: Added id="properties" for navigation anchor */}
+        <div id="properties" className="w-full mb-60 scroll-mt-32">
            <MarketInsights />
         </div>
 
         {/* --- SCENE 5: THE LIVING ROOM (Insights HUD) --- */}
         {/* 
             UPDATE: Now Centered (max-w-6xl mx-auto).
-            It acts as a floating control panel in the center of the video. 
+            It acts as a floating control panel in the center of the video.
+            ✅ FIX: Added id="insights" for navigation anchor.
         */}
-        <div className="w-full px-6 mb-60 flex justify-center items-center min-h-[50vh]">
+        <div id="insights" className="w-full px-6 mb-60 flex justify-center items-center min-h-[50vh] scroll-mt-32">
            <div className="w-full max-w-6xl apple-glass rounded-3xl p-8 md:p-12 shadow-2xl backdrop-blur-xl">
               <InsightsAndWhy />
            </div>
         </div>
         
         {/* --- SCENE 6: THE TERRACE (Stats & Testimonials) --- */}
-        <div className="w-full max-w-7xl px-6 space-y-40 mb-40">
+        {/* ✅ FIX: Added id="advantage" for navigation anchor */}
+        <div id="advantage" className="w-full max-w-7xl px-6 space-y-40 mb-40 scroll-mt-32">
            <LimassolAdvantage />
            <TestimonialsGlass />
         </div>
