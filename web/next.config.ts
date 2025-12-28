@@ -1,5 +1,12 @@
+/* UPDATED: next.config.ts */
+import createNextIntlPlugin from 'next-intl/plugin';
 import type { NextConfig } from "next";
 
+// 1. Initialize the i18n plugin
+// Point this to where we created the request.ts file earlier
+const withNextIntl = createNextIntlPlugin('./src/i18n/request.ts');
+
+// 2. Define your existing config
 const nextConfig: NextConfig = {
   images: {
     loader: 'custom',
@@ -11,7 +18,6 @@ const nextConfig: NextConfig = {
       },
     ],
   },
-  // Ensure we bypass strict linting for the demo
   eslint: {
     ignoreDuringBuilds: true,
   },
@@ -20,4 +26,5 @@ const nextConfig: NextConfig = {
   },
 };
 
-export default nextConfig;
+// 3. Wrap and Export
+export default withNextIntl(nextConfig);
