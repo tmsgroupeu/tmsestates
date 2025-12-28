@@ -15,7 +15,10 @@ export default function MarketInsights() {
   useEffect(() => {
     async function loadProperties() {
       const { data } = await fetchProperties({ "pagination[pageSize]": "12", "sort[0]": "createdAt:desc" });
-      setProperties(data || []);
+      const items = data || [];
+      const safeLoopData = items.length > 0 && items.length < 8 ? [...items, ...items, ...items] : items;
+      
+      setProperties(safeLoopData);
     }
     loadProperties();
   }, []);
