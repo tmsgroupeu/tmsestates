@@ -3,7 +3,7 @@
 
 import { useChat, type Message } from '@ai-sdk/react';
 import { useState, useRef, useEffect } from 'react';
-import { X, Send, Headset, User, Bot } from 'lucide-react'; // ✅ Swapped Sparkles for Headset
+import { X, Send, Headset, User } from 'lucide-react'; 
 import { motion, AnimatePresence } from 'framer-motion';
 import ReactMarkdown from 'react-markdown';
 import MiniPropertyCard from './MiniPropertyCard';
@@ -41,31 +41,25 @@ export default function AIChatWidget() {
   };
 
   return (
-    // ✅ RESPONSIVE CONTAINER:
-    // Mobile: fixed z-[9999] (high z-index).
-    // The button logic handles positioning.
     <div className="fixed z-[9999] font-sans pointer-events-none inset-0 flex flex-col justify-end items-end p-4 sm:p-6">
       
+      {/* --- THE CHAT WINDOW --- */}
       <AnimatePresence>
         {isOpen && (
           <motion.div
-            // ✅ ANIMATION: Pops up nicely
-            initial={{ opacity: 0, y: 20, scale: 0.95 }}
+            // Animation: Pop up from bottom-right
+            initial={{ opacity: 0, y: 20, scale: 0.95, originX: 1, originY: 1 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 20, scale: 0.95 }}
             
-            // ✅ WINDOW STYLING:
-            // Mobile: Full width minus padding, fixed height (60vh), pointer-events-auto to allow clicking.
-            // Desktop (md): Fixed width (380px), taller height.
-            className="pointer-events-auto mb-20 sm:mb-20 md:mb-4 
+            className="pointer-events-auto mb-2 sm:mb-2 md:mb-4 
                        w-full md:w-[380px] h-[60vh] md:h-[600px] 
                        flex flex-col overflow-hidden rounded-2xl border border-white/20 
-                       bg-[#0A2342]/95 shadow-2xl backdrop-blur-xl origin-bottom-right"
+                       bg-[#0A2342]/95 shadow-2xl backdrop-blur-xl"
           >
-            {/* Header */}
+            {/* Header with Close Button */}
             <div className="flex items-center justify-between border-b border-white/10 bg-white/5 p-4 shrink-0">
               <div className="flex items-center gap-3">
-                {/* ✅ ICON UPDATE: Headset here */}
                 <div className="flex h-9 w-9 items-center justify-center rounded-full bg-[#D4AF37] text-[#0A2342]">
                   <Headset size={18} />
                 </div>
@@ -74,6 +68,7 @@ export default function AIChatWidget() {
                   <p className="text-[10px] text-white/60">AI Property Specialist</p>
                 </div>
               </div>
+              {/* ✅ This is now the ONLY close button when open */}
               <button 
                 onClick={() => setIsOpen(false)}
                 className="rounded-full p-2 text-white/60 hover:bg-white/10 hover:text-white transition-colors"
@@ -139,7 +134,7 @@ export default function AIChatWidget() {
                       }
                       return (
                          <div key={toolCallId} className="w-full h-24 bg-white/5 rounded-xl animate-pulse flex items-center justify-center border border-white/5">
-                            <span className="text-xs text-white/30">Searching portfolio...</span>
+                            <span className="text-xs text-white/30">Searching...</span>
                          </div>
                       );
                     })}
@@ -177,21 +172,28 @@ export default function AIChatWidget() {
         )}
       </AnimatePresence>
 
-      {/* ✅ TOGGLE BUTTON POSITIONING:
-          - pointer-events-auto: Re-enables clicking on the button.
-          - absolute bottom-6: Sticks to bottom.
-          - right-[88px] (Mobile): Moves it to the left of the Contact Bubble (which is right-6 + ~60px width).
-          - md:right-24: On desktop, keeps standard spacing.
-      */}
-      <motion.button
-        onClick={() => setIsOpen(!isOpen)}
-        whileHover={{ scale: 1.05 }}
-        whileTap={{ scale: 0.95 }}
-        className="pointer-events-auto absolute bottom-6 right-[90px] md:right-24 flex h-14 w-14 items-center justify-center rounded-full bg-[#D4AF37] text-[#0A2342] shadow-[0_0_20px_rgba(212,175,55,0.4)] transition-shadow hover:shadow-[0_0_30px_rgba(212,175,55,0.6)] cursor-pointer z-[10000]"
-      >
-        {/* ✅ ICON UPDATE: Headset here */}
-        {isOpen ? <X size={24} /> : <Headset size={24} />}
-      </motion.button>
+      {/* --- THE FLOATING TOGGLE BUTTON --- */}
+      {/* ✅ FIX: AnimatePresence ensures it smoothly scales out when chat opens */}
+      <AnimatePresence>
+        {!isOpen && (
+          <motion.button
+            // Initial mount animation (scale up)
+            initial={{ scale: 0, rotate: -90 }}
+            // When visible (scale normal)
+            animate={{ scale: 1, rotate: 0 }}
+            // When removing (scale down)
+            exit={{ scale: 0, rotate: 90 }}
+            
+            onClick={() => setIsOpen(true)}
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+            className="pointer-events-auto absolute bottom-6 right-[90px] md:right-24 flex h-14 w-14 items-center justify-center rounded-full bg-[#D4AF37] text-[#0A2342] shadow-[0_0_20px_rgba(212,175,55,0.4)] transition-shadow hover:shadow-[0_0_30px_rgba(212,175,55,0.6)] cursor-pointer z-[10000]"
+          >
+            {/* Just the Headset icon now, since the X is inside the window */}
+            <Headset size={24} />
+          </motion.button>
+        )}
+      </AnimatePresence>
     </div>
   );
 }
