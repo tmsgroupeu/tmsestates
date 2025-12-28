@@ -1,0 +1,27 @@
+{
+  "Navigation": {
+    "properties": "精选房源",
+    "insights": "市场洞察",
+    "advantage": "核心优势",
+    "contact": "联系我们要"
+  },
+  "Hero": {
+    "explore": "浏览房源",
+    "consultation": "预约咨询",
+    "start": "开启旅程"
+  },
+  "UI": {
+    "view_details": "查看详情",
+    "bedrooms": "卧室",
+    "bathrooms": "浴室",
+    "area": "面积",
+    "price": "价格面议",
+    "loading": "加载中..."
+  },
+  "Filters": {
+    "status": "状态",
+    "city": "城市",
+    "apply": "应用",
+    "reset": "重置"
+  }
+}
