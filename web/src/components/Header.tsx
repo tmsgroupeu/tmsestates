@@ -15,7 +15,8 @@ export default function Header({ locale }: { locale: string }) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   useEffect(() => {
-    const handleScroll = () => setIsScrolled(window.scrollY > 50);
+    // Detect scroll earlier (10px) to switch logo faster
+    const handleScroll = () => setIsScrolled(window.scrollY > 10);
     window.addEventListener("scroll", handleScroll, { passive: true });
     handleScroll(); 
     return () => window.removeEventListener("scroll", handleScroll);
@@ -26,17 +27,21 @@ export default function Header({ locale }: { locale: string }) {
   const headerVariants = {
     top: {
       backgroundColor: 'rgba(10, 35, 66, 0)', 
-      height: '6rem', // Reduced initial height for elegance
+      height: '6rem', 
       backdropFilter: 'blur(0px)',
       borderBottom: '1px solid rgba(255,255,255,0)'
     },
     scrolled: {
-      backgroundColor: 'rgba(10, 35, 66, 0.85)', 
-      height: '4.5rem', // Tighter, sleeker when scrolled
-      backdropFilter: 'blur(12px)',
-      borderBottom: '1px solid rgba(255,255,255,0.1)'
+      backgroundColor: 'rgba(10, 35, 66, 0.95)', // Increased opacity for better contrast 
+      height: '4.5rem', 
+      backdropFilter: 'blur(16px)',
+      borderBottom: '1px solid rgba(255,255,255,0.05)'
     }
   };
+
+  // ✅ LOGIC: Toggle between the dark logo and the white logo
+  // Make sure you have 'tms-logo-white.svg' in your public folder!
+  const logoSrc = isScrolled ? "/tms-logo2.svg" : "/tms-logo.svg";
 
   return (
     <>
@@ -48,49 +53,35 @@ export default function Header({ locale }: { locale: string }) {
       >
         <div className="mx-auto max-w-7xl h-full px-6 flex items-center justify-between">
           
-          {/* 1. LOGO - FIXED SIZING */}
+          {/* 1. SMART LOGO */}
           <Link href="/" className="relative flex-shrink-0 z-50">
-            {/* 
-               ✅ FIX: We constrain the width heavily here. 
-               w-32 (128px) to w-40 (160px) is the sweet spot for luxury logos. 
-            */}
             <motion.div layout className="relative w-32 md:w-40"> 
+              {/* 
+                 We use key={logoSrc} to force React to re-render the image cleanly 
+                 when the source changes, preventing visual glitches.
+              */}
               <Image
-                src="/tms-logo.svg"
+                key={logoSrc} 
+                src={logoSrc}
                 alt="TMS Estates"
-                width={160} // Intrinsic width
-                height={40} // Intrinsic height
-                className="w-full h-auto object-contain" // Force aspect ratio
+                width={160}
+                height={40}
+                className="w-full h-auto object-contain transition-opacity duration-300"
                 priority
               />
             </motion.div>
           </Link>
 
-          {/* 2. NAVIGATION LINKS - UPDATED TO ANCHORS */}
+          {/* 2. NAVIGATION LINKS */}
           <div className="hidden md:flex items-center gap-8">
             <nav className="flex items-center gap-8">
-              
-              {/* Properties -> Scroll to Carousel */}
-              <Link 
-                href="/#properties" 
-                className="text-white text-[11px] font-bold uppercase tracking-[0.15em] hover:text-[#D4AF37] transition-colors"
-              >
+              <Link href="/#properties" className="text-white text-[11px] font-bold uppercase tracking-[0.15em] hover:text-[#D4AF37] transition-colors">
                 {t('properties')}
               </Link>
-              
-              {/* Insights -> Scroll to Informed Decisions */}
-              <Link 
-                href="/#insights" 
-                className="text-white text-[11px] font-bold uppercase tracking-[0.15em] hover:text-[#D4AF37] transition-colors"
-              >
+              <Link href="/#insights" className="text-white text-[11px] font-bold uppercase tracking-[0.15em] hover:text-[#D4AF37] transition-colors">
                 {t('insights')}
               </Link>
-              
-              {/* Advantage -> Scroll to Stats */}
-              <Link 
-                href="/#advantage" 
-                className="text-white text-[11px] font-bold uppercase tracking-[0.15em] hover:text-[#D4AF37] transition-colors"
-              >
+              <Link href="/#advantage" className="text-white text-[11px] font-bold uppercase tracking-[0.15em] hover:text-[#D4AF37] transition-colors">
                 {t('advantage')}
               </Link>
             </nav>
@@ -99,7 +90,7 @@ export default function Header({ locale }: { locale: string }) {
             <LanguageSwitcher currentLocale={locale} />
           </div>
 
-          {/* 3. MOBILE MENU */}
+          {/* 3. MOBILE MENU TOGGLE */}
           <div className="md:hidden flex items-center gap-4">
              <button onClick={toggleMenu} className="p-2 text-white hover:text-[#D4AF37] transition-colors">
                <Menu size={24} />
@@ -109,18 +100,18 @@ export default function Header({ locale }: { locale: string }) {
         </div>
       </motion.header>
 
-      {/* Mobile Menu Overlay */}
+      {/* MOBILE MENU OVERLAY */}
       <AnimatePresence>
         {isMenuOpen && (
           <motion.div
             initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
-            className="fixed inset-0 z-[200] bg-[#0A2342]/95 backdrop-blur-xl md:hidden"
+            className="fixed inset-0 z-[200] bg-[#0A2342]/98 backdrop-blur-xl md:hidden"
           >
             <div className="flex flex-col h-full p-8">
               <div className="flex justify-between items-center mb-12">
-                 {/* Smaller logo in mobile menu too */}
+                 {/* Always use white logo in the dark mobile menu */}
                  <div className="w-32">
-                    <Image src="/tms-logo.svg" alt="TMS" width={128} height={32} className="w-full h-auto" />
+                    <Image src="/tms-logo2.svg" alt="TMS" width={128} height={32} className="w-full h-auto" />
                  </div>
                  <button onClick={toggleMenu} className="text-white hover:text-[#D4AF37]"><X size={28} /></button>
               </div>
