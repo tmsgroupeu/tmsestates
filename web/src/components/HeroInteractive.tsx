@@ -81,11 +81,11 @@ export default function HeroInteractive() {
                        text-5xl sm:text-6xl md:text-7xl xl:text-8xl 
                        drop-shadow-[0_10px_20px_rgba(0,0,0,0.5)] leading-[1.1] pb-2"
           >
-            Living Elevated.
+            Beyond Ordinary
             <br />
             {/* Elegant Gradient for "Luxury" */}
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#FBF5E8] via-[#D4AF37] to-[#AA8C2C]">
-              Defining Luxury.
+              Estates
             </span>
           </motion.h1>
 
@@ -108,7 +108,7 @@ export default function HeroInteractive() {
               className="group relative overflow-hidden rounded-full bg-white px-8 py-4 text-sm font-bold uppercase tracking-wider text-[var(--navy)] transition-all duration-300 hover:scale-105 hover:shadow-[0_0_40px_rgba(255,255,255,0.4)] w-full sm:w-auto text-center"
             >
               <span className="relative z-10 flex items-center justify-center gap-2">
-                Explore Collection
+                BUY
                 <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
               </span>
             </Link>
@@ -117,7 +117,7 @@ export default function HeroInteractive() {
               onClick={() => document.getElementById("contact")?.scrollIntoView({ behavior: "smooth" })}
               className="group w-full sm:w-auto rounded-full border border-white/30 bg-white/5 px-8 py-4 text-sm font-bold uppercase tracking-wider text-white backdrop-blur-sm transition-all duration-300 hover:bg-white/10 hover:border-white hover:shadow-[0_0_30px_rgba(255,255,255,0.15)]"
             >
-              Private Consultation
+              RENT
             </button>
           </motion.div>
         </motion.div>
