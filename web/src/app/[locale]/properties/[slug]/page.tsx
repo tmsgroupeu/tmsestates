@@ -1,48 +1,47 @@
-// UPDATED: web/src/app/properties/[slug]/page.tsx
+/* FULL REPLACEMENT: src/app/[locale]/properties/[slug]/page.tsx */
 import { notFound } from 'next/navigation';
-import PropertyPageClient, { Property } from '@/components/PropertyPageClient'; // Import the new client component
+import PropertyPageClient, { Property } from '@/components/PropertyPageClient';
+import { fetchProperties } from '@/lib/cms';
 
-const API = process.env.STRAPI_API_URL || process.env.NEXT_PUBLIC_API_URL || "";
+export const revalidate = 0; // Ensure fresh data
 
-// This function now correctly works in a Server Component
+// 1. Generate Static Params (Optional, helps performance)
 export async function generateStaticParams() {
-  if (!API) return [];
-  try {
-    const res = await fetch(`${API}/api/properties?fields[0]=slug`, { next: { revalidate: 3600 } });
-    if (!res.ok) return [];
-    const json = await res.json();
-    return json.data?.map((item: { slug: string }) => ({ slug: item.slug })) ?? [];
-  } catch (error) {
-    console.error("Failed to generate static params:", error);
-    return [];
-  }
+  const { data: properties } = await fetchProperties({ 
+    "pagination[pageSize]": "50",
+    "fields[0]": "slug" 
+  });
+  
+  if (!properties) return [];
+  // We return params for the default locale 'en' initially
+  return properties.map((p: any) => ({ slug: p.slug, locale: 'en' }));
 }
 
-async function fetchProperty(slug: string): Promise<Property | null> {
-  if (!API) return null;
-  const params = new URLSearchParams({
+// 2. Fetch Logic
+async function getProperty(slug: string) {
+  const { data } = await fetchProperties({
     "filters[slug][$eq]": slug,
     "populate": "*",
   });
-  try {
-    const res = await fetch(`${API}/api/properties?${params.toString()}`, { next: { revalidate: 3600 } });
-    if (!res.ok) return null;
-    const json = await res.json();
-    return json?.data?.[0] ?? null;
-  } catch (error) {
-    console.error("Failed to fetch property:", error);
-    return null;
-  }
+  return data?.[0] || null;
 }
 
-// This is now a clean Server Component
-export default async function Page({ params }: { params: { slug: string } }) {
-  const property = await fetchProperty(params.slug);
+// 3. The Page Component
+// ✅ FIX: Correctly type props for Next.js 15 (params is a Promise)
+type Props = {
+  params: Promise<{ slug: string; locale: string }>;
+};
+
+export default async function PropertyPage({ params }: Props) {
+  // ✅ FIX: Await params
+  const { slug } = await params;
+
+  const property = await getProperty(slug);
 
   if (!property) {
-    notFound(); // Use Next.js's built-in 404 handler
+    console.error(`Property not found for slug: ${slug}`);
+    notFound();
   }
 
-  // Pass the server-fetched data to the client component for rendering
-  return <PropertyPageClient property={property} />;
+  return <PropertyPageClient property={property as Property} />;
 }

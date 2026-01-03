@@ -50,17 +50,13 @@ export default function MarketInsights() {
         className="!pb-12 px-4" // Padding for hover effects/shadows
       >
         {properties.map((p) => (
-          <SwiperSlide key={p.id} className="h-auto">
+          <SwiperSlide key={p.id} className="h-auto pb-10 pt-4 px-2"> 
              {/* 
-                We modify the styling logic by wrapping the card. 
-                Using a blur container so the card pops off the video.
+                ✅ FIX: Removed the 'apple-glass' wrapper div entirely.
+                Added padding to SwiperSlide so the Card's shadow isn't cut off.
+                The PropertyCard component handles its own beautiful white rounded styling.
              */}
-             <div className="apple-glass rounded-xl overflow-hidden transition-transform duration-300 hover:scale-[1.02] hover:shadow-[0_10px_40px_rgba(0,0,0,0.3)]">
-               {/* 
-                 Note: We reuse the PropertyCard, but ideally PropertyCard should detect 
-                 if it's on a dark background. Since it has a white bg, it works well as 
-                 a 'Polaroid' style on the glass. 
-               */}
+             <div className="h-full">
                <PropertyCard p={p} />
              </div>
           </SwiperSlide>

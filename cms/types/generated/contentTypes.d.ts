@@ -485,6 +485,7 @@ export interface ApiPropertyProperty extends Struct.CollectionTypeSchema {
     createdAt: Schema.Attribute.DateTime;
     createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
+    currency: Schema.Attribute.Enumeration<['EUR', 'USD', 'GBP']>;
     description: Schema.Attribute.RichText;
     images: Schema.Attribute.Media<'images', true>;
     locale: Schema.Attribute.String & Schema.Attribute.Private;
@@ -493,6 +494,15 @@ export interface ApiPropertyProperty extends Struct.CollectionTypeSchema {
       'api::property.property'
     > &
       Schema.Attribute.Private;
+    price: Schema.Attribute.Decimal & Schema.Attribute.Required;
+    prop_status: Schema.Attribute.Enumeration<
+      ['for-sale', 'for-rent', 'sold', 'rented']
+    > &
+      Schema.Attribute.Required;
+    propertyType: Schema.Attribute.Enumeration<
+      ['House', 'Apartment', 'Villa', 'Commercial/Offices', 'Plot/Land']
+    > &
+      Schema.Attribute.Required;
     publishedAt: Schema.Attribute.DateTime;
     seoDescription: Schema.Attribute.Text;
     seoTitle: Schema.Attribute.String;
