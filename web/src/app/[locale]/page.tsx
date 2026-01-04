@@ -62,12 +62,6 @@ export default function Home() {
            <TestimonialsGlass />
         </div>
 
-        {/* FOOTER AREA */}
-        <div className="relative z-20 bg-[#0A2342] pt-24 pb-12 rounded-t-[3rem] shadow-[0_-20px_60px_rgba(0,0,0,0.4)] w-full">
-           <CTAContact />
-           {/* Footer component comes from layout */}
-        </div>
-
       </div>
     </main>
   );
