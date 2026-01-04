@@ -1,0 +1,27 @@
+{
+  "Navigation": {
+    "properties": "العقارات",
+    "insights": "رؤى السوق",
+    "advantage": "المميزات",
+    "contact": "اتصل بنا"
+  },
+  "Hero": {
+    "explore": "تصفح المجموعة",
+    "consultation": "استشارة خاصة",
+    "start": "ابدأ الرحلة"
+  },
+  "UI": {
+    "view_details": "عرض التفاصيل",
+    "bedrooms": "غرف النوم",
+    "bathrooms": "الحمامات",
+    "area": "المساحة",
+    "price": "السعر عند الطلب",
+    "loading": "جار التحميل..."
+  },
+  "Filters": {
+    "status": "الحالة",
+    "city": "المدينة",
+    "apply": "تطبيق",
+    "reset": "إعادة تعيين"
+  }
+}

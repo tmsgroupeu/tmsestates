@@ -51,6 +51,39 @@
     },
     "seoDescription": {
       "type": "text"
+    },
+    "price": {
+      "type": "decimal",
+      "required": true
+    },
+    "currency": {
+      "type": "enumeration",
+      "enum": [
+        "EUR",
+        "USD",
+        "GBP"
+      ]
+    },
+    "prop_status": {
+      "type": "enumeration",
+      "required": true,
+      "enum": [
+        "for-sale",
+        "for-rent",
+        "sold",
+        "rented"
+      ]
+    },
+    "propertyType": {
+      "type": "enumeration",
+      "required": true,
+      "enum": [
+        "House",
+        "Apartment",
+        "Villa",
+        "Commercial/Offices",
+        "Plot/Land"
+      ]
     }
   }
 }

@@ -1,9 +1,8 @@
+/* FULL REPLACEMENT: src/lib/cms.ts */
 /* eslint-disable @typescript-eslint/no-explicit-any */
-// src/lib/cms.ts
 
 import type { StrapiMedia } from "./media";
 
-// Accept either CMS_URL (server), STRAPI_URL (server), or NEXT_PUBLIC_API_URL (client/server)
 const BASE_URL =
   process.env.CMS_URL ||
   process.env.STRAPI_URL ||
@@ -12,7 +11,7 @@ const BASE_URL =
 
 const STRAPI_TOKEN = process.env.STRAPI_TOKEN || "";
 
-// ----- low-level fetcher (unchanged behavior) -----
+// ----- Low-level Fetcher -----
 async function baseFetch(path: string, params: Record<string, string> = {}) {
   const url = new URL(`/api${path}`, BASE_URL);
   url.search = new URLSearchParams(params).toString();
@@ -20,15 +19,19 @@ async function baseFetch(path: string, params: Record<string, string> = {}) {
   const headers: HeadersInit = { "Content-Type": "application/json" };
   if (STRAPI_TOKEN) headers["Authorization"] = `Bearer ${STRAPI_TOKEN}`;
 
+  // Debugging log to see exactly what URL is requested
+  // console.log(`📡 API Request: ${url.toString()}`);
+
   try {
     const res = await fetch(url.toString(), {
       method: "GET",
       headers,
-      next: { revalidate: 60 },
+      next: { revalidate: 0 }, // Ensure fresh data for filtering
     });
     if (!res.ok) {
-      // keep diagnostic logging; do not throw (UI can render empty states)
-      console.error(`Strapi fetch error: ${res.status} ${res.statusText}`, await res.text());
+      console.error(`Strapi fetch error: ${res.status} ${res.statusText}`);
+      const body = await res.text();
+      console.error("Error Body:", body);
       return { data: null, meta: null };
     }
     return res.json();
@@ -38,21 +41,36 @@ async function baseFetch(path: string, params: Record<string, string> = {}) {
   }
 }
 
-// ----------------- Your types (kept) -----------------
+// ----- UPDATED PROPERTY TYPE TO MATCH STRAPI SCHEMA -----
 export type Property = {
   id: number;
   title: string;
   slug: string;
+  
+  // Location
   city?: string;
-  address?: string;
+  address?: string; 
+  
+  // Details
   description?: string;
-  price?: number;
-  currency?: string;
   bedrooms?: number;
   bathrooms?: number;
   area?: number;
-  status?: string;
+  
+  // Financial
+  price?: number;
+  currency?: 'EUR' | 'USD' | 'GBP';
+  
+  // ✅ FIX: Matched field name to 'prop_status' based on your screenshot
+  prop_status?: 'for-sale' | 'for-rent' | 'sold' | 'rented';
+  
+  propertyType?: 'villa' | 'apartment' | 'penthouse' | 'townhouse' | 'commercial' | 'plot';
+  
+  // Metadata
+  vip?: boolean;
   images?: StrapiMedia[];
+  
+  // SEO
   seoTitle?: string;
   seoDescription?: string;
 };
@@ -67,7 +85,7 @@ export type Article = {
   publishedAt?: string;
 };
 
-// ----------------- API functions (compatible with your current usage) -----------------
+// ----- API Functions -----
 export async function fetchProperties(params: Record<string, string> = {}): Promise<{ data: any[]; meta?: any }> {
   const result = await baseFetch("/properties", { populate: "*", ...params });
   return { data: result.data || [], meta: result.meta };
@@ -97,31 +115,4 @@ export async function fetchArticleBySlug(slug: string): Promise<any | null> {
     "pagination[pageSize]": "1",
   });
   return data?.[0] || null;
-}
-
-// ----------------- Convenience wrappers -----------------
-export async function getAllProperties(limit = 12) {
-  return fetchProperties({
-    "sort[0]": "publishedAt:desc",
-    "pagination[pageSize]": String(limit),
-  });
-}
-
-export async function getFeaturedProperties(limit = 8) {
-  return fetchProperties({
-    "filters[featured][$eq]": "true",
-    "sort[0]": "publishedAt:desc",
-    "pagination[pageSize]": String(limit),
-  });
-}
-
-export async function getPropertyBySlug(slug: string) {
-  return fetchPropertyBySlug(slug);
-}
-
-export async function getLatestArticles(limit = 6) {
-  return fetchArticles({
-    "sort[0]": "publishedAt:desc",
-    "pagination[pageSize]": String(limit),
-  });
 }

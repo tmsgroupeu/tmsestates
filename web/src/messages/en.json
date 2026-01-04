@@ -1,0 +1,27 @@
+{
+  "Navigation": {
+    "properties": "Properties",
+    "insights": "Insights",
+    "advantage": "Advantage",
+    "contact": "Contact"
+  },
+  "Hero": {
+    "explore": "Explore Collection",
+    "consultation": "Private Consultation",
+    "start": "Start the Journey"
+  },
+  "UI": {
+    "view_details": "View Details",
+    "bedrooms": "Bedrooms",
+    "bathrooms": "Bathrooms",
+    "area": "Area",
+    "price": "Price Upon Request",
+    "loading": "Loading..."
+  },
+  "Filters": {
+    "status": "Status",
+    "city": "City",
+    "apply": "Apply",
+    "reset": "Reset"
+  }
+}

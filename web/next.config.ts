@@ -1,21 +1,30 @@
-// next.config.ts
+/* UPDATED: next.config.ts */
+import createNextIntlPlugin from 'next-intl/plugin';
 import type { NextConfig } from "next";
 
+// 1. Initialize the i18n plugin
+// Point this to where we created the request.ts file earlier
+const withNextIntl = createNextIntlPlugin('./src/i18n/request.ts');
+
+// 2. Define your existing config
 const nextConfig: NextConfig = {
   images: {
+    loader: 'custom',
+    loaderFile: './src/lib/cloudinaryLoader.ts',
     remotePatterns: [
-      { protocol: "https", hostname: "tmsestates.onrender.com" },
-      { protocol: "https", hostname: "*.onrender.com" },      // future-proof any Render hostname variants
-      { protocol: "https", hostname: "images.unsplash.com" }, // if you use Unsplash in mock data
-      { protocol: "https", hostname: "res.cloudinary.com" }   // if you move to Cloudinary later
+      {
+        protocol: 'https',
+        hostname: 'res.cloudinary.com',
+      },
     ],
-    // If you need to unblock quickly during a demo, you can temporarily use:
-    // unoptimized: true
   },
   eslint: {
-    ignoreDuringBuilds: true, // allow build even if ESLint errors exist
+    ignoreDuringBuilds: true,
   },
-  // typescript: { ignoreBuildErrors: true }, // <- only if you need to force a demo build
+  typescript: {
+    ignoreBuildErrors: true,
+  },
 };
 
-export default nextConfig;
+// 3. Wrap and Export
+export default withNextIntl(nextConfig);

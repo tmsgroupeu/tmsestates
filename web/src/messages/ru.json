@@ -1,0 +1,27 @@
+{
+  "Navigation": {
+    "properties": "Nedvizhimost",
+    "insights": "Analitika",
+    "advantage": "Preimushchestva",
+    "contact": "Kontakty"
+  },
+  "Hero": {
+    "explore": "Smotret Kollektsiyu",
+    "consultation": "Konsultatsiya",
+    "start": "Nachat Puteshestvie"
+  },
+  "UI": {
+    "view_details": "Podrobnee",
+    "bedrooms": "Spalni",
+    "bathrooms": "Vannye",
+    "area": "Ploshchad",
+    "price": "Tsena po zaprosu",
+    "loading": "Zagruzka..."
+  },
+  "Filters": {
+    "status": "Status",
+    "city": "Gorod",
+    "apply": "Primenit",
+    "reset": "Sbros"
+  }
+}
