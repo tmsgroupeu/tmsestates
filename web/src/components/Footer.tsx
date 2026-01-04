@@ -19,7 +19,7 @@ export default function Footer() {
 
             <div className="flex flex-col md:flex-row justify-between items-center gap-8 border-b border-white/10 pb-8">
                 <Link href="/" className="shrink-0">
-                    <Image src="/tms-logo2.svg" alt="TMS Estates Logo" width={180} height={45} />
+                    <Image src="/tms-logo-white.svg" alt="TMS Estates Logo" width={180} height={45} />
                 </Link>
 
                 <div className="flex justify-center items-center gap-6">
