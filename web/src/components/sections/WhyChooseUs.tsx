@@ -1,7 +1,9 @@
+/* FULL REPLACEMENT: src/components/sections/WhyChooseUs.tsx */
 "use client";
 
-import { ShieldCheck, Handshake, Sparkles, MapPinned } from "lucide-react";
+import { ShieldCheck, Handshake, Sparkles, MapPinned, ArrowRight } from "lucide-react";
 import { motion } from "framer-motion";
+import { Link } from "@/i18n/routing"; // Use i18n Link
 
 const points = [
   {
@@ -29,7 +31,9 @@ const points = [
 export default function WhyChooseUs() {
   return (
     <section className="relative z-10 mx-auto max-w-7xl px-6">
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+      
+      {/* 1. The Grid of Glass Cards */}
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
         {points.map((p, i) => (
           <motion.div
             key={p.title}
@@ -47,6 +51,33 @@ export default function WhyChooseUs() {
           </motion.div>
         ))}
       </div>
+
+      {/* 2. The CTA Footer (Teaser for About Page) */}
+      <motion.div 
+        initial={{ opacity: 0, y: 10 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true }}
+        transition={{ delay: 0.4 }}
+        className="flex flex-col md:flex-row items-center justify-between gap-6 apple-glass rounded-2xl p-8"
+      >
+         <div className="text-center md:text-left">
+            <h3 className="text-lg font-montserrat font-bold text-white">Who We Are</h3>
+            <p className="text-sm text-white/70 mt-1 max-w-xl">
+               TMS Estates Ltd delivers high-level expertise supported by in-depth market knowledge. 
+               We build long-term partnerships founded on integrity and results.
+            </p>
+         </div>
+
+         {/* THE BUTTON */}
+         <Link 
+            href="/about"
+            className="group whitespace-nowrap inline-flex items-center gap-3 bg-white text-[#0A2342] px-8 py-3.5 rounded-full font-bold uppercase text-xs tracking-widest hover:bg-[#D4AF37] hover:text-white transition-all shadow-lg hover:shadow-2xl"
+         >
+            More About Us
+            <ArrowRight size={16} className="transition-transform group-hover:translate-x-1" />
+         </Link>
+      </motion.div>
+
     </section>
   );
 }
