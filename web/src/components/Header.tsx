@@ -39,7 +39,7 @@ export default function Header({ locale }: { locale: string }) {
   };
 
   // Always use white logo for consistent contrast against video/navy
-  const logoSrc = "/tms-logo-white.svg";
+  const logoSrc = "/tms-logo2";
 
   return (
     <>
@@ -129,7 +129,7 @@ export default function Header({ locale }: { locale: string }) {
                 {/* Header */}
                 <div className="flex justify-between items-center mb-16">
                    <div className="w-32">
-                      <Image src="/tms-logo-white.svg" alt="TMS" width={128} height={32} className="w-full h-auto" />
+                      <Image src="/tms-logo2.svg" alt="TMS" width={128} height={32} className="w-full h-auto" />
                    </div>
                    <button onClick={toggleMenu} className="text-white hover:text-[#D4AF37]"><X size={32} /></button>
                 </div>
