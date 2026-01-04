@@ -1,7 +1,7 @@
 /* FULL REPLACEMENT: src/components/PropertyCard.tsx */
 import Image from "next/image";
 import Link from "next/link";
-import { BedDouble, Bath, Ruler, MapPin, Crown } from "lucide-react";
+import { BedDouble, Ruler, Crown, Sparkles } from "lucide-react"; // Using Sparkles icon as metaphor for shine, or CSS for effect
 import type { Property } from "@/lib/cms";
 import { getStrapiMediaUrl } from "@/lib/media";
 
@@ -21,8 +21,16 @@ export default function PropertyCard({ p, showVipBadge = false }: { p: Property;
   return (
     <Link
       href={`/properties/${p.slug}`}
-      className="group block h-full w-full overflow-hidden rounded-2xl bg-white shadow-lg transition-all duration-500 hover:-translate-y-2 hover:shadow-2xl flex flex-col"
+      className="group relative block h-full w-full overflow-hidden rounded-2xl bg-white shadow-lg transition-all duration-500 hover:-translate-y-2 hover:shadow-2xl flex flex-col"
     >
+      {/* 
+         ✨ SHINE EFFECT: 
+         An invisible gradient that slides across the card on hover.
+      */}
+      <div className="absolute inset-0 z-20 pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity duration-700">
+         <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -skew-x-12 translate-x-[-150%] group-hover:animate-shine" />
+      </div>
+
       {/* Image Section */}
       <div className="relative aspect-[4/3] bg-gray-200 overflow-hidden shrink-0">
         <Image
@@ -33,24 +41,26 @@ export default function PropertyCard({ p, showVipBadge = false }: { p: Property;
           className="object-cover transition-transform duration-700 ease-out group-hover:scale-110"
         />
         
-        {/* VIP Badge */}
+        {/* VIP Badge (Top Left) - Used for Exclusive section */}
         {showVipBadge && p.vip && (
-          <div className="absolute left-3 top-3 inline-flex items-center gap-1 rounded-full bg-[#D4AF37] px-3 py-1 text-[9px] font-bold uppercase tracking-widest text-white shadow-sm z-10">
+          <div className="absolute left-3 top-3 inline-flex items-center gap-1 rounded-full bg-[#D4AF37] px-3 py-1.5 text-[9px] font-bold uppercase tracking-widest text-white shadow-sm z-10">
             <Crown className="h-3 w-3" /> VIP
           </div>
         )}
 
-        {/* Status Badge - Using 'prop_status' */}
-        {/* Only show status if it's NOT 'for-sale' or 'for-rent' (e.g. show Sold/Rented) */}
-        {p.prop_status && p.prop_status !== 'for-sale' && p.prop_status !== 'for-rent' && (
-           <div className="absolute bottom-3 right-3 rounded bg-black/80 px-2 py-1 text-[10px] font-bold uppercase tracking-wider text-white backdrop-blur-md">
-             {p.prop_status.toUpperCase()}
+        {/* STATUS BADGE (For Sale / Rent) - Top Right */}
+        {/* We moved this to top-right to balance the card better than bottom-right */}
+        {p.prop_status && (
+           <div className={`absolute top-3 right-3 rounded-md px-2.5 py-1 text-[10px] font-bold uppercase tracking-widest text-white backdrop-blur-md shadow-sm z-10
+              ${p.prop_status === 'sold' || p.prop_status === 'rented' ? 'bg-red-500/90' : 'bg-[#0A2342]/90'}
+           `}>
+             {p.prop_status.replace('-', ' ')}
            </div>
         )}
       </div>
 
       {/* Details Section */}
-      <div className="flex flex-col p-5 h-full">
+      <div className="flex flex-col p-5 h-full relative z-10 bg-white">
         
         {/* Type & City */}
         <div className="flex items-center gap-2 mb-2 text-[10px] font-bold uppercase tracking-widest text-[#D4AF37]">
@@ -64,33 +74,32 @@ export default function PropertyCard({ p, showVipBadge = false }: { p: Property;
           {p.title}
         </h3>
 
-        {/* Price */}
-        <p className="text-sm font-medium text-gray-500 mb-4">
+        {/* Price - Larger and bolder */}
+        <p className="text-lg font-bold text-gray-900 mb-4 font-montserrat">
            {formatPrice(p.price, p.currency)}
         </p>
 
         {/* Divider */}
         <div className="border-t border-gray-100 my-auto" />
 
-        {/* Stats Row */}
+        {/* Stats Row (Baths Removed) */}
         <div className="flex items-center justify-between pt-4 mt-auto text-xs text-gray-500 font-medium">
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-6">
+            {/* Bedrooms */}
             {p.bedrooms && (
-              <div className="flex items-center gap-1.5" title="Bedrooms">
-                <BedDouble className="h-4 w-4 text-[#D4AF37]/80" /> 
-                <span>{p.bedrooms}</span>
+              <div className="flex items-center gap-2" title="Bedrooms">
+                <BedDouble className="h-4 w-4 text-[#D4AF37]" /> 
+                <span className="font-bold text-[#0A2342]">{p.bedrooms}</span>
+                <span>Bed</span>
               </div>
             )}
-            {p.bathrooms && (
-              <div className="flex items-center gap-1.5" title="Bathrooms">
-                <Bath className="h-4 w-4 text-[#D4AF37]/80" /> 
-                <span>{p.bathrooms}</span>
-              </div>
-            )}
+            
+            {/* Area */}
             {p.area && (
-              <div className="flex items-center gap-1.5" title="Covered Area">
-                <Ruler className="h-4 w-4 text-[#D4AF37]/80" /> 
-                <span>{p.area} m²</span>
+              <div className="flex items-center gap-2" title="Covered Area">
+                <Ruler className="h-4 w-4 text-[#D4AF37]" /> 
+                <span className="font-bold text-[#0A2342]">{p.area}</span>
+                <span>m²</span>
               </div>
             )}
           </div>

@@ -63,3 +63,11 @@ body {
 .swiper-button-next::after, .swiper-button-prev::after {
   font-size: 16px !important; font-weight: bold; color: var(--navy);
 }
+
+@keyframes shine {
+  0% { transform: translateX(-150%) skewX(-12deg); }
+  100% { transform: translateX(150%) skewX(-12deg); }
+}
+.animate-shine {
+  animation: shine 1.5s ease-in-out infinite;
+}

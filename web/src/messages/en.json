@@ -2,8 +2,9 @@
   "Navigation": {
     "properties": "Properties",
     "insights": "Insights",
-    "advantage": "Advantage",
-    "contact": "Contact"
+    "invest": "Invest",
+    "about": "Who We Are",
+    "portfolio": "Our Portfolio"
   },
   "Hero": {
     "explore": "Explore Collection",

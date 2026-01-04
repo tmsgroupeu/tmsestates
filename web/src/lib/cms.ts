@@ -7,7 +7,7 @@ const BASE_URL =
   process.env.CMS_URL ||
   process.env.STRAPI_URL ||
   process.env.NEXT_PUBLIC_API_URL ||
-  "http://127.0.0.1:1337";
+  "https://tmsestates.onrender.com";
 
 const STRAPI_TOKEN = process.env.STRAPI_TOKEN || "";
 
