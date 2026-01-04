@@ -1,7 +1,7 @@
-/* UPDATED: src/components/Footer.tsx */
+/* FULL REPLACEMENT: src/components/Footer.tsx */
 import Image from "next/image";
 import { Mail, MessageCircle, Send } from 'lucide-react';
-import { Link } from "@/i18n/routing"; // ✅ Use the localized Link
+import { Link } from "@/i18n/routing"; 
 
 const contactBubbles = [
     { icon: MessageCircle, label: 'WhatsApp', href: 'https://wa.me/YOUR_NUMBER' },
@@ -16,8 +16,17 @@ export default function Footer() {
             
             {/* Top Row: Logo & Socials */}
             <div className="flex flex-col md:flex-row justify-between items-center gap-8 border-b border-white/10 pb-8">
+                
                 <Link href="/" className="shrink-0">
-                    <Image src="/tms-logo-white.svg" alt="TMS Estates Logo" width={180} height={45} className="w-auto h-auto" />
+                    {/* ✅ FIX: Replaced "w-auto" with specific width constraints */}
+                    {/* w-40 (160px) on mobile, w-48 (192px) on desktop */}
+                    <Image 
+                        src="/tms-logo-white.svg" 
+                        alt="TMS Estates Logo" 
+                        width={180} 
+                        height={45} 
+                        className="w-40 md:w-48 h-auto object-contain" 
+                    />
                 </Link>
 
                 <div className="flex justify-center items-center gap-6">
