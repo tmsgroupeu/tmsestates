@@ -12,20 +12,17 @@ export default function AboutPage() {
     offset: ["start start", "end end"],
   });
 
-  // --- CONFIG ---
   const CLOUD_NAME = "dkbpthpxg";
-  
-  // Using the specific IDs you provided
   const INTRO_ID = "The_view_of_1080p_202601091840_-_Trim_e74n78";
   const LOOP_ID = "Reshoot_stationary_1080p_202601101124_llct00";
   
-  // Construct URLs
-  const INTRO_URL = `https://res.cloudinary.com/${CLOUD_NAME}/video/upload/f_auto,q_auto/${INTRO_ID}.mp4`;
-  const LOOP_URL = `https://res.cloudinary.com/${CLOUD_NAME}/video/upload/f_auto,q_auto/${LOOP_ID}.mp4`;
+  // ✅ FIX: 'q_90' forces high quality instead of aggressive compression
+  const INTRO_URL = `https://res.cloudinary.com/${CLOUD_NAME}/video/upload/f_auto,q_90/${INTRO_ID}.mp4`;
+  const LOOP_URL = `https://res.cloudinary.com/${CLOUD_NAME}/video/upload/f_auto,q_90/${LOOP_ID}.mp4`;
 
   const [introFinished, setIntroFinished] = useState(false);
 
-  // Background Styles
+  // Parallax / Blur Logic
   const bgBlur = useTransform(scrollYProgress, [0, 0.2], ["0px", "8px"]);
   const bgOverlay = useTransform(scrollYProgress, [0, 0.3], ["rgba(10, 35, 66, 0.2)", "rgba(10, 35, 66, 0.6)"]);
   const fadeInUp = { hidden: { opacity: 0, y: 40 }, visible: { opacity: 1, y: 0, transition: { duration: 0.8, ease: "easeOut" } } };
@@ -36,7 +33,7 @@ export default function AboutPage() {
       {/* --- VIDEO LAYER --- */}
       <motion.div className="fixed inset-0 w-full h-full z-0 overflow-hidden">
         
-        {/* Tint Overlay */}
+        {/* Overlay */}
         <motion.div 
             style={{ backdropFilter: `blur(${bgBlur})`, backgroundColor: bgOverlay }}
             className="absolute inset-0 z-10 pointer-events-none"
@@ -44,8 +41,6 @@ export default function AboutPage() {
 
         {/* 
             LAYER 1: The Loop (Bottom) 
-            scale-110 hides the watermark.
-            This plays continuously in the background.
         */}
         <video
           autoPlay loop muted playsInline
@@ -55,10 +50,11 @@ export default function AboutPage() {
 
         {/* 
             LAYER 2: The Intro (Top)
-            scale-110 hides the watermark.
-            Fades out once ended.
+            ✅ FIX: Duration 1.5s for a smoother cross-dissolve
         */}
-        <div className={`absolute inset-0 w-full h-full z-1 transition-opacity duration-1000 ${introFinished ? 'opacity-0' : 'opacity-100'}`}>
+        <div 
+          className={`absolute inset-0 w-full h-full z-1 transition-opacity duration-[1500ms] ease-in-out ${introFinished ? 'opacity-0' : 'opacity-100'}`}
+        >
              <video
                autoPlay muted playsInline
                className="w-full h-full object-cover scale-110 origin-center"
@@ -69,32 +65,32 @@ export default function AboutPage() {
 
       </motion.div>
 
-      {/* --- CONTENT LAYER --- */}
+      {/* --- CONTENT --- */}
       <div className="relative z-20 w-full flex flex-col items-center">
-        
+
+        {/* Hero Text */}
         <div className="h-screen w-full flex flex-col items-center justify-center px-6 text-center">
             <motion.div 
                initial="hidden" animate="visible" variants={fadeInUp}
                className="max-w-4xl"
             >
                <span className="inline-block py-1.5 px-4 border border-white/20 rounded-full text-white/80 text-[10px] font-bold uppercase tracking-[0.3em] mb-8 backdrop-blur-md">
-                 Behind the Scenes
+                 Our Vision
                </span>
                <h1 className="text-5xl md:text-7xl font-montserrat font-bold text-white mb-6 leading-tight drop-shadow-2xl">
-                 Transparent.<br/>
+                 Transparency.<br/>
                  <span className="text-[#D4AF37]">By Design.</span>
                </h1>
             </motion.div>
         </div>
 
-        {/* --- WHO WE ARE --- */}
+        {/* Info Card */}
         <div className="w-full max-w-5xl px-6 mb-32">
            <motion.div 
               initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-100px" }}
               variants={fadeInUp}
               className="relative overflow-hidden rounded-3xl border border-white/10 bg-white/5 backdrop-blur-xl p-10 md:p-16 shadow-2xl group"
            >
-              {/* Shine Effect */}
               <div className="absolute inset-0 z-0 pointer-events-none">
                  <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent -skew-x-12 translate-x-[-150%] group-hover:animate-shine" />
               </div>
@@ -115,21 +111,18 @@ export default function AboutPage() {
                       </p>
                       <p>
                         As part of the <strong>TMS Group</strong>, an international organisation with worldwide activities, we benefit from a 
-                        strong global network while maintaining a focused, disciplined local presence. Our boutique operating model allows us 
-                        to remain selective, ensuring consistent quality and alignment with our corporate standards.
+                        strong global network while maintaining a focused, disciplined local presence.
                       </p>
                   </div>
               </div>
            </motion.div>
         </div>
 
-        {/* --- MISSION & VALUES --- */}
+        {/* Mission & Values */}
         <div className="w-full max-w-6xl px-6 pb-40 grid grid-cols-1 md:grid-cols-2 gap-8">
-           
-           {/* Mission */}
            <motion.div 
              initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeInUp}
-             className="rounded-3xl border border-white/10 bg-[#0A2342]/80 backdrop-blur-md p-10 md:p-12 shadow-xl hover:border-[#D4AF37]/50 transition-colors duration-500"
+             className="rounded-3xl border border-white/10 bg-[#0A2342]/80 backdrop-blur-md p-10 shadow-xl"
            >
               <div className="w-12 h-12 bg-white/10 rounded-full flex items-center justify-center text-white mb-6">
                  <Target size={24} />
@@ -137,15 +130,13 @@ export default function AboutPage() {
               <h3 className="text-2xl font-montserrat font-bold text-white mb-4">Our Mission</h3>
               <p className="text-white/70 leading-relaxed">
                  To establish a distinctive real estate identity founded on excellence in service, 
-                 innovation, and ethical business practices. We deliver long-term value, 
-                 transparency, and trust to our clients.
+                 innovation, and ethical business practices.
               </p>
            </motion.div>
 
-           {/* Values */}
            <motion.div 
              initial="hidden" whileInView="visible" viewport={{ once: true, delay: 0.2 }} variants={fadeInUp}
-             className="rounded-3xl border border-white/10 bg-white/10 backdrop-blur-md p-10 md:p-12 shadow-xl hover:border-[#D4AF37]/50 transition-colors duration-500"
+             className="rounded-3xl border border-white/10 bg-white/10 backdrop-blur-md p-10 shadow-xl"
            >
               <div className="w-12 h-12 bg-[#D4AF37] rounded-full flex items-center justify-center text-[#0A2342] mb-6">
                  <Gem size={24} />
@@ -153,12 +144,8 @@ export default function AboutPage() {
               <h3 className="text-2xl font-montserrat font-bold text-white mb-4">Our Values</h3>
               <p className="text-white/80 leading-relaxed mb-6">
                  Centered on professional excellence, integrity, and a client-focused approach. 
-                 We operate with transparency, accountability, and strong ethical standards.
+                 We operate with transparency and strong ethical standards.
               </p>
-              <div className="flex gap-4">
-                 <span className="text-xs uppercase tracking-widest text-[#D4AF37] border border-[#D4AF37]/30 px-3 py-1 rounded-full">Integrity</span>
-                 <span className="text-xs uppercase tracking-widest text-[#D4AF37] border border-[#D4AF37]/30 px-3 py-1 rounded-full">Trust</span>
-              </div>
            </motion.div>
         </div>
 
