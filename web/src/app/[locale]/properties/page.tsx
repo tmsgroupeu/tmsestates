@@ -1,11 +1,12 @@
 /* FULL REPLACEMENT: src/app/[locale]/properties/page.tsx */
 import Link from "next/link";
+import Image from "next/image";
 import PropertyCard from "@/components/PropertyCard";
 import Filters from "@/components/Filters";
 import { fetchProperties, Property } from "@/lib/cms";
 import type { SearchParams } from "@/lib/types";
 
-export const revalidate = 0; // Ensure filtering is dynamic
+export const revalidate = 0;
 
 type Props = {
   searchParams: Promise<SearchParams>;
@@ -13,23 +14,20 @@ type Props = {
 
 export default async function PropertiesPage({ searchParams }: Props) {
   const params = await searchParams;
-  
-  // 1. Determine active status from URL (defaults to '' which implies ALL)
-  // If user clicks a tab, status will be 'for-sale' or 'for-rent'
-  const activeStatus = params.status || '';
+  const activeStatus = params.status || 'all'; // Default to 'all' internally for UI
 
-  // 2. Build API Filters
+  // 2. Build Filter Params
   const apiFilters: Record<string, string> = {
     "pagination[pageSize]": "100",
     "sort[0]": "updatedAt:desc",
   };
 
-  // ✅ FIX: Map URL param 'status' -> DB field 'prop_status'
-  if (activeStatus) {
+  // Only filter by status if it's NOT 'all'
+  if (activeStatus !== 'all') {
       apiFilters["filters[prop_status][$eq]"] = activeStatus;
   }
 
-  // Map other filters
+  // Other filters
   if (params.type) apiFilters["filters[propertyType][$eq]"] = params.type;
   if (params.city) apiFilters["filters[city][$eq]"] = params.city;
   if (params.beds) apiFilters["filters[bedrooms][$gte]"] = params.beds;
@@ -37,81 +35,82 @@ export default async function PropertiesPage({ searchParams }: Props) {
   if (params.max) apiFilters["filters[price][$lte]"] = params.max;
   if (params.ref) apiFilters["filters[id][$eq]"] = params.ref;
 
-  // 3. Fetch Data
   const { data: properties } = await fetchProperties(apiFilters);
-  
-  // Fetch cities for dropdown (helper call)
   const { data: allData } = await fetchProperties({ "pagination[pageSize]": "200", "fields[0]": "city" });
   const cities = [...new Set(allData.map((p: any) => p.city).filter(Boolean))];
 
   return (
     <main className="min-h-screen bg-[#F9F9F9]">
       
-      {/* Header */}
-      <div className="bg-[#0A2342] pt-40 pb-20 px-6 text-center text-white">
-         <h1 className="text-4xl md:text-5xl font-montserrat font-bold mb-4">
-            Our Portfolio
-         </h1>
-         <p className="text-white/70 max-w-2xl mx-auto">
-            Discover the finest residential and investment opportunities in Cyprus.
-         </p>
+      {/* HEADER WITH POSTER BACKGROUND */}
+      <div className="relative pt-48 pb-24 px-6 text-center text-white overflow-hidden">
+         {/* Background Image */}
+         <div className="absolute inset-0 z-0">
+             <Image 
+               src="/assets/hero-poster.jpg" 
+               alt="Background" 
+               fill 
+               className="object-cover"
+               priority
+             />
+             <div className="absolute inset-0 bg-[#0A2342]/80 backdrop-blur-[2px]" />
+         </div>
+
+         <div className="relative z-10 max-w-3xl mx-auto">
+             <h1 className="text-4xl md:text-6xl font-montserrat font-bold mb-4 drop-shadow-lg">
+                Our Portfolio
+             </h1>
+             <p className="text-white/80 text-lg">
+                Discover the finest residential and investment opportunities in Cyprus.
+             </p>
+         </div>
       </div>
 
-      <div className="max-w-7xl mx-auto px-6 -mt-10 pb-24 relative z-10">
+      <div className="max-w-7xl mx-auto px-4 -mt-8 relative z-20 pb-24">
          
-         {/* Tabs */}
-         <div className="flex justify-center mb-8">
-            <div className="inline-flex bg-white rounded-full p-1 shadow-lg border border-gray-100">
-               {/* 
-                  Note: The href keeps '?status=...' in the URL for clarity,
-                  but the logic above maps it to 'prop_status' for Strapi.
-               */}
-               <Link 
-                 href="/properties?status=for-sale" 
-                 scroll={false}
-                 className={`px-8 py-3 rounded-full text-sm font-bold uppercase tracking-widest transition-all
-                    ${activeStatus === 'for-sale' || !activeStatus 
-                      ? 'bg-[#D4AF37] text-white shadow-md' 
-                      : 'text-gray-500 hover:text-[#0A2342]'}
-                 `}
-               >
-                 For Sale
-               </Link>
-               <Link 
-                 href="/properties?status=for-rent" 
-                 scroll={false}
-                 className={`px-8 py-3 rounded-full text-sm font-bold uppercase tracking-widest transition-all
-                    ${activeStatus === 'for-rent' 
-                      ? 'bg-[#D4AF37] text-white shadow-md' 
-                      : 'text-gray-500 hover:text-[#0A2342]'}
-                 `}
-               >
-                 For Rent
-               </Link>
-            </div>
+         {/* --- CONTROLS STRIPE (Tabs + Filters Integrated) --- */}
+         <div className="flex flex-col gap-4">
+             
+             {/* TABS ROW */}
+             <div className="flex justify-center">
+                <div className="inline-flex bg-white rounded-full p-1.5 shadow-xl border border-gray-100">
+                   {['all', 'for-sale', 'for-rent'].map((tab) => (
+                      <Link 
+                        key={tab}
+                        href={tab === 'all' ? '/properties' : `/properties?status=${tab}`} 
+                        scroll={false}
+                        className={`px-6 py-2.5 rounded-full text-xs font-bold uppercase tracking-widest transition-all
+                           ${activeStatus === tab 
+                             ? 'bg-[#0A2342] text-white shadow-md' 
+                             : 'text-gray-500 hover:text-[#0A2342] hover:bg-gray-50'}
+                        `}
+                      >
+                        {tab === 'all' ? 'All Listings' : tab.replace('-', ' ')}
+                      </Link>
+                   ))}
+                </div>
+             </div>
+
+             {/* FILTERS STRIPE */}
+             <Filters cities={cities} />
          </div>
 
-         {/* Filters Bar */}
-         <div className="mb-12">
-            <Filters cities={cities} />
+         {/* --- RESULTS --- */}
+         <div className="mt-12">
+            {properties && properties.length > 0 ? (
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                {properties.map((p: Property) => (
+                    <PropertyCard key={p.id} p={p} />
+                ))}
+                </div>
+            ) : (
+                <div className="text-center py-32 bg-white rounded-3xl border border-dashed border-gray-200">
+                    <div className="text-4xl mb-4 opacity-50">🔍</div>
+                    <h3 className="text-lg font-bold text-[#0A2342]">No properties found</h3>
+                    <p className="text-gray-400 text-sm mt-1">Adjust your filters to see more results.</p>
+                </div>
+            )}
          </div>
-
-         {/* Results Grid */}
-         {properties && properties.length > 0 ? (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-               {properties.map((p: Property) => (
-                  <PropertyCard key={p.id} p={p} />
-               ))}
-            </div>
-         ) : (
-            <div className="text-center py-20 bg-white rounded-3xl border border-dashed border-gray-200">
-               <div className="text-4xl mb-4">🔍</div>
-               <h3 className="text-xl font-bold text-[#0A2342]">No properties found</h3>
-               <p className="text-gray-500 mt-2">
-                  Try adjusting your filters or switching tabs.
-               </p>
-            </div>
-         )}
 
       </div>
     </main>
