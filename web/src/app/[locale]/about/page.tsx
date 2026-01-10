@@ -75,11 +75,11 @@ export default function AboutPage() {
                className="max-w-4xl"
             >
                <span className="inline-block py-1.5 px-4 border border-white/20 rounded-full text-white/80 text-[10px] font-bold uppercase tracking-[0.3em] mb-8 backdrop-blur-md">
-                 Our Vision
+                 About Us
                </span>
                <h1 className="text-5xl md:text-7xl font-montserrat font-bold text-white mb-6 leading-tight drop-shadow-2xl">
-                 Transparency.<br/>
-                 <span className="text-[#D4AF37]">By Design.</span>
+                 Who<br/>
+                 <span className="text-[#D4AF37]">We Are</span>
                </h1>
             </motion.div>
         </div>
