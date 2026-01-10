@@ -1,83 +1,98 @@
 /* FULL REPLACEMENT: src/components/sections/WhyChooseUs.tsx */
 "use client";
 
-import { ShieldCheck, Handshake, Sparkles, MapPinned, ArrowRight } from "lucide-react";
+import { ShieldCheck, Handshake, Sparkles, MapPinned, ArrowRight, UserCheck } from "lucide-react";
 import { motion } from "framer-motion";
-import { Link } from "@/i18n/routing"; // Use i18n Link
+import { Link } from "@/i18n/routing";
 
 const points = [
   {
     icon: ShieldCheck,
     title: "Trusted Advisory",
-    desc: "Diligent guidance from viewing to final signatures.",
+    desc: "Rigorous due diligence and transparent guidance from viewing to final signatures.",
   },
   {
     icon: Handshake,
-    title: "Exclusive Network",
-    desc: "Access to private & off-market listings.",
+    title: "Exclusive Access",
+    desc: "A private network offering off-market listings unavailable to the general public.",
   },
   {
     icon: Sparkles,
-    title: "Curated Quality",
-    desc: "Design-forward homes with enduring value.",
+    title: "Curated Portfolio",
+    desc: "We select only design-forward, high-yield properties with enduring value.",
   },
   {
     icon: MapPinned,
-    title: "Island-Wide",
-    desc: "Local expertise in Limassol, Larnaca & Paphos.",
+    title: "Prime Locations",
+    desc: "Deep expertise in Limassol’s most prestigious postcodes and seafronts.",
+  },
+  {
+    icon: UserCheck,
+    title: "Client-Centric",
+    desc: "Boutique service model ensuring dedicated attention to your specific goals.",
   },
 ];
 
 export default function WhyChooseUs() {
   return (
-    <section className="relative z-10 mx-auto max-w-7xl px-6">
+    <section className="relative z-10 w-full max-w-[1400px] mx-auto">
       
-      {/* 1. The Grid of Glass Cards */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
-        {points.map((p, i) => (
-          <motion.div
-            key={p.title}
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ delay: i * 0.1 }}
-            className="group relative overflow-hidden rounded-2xl apple-glass p-6 text-center transition-transform duration-300 hover:-translate-y-1 hover:bg-white/5"
-          >
-            <div className="mb-3 inline-flex items-center justify-center rounded-full bg-white/10 p-3 text-[color:var(--gold)]">
-              <p.icon className="size-6" />
-            </div>
-            <h3 className="text-sm font-bold text-white font-montserrat">{p.title}</h3>
-            <p className="mt-2 text-xs text-white/70 leading-relaxed">{p.desc}</p>
-          </motion.div>
+      {/* Grid Layout: 3 Top, 2 Bottom (Centered) */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+        
+        {/* Render first 3 items */}
+        {points.slice(0, 3).map((p, i) => (
+           <Card key={i} p={p} i={i} />
         ))}
       </div>
 
-      {/* 2. The CTA Footer (Teaser for About Page) */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-4xl mx-auto mb-12">
+        {/* Render remaining 2 items */}
+        {points.slice(3).map((p, i) => (
+           <Card key={i} p={p} i={i + 3} />
+        ))}
+      </div>
+
+      {/* The "About Us" Footer Bar */}
       <motion.div 
-        initial={{ opacity: 0, y: 10 }}
+        initial={{ opacity: 0, y: 20 }}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true }}
-        transition={{ delay: 0.4 }}
-        className="flex flex-col md:flex-row items-center justify-between gap-6 apple-glass rounded-2xl p-8"
+        className="apple-glass rounded-2xl p-8 flex flex-col md:flex-row items-center justify-between gap-8"
       >
          <div className="text-center md:text-left">
-            <h3 className="text-lg font-montserrat font-bold text-white">Who We Are</h3>
-            <p className="text-sm text-white/70 mt-1 max-w-xl">
-               TMS Estates Ltd delivers high-level expertise supported by in-depth market knowledge. 
-               We build long-term partnerships founded on integrity and results.
+            <h3 className="text-xl font-montserrat font-bold text-white">The TMS Standard</h3>
+            <p className="text-white/60 text-sm mt-1 max-w-xl font-light">
+               We build long-term partnerships founded on integrity, financial insight, and exceptional results.
             </p>
          </div>
-
-         {/* THE BUTTON */}
          <Link 
             href="/about"
-            className="group whitespace-nowrap inline-flex items-center gap-3 bg-white text-[#0A2342] px-8 py-3.5 rounded-full font-bold uppercase text-xs tracking-widest hover:bg-[#D4AF37] hover:text-white transition-all shadow-lg hover:shadow-2xl"
+            className="group whitespace-nowrap inline-flex items-center gap-3 bg-[#D4AF37] text-[#0A2342] px-8 py-4 rounded-full font-bold uppercase text-[11px] tracking-[0.15em] hover:bg-white transition-all shadow-[0_0_20px_rgba(212,175,55,0.3)] hover:shadow-white/20"
          >
-            More About Us
-            <ArrowRight size={16} className="transition-transform group-hover:translate-x-1" />
+            Who We Are
+            <ArrowRight size={14} className="transition-transform group-hover:translate-x-1" />
          </Link>
       </motion.div>
 
     </section>
   );
+}
+
+function Card({ p, i }: { p: any, i: number }) {
+    return (
+        <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ delay: i * 0.1 }}
+            className="group relative overflow-hidden rounded-3xl border border-white/5 bg-gradient-to-br from-white/10 to-white/5 backdrop-blur-md p-8 hover:bg-white/10 transition-colors duration-500"
+        >
+            <div className="mb-6 inline-flex items-center justify-center rounded-2xl bg-[#0A2342]/40 p-4 text-[#D4AF37] shadow-inner ring-1 ring-white/10 group-hover:scale-110 transition-transform duration-500">
+              <p.icon className="size-6" strokeWidth={1.5} />
+            </div>
+            <h3 className="text-lg font-bold text-white font-montserrat mb-3">{p.title}</h3>
+            <p className="text-sm text-white/60 leading-relaxed font-light">{p.desc}</p>
+        </motion.div>
+    );
 }
