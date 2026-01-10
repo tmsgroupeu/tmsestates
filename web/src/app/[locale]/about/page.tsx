@@ -14,7 +14,7 @@ export default function AboutPage() {
 
   const CLOUD_NAME = "dkbpthpxg";
   const INTRO_ID = "The_view_of_1080p_202601091840_-_Trim_e74n78";
-  const LOOP_ID = "Reshoot_stationary_1080p_202601101124_llct00";
+  const LOOP_ID = "Reshoot_stationary_202601101139_egs3f_sfxo0c";
   
   // ✅ FIX: 'q_90' forces high quality instead of aggressive compression
   const INTRO_URL = `https://res.cloudinary.com/${CLOUD_NAME}/video/upload/f_auto,q_90/${INTRO_ID}.mp4`;
