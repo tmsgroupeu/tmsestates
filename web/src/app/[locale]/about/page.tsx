@@ -13,7 +13,7 @@ export default function AboutPage() {
   });
 
   const CLOUD_NAME = "dkbpthpxg";
-  const INTRO_ID = "The_view_of_1080p_202601091840_-_Trim_e74n78";
+  const INTRO_ID = "The_view_of_202601101217_dr2mr_-_Trim_cbwcvm";
   const LOOP_ID = "Reshoot_stationary_202601101139_egs3f_sfxo0c";
   
   // ✅ FIX: 'q_90' forces high quality instead of aggressive compression
