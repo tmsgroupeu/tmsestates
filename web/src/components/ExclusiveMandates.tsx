@@ -1,5 +1,4 @@
 /* FULL REPLACEMENT: src/components/ExclusiveMandates.tsx */
-import Link from "next/link";
 import { Crown } from "lucide-react";
 import { headers } from "next/headers";
 import PropertyCard from "@/components/PropertyCard";
@@ -33,19 +32,13 @@ export default async function ExclusiveMandates() {
       </div>
 
       {/* 
-         ✅ FIX: The Grid Layout
-         - 'gap-8' creates breathing room.
-         - 'md:grid-cols-2 lg:grid-cols-3' handles responsiveness perfectly.
-         - Crucially: We don't apply extra heights or flex-grow here. 
-           The card handles its own height naturally.
+         ✅ FIX: Added 'items-start'. 
+         This prevents the grid rows from stretching all cards to the height of the tallest one.
+         Combined with the card fix above, this eliminates the white gap.
       */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 items-start">
         {items.map((item) => (
            <div key={item.id} className="w-full">
-               {/* 
-                  Passing 'showVipBadge' ensures the Gold Crown appears.
-                  The card itself is responsible for its aspect ratio.
-               */}
                <PropertyCard p={item} showVipBadge={true} />
            </div>
         ))}
