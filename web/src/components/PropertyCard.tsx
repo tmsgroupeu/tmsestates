@@ -1,11 +1,11 @@
 /* FULL REPLACEMENT: src/components/PropertyCard.tsx */
 import Image from "next/image";
 import Link from "next/link";
-import { BedDouble, Ruler, Crown, Sparkles } from "lucide-react"; // Using Sparkles icon as metaphor for shine, or CSS for effect
+import { BedDouble, Ruler, MapPin, Crown, ArrowUpRight } from "lucide-react";
 import type { Property } from "@/lib/cms";
 import { getStrapiMediaUrl } from "@/lib/media";
 
-// Helper to format price
+// Helper to format price elegantly
 const formatPrice = (price?: number, currency = 'EUR') => {
   if (!price) return 'Price Upon Request';
   return new Intl.NumberFormat('en-IE', {
@@ -18,92 +18,125 @@ const formatPrice = (price?: number, currency = 'EUR') => {
 export default function PropertyCard({ p, showVipBadge = false }: { p: Property; showVipBadge?: boolean }) {
   const imgUrl = getStrapiMediaUrl(p.images?.[0]);
 
+  // Determine Label Colors based on status
+  const isSold = p.prop_status === 'sold' || p.prop_status === 'rented';
+  const statusLabel = p.prop_status ? p.prop_status.replace('-', ' ') : 'Listing';
+
   return (
     <Link
       href={`/properties/${p.slug}`}
-      className="group relative block h-full w-full overflow-hidden rounded-2xl bg-white shadow-lg transition-all duration-500 hover:-translate-y-2 hover:shadow-2xl flex flex-col"
+      className="group relative block h-full w-full overflow-hidden rounded-3xl bg-white shadow-[0_10px_40px_-10px_rgba(0,0,0,0.08)] transition-all duration-500 hover:-translate-y-2 hover:shadow-[0_20px_50px_-10px_rgba(10,35,66,0.15)] flex flex-col border border-gray-100/50"
     >
       {/* 
-         ✨ SHINE EFFECT: 
-         An invisible gradient that slides across the card on hover.
+         ✨ IMAGE CONTAINER 
+         Aspect ratio optimized for modern displays (4:3)
       */}
-      <div className="absolute inset-0 z-20 pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity duration-700">
-         <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -skew-x-12 translate-x-[-150%] group-hover:animate-shine" />
-      </div>
-
-      {/* Image Section */}
-      <div className="relative aspect-[4/3] bg-gray-200 overflow-hidden shrink-0">
+      <div className="relative aspect-[4/3] w-full overflow-hidden bg-gray-100">
+        
+        {/* The Image */}
         <Image
           src={imgUrl}
           alt={p.title || "Property"}
           fill
           sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-          className="object-cover transition-transform duration-700 ease-out group-hover:scale-110"
+          className={`object-cover transition-transform duration-700 ease-out will-change-transform group-hover:scale-110 ${isSold ? 'grayscale opacity-80' : ''}`}
         />
-        
-        {/* VIP Badge (Top Left) - Used for Exclusive section */}
-        {showVipBadge && p.vip && (
-          <div className="absolute left-3 top-3 inline-flex items-center gap-1 rounded-full bg-[#D4AF37] px-3 py-1.5 text-[9px] font-bold uppercase tracking-widest text-white shadow-sm z-10">
-            <Crown className="h-3 w-3" /> VIP
-          </div>
-        )}
 
-        {/* STATUS BADGE (For Sale / Rent) - Top Right */}
-        {/* We moved this to top-right to balance the card better than bottom-right */}
-        {p.prop_status && (
-           <div className={`absolute top-3 right-3 rounded-md px-2.5 py-1 text-[10px] font-bold uppercase tracking-widest text-white backdrop-blur-md shadow-sm z-10
-              ${p.prop_status === 'sold' || p.prop_status === 'rented' ? 'bg-red-500/90' : 'bg-[#0A2342]/90'}
-           `}>
-             {p.prop_status.replace('-', ' ')}
-           </div>
-        )}
-      </div>
-
-      {/* Details Section */}
-      <div className="flex flex-col p-5 h-full relative z-10 bg-white">
-        
-        {/* Type & City */}
-        <div className="flex items-center gap-2 mb-2 text-[10px] font-bold uppercase tracking-widest text-[#D4AF37]">
-           {p.propertyType?.replace(/-/g, ' ') || 'Residence'}
-           <span className="text-gray-300">•</span>
-           {p.city}
+        {/* 
+           ✨ LUXURY SHINE EFFECT
+           Only visible on hover. A sleek light reflection.
+        */}
+        <div className="absolute inset-0 pointer-events-none z-10 opacity-0 group-hover:opacity-100 transition-opacity duration-700">
+             <div className="absolute top-0 -inset-full h-full w-1/2 z-5 block transform -skew-x-12 bg-gradient-to-r from-transparent to-white/20 opacity-40 group-hover:animate-shine" />
         </div>
 
-        {/* Title */}
-        <h3 className="font-montserrat text-lg font-bold leading-snug text-[#0A2342] line-clamp-1 mb-1 group-hover:text-[#D4AF37] transition-colors">
+        {/* 
+           🏷️ BADGES LAYER 
+        */}
+        <div className="absolute top-0 left-0 w-full p-4 flex justify-between items-start z-20">
+            
+            {/* LEFT: VIP (If applicable) */}
+            <div>
+              {(p.vip || showVipBadge) && (
+                <div className="inline-flex items-center gap-1.5 bg-[#D4AF37] text-white px-3 py-1.5 rounded-full text-[10px] font-bold uppercase tracking-widest shadow-lg backdrop-blur-md border border-white/20">
+                  <Crown size={12} fill="currentColor" />
+                  <span>Exclusive</span>
+                </div>
+              )}
+            </div>
+
+            {/* RIGHT: STATUS (Sale/Rent/Sold) */}
+            {/* We always show this to clarify the offering */}
+            {p.prop_status && (
+              <div className={`
+                 px-3 py-1.5 rounded-full text-[10px] font-bold uppercase tracking-widest shadow-lg backdrop-blur-md border border-white/20
+                 ${isSold ? 'bg-red-600 text-white' : 'bg-[#0A2342]/90 text-white'}
+              `}>
+                {statusLabel}
+              </div>
+            )}
+        </div>
+        
+        {/* Bottom Gradient for Contrast (optional, keeps image clean) */}
+        <div className="absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-black/40 to-transparent opacity-60" />
+      </div>
+
+      {/* 
+         📝 INFO CONTAINER 
+         Designed for high readability and elegance
+      */}
+      <div className="relative flex flex-col p-6 h-full bg-white">
+        
+        {/* 1. EYEBROW: Location & Type */}
+        <div className="flex items-center justify-between mb-3">
+            <div className="flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-widest text-[#D4AF37]">
+                <span className="truncate max-w-[120px]">{p.propertyType || 'Residence'}</span>
+                <span className="text-gray-300">•</span>
+                <div className="flex items-center gap-1">
+                    <MapPin size={10} />
+                    <span className="truncate max-w-[100px]">{p.city}</span>
+                </div>
+            </div>
+            
+            {/* Tiny Arrow Icon on Hover */}
+            <div className="text-[#0A2342] opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-300">
+               <ArrowUpRight size={18} />
+            </div>
+        </div>
+
+        {/* 2. TITLE */}
+        <h3 className="font-montserrat text-lg font-bold leading-snug text-[#0A2342] mb-2 line-clamp-1 group-hover:text-[#D4AF37] transition-colors">
           {p.title}
         </h3>
 
-        {/* Price - Larger and bolder */}
-        <p className="text-lg font-bold text-gray-900 mb-4 font-montserrat">
+        {/* 3. PRICE */}
+        <div className="text-xl font-medium text-[#0A2342] mb-6">
            {formatPrice(p.price, p.currency)}
-        </p>
+           {p.prop_status === 'for-rent' && <span className="text-xs text-gray-400 font-normal ml-1">/ month</span>}
+        </div>
 
         {/* Divider */}
-        <div className="border-t border-gray-100 my-auto" />
+        <div className="w-full h-px bg-gray-100 mb-4 mt-auto" />
 
-        {/* Stats Row (Baths Removed) */}
-        <div className="flex items-center justify-between pt-4 mt-auto text-xs text-gray-500 font-medium">
-          <div className="flex items-center gap-6">
+        {/* 4. STATS (Beds & Area) */}
+        <div className="flex items-center gap-6 text-xs font-medium text-gray-500">
             {/* Bedrooms */}
             {p.bedrooms && (
-              <div className="flex items-center gap-2" title="Bedrooms">
-                <BedDouble className="h-4 w-4 text-[#D4AF37]" /> 
-                <span className="font-bold text-[#0A2342]">{p.bedrooms}</span>
-                <span>Bed</span>
-              </div>
+                <div className="flex items-center gap-2">
+                    <BedDouble size={16} className="text-[#D4AF37]" />
+                    <span className="text-[#0A2342] font-bold">{p.bedrooms}</span> Beds
+                </div>
             )}
             
             {/* Area */}
             {p.area && (
-              <div className="flex items-center gap-2" title="Covered Area">
-                <Ruler className="h-4 w-4 text-[#D4AF37]" /> 
-                <span className="font-bold text-[#0A2342]">{p.area}</span>
-                <span>m²</span>
-              </div>
+                <div className="flex items-center gap-2">
+                    <Ruler size={16} className="text-[#D4AF37]" />
+                    <span className="text-[#0A2342] font-bold">{p.area}</span> m²
+                </div>
             )}
-          </div>
         </div>
+
       </div>
     </Link>
   );
