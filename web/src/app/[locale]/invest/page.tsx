@@ -15,6 +15,11 @@ export default function InvestPage() {
     offset: ["start start", "end end"],
   });
 
+
+  const CLOUD_NAME = "dkbpthpxg"; 
+  const VIDEO_ID = "12626268_3840_2160_25fps_xr0ota"; 
+  const VIDEO_URL = `https://res.cloudinary.com/${CLOUD_NAME}/video/upload/f_auto,q_auto/${VIDEO_ID}.mp4`;
+
   // Background Animations
   const bgBlur = useTransform(scrollYProgress, [0, 0.2], ["0px", "12px"]);
   const bgOverlay = useTransform(scrollYProgress, [0, 0.5], ["rgba(10, 35, 66, 0.4)", "rgba(10, 35, 66, 0.90)"]);
@@ -46,7 +51,7 @@ export default function InvestPage() {
           autoPlay loop muted playsInline
           className="w-full h-full object-cover scale-110"
           // Placeholder: Modern City/Architecture Video
-          src="https://videos.pexels.com/video-files/3121459/3121459-uhd_2560_1440_24fps.mp4"
+          src={VIDEO_URL}
         />
       </motion.div>
 
