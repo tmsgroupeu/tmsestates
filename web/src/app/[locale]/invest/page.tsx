@@ -17,7 +17,7 @@ export default function InvestPage() {
 
 
   const CLOUD_NAME = "dkbpthpxg"; 
-  const VIDEO_ID = "12626268_3840_2160_25fps_xr0ota"; 
+  const VIDEO_ID = "12626266_1920_1080_25fps_xzeheg"; 
   const VIDEO_URL = `https://res.cloudinary.com/${CLOUD_NAME}/video/upload/f_auto,q_auto/${VIDEO_ID}.mp4`;
 
   // Background Animations
