@@ -71,3 +71,16 @@ body {
 .animate-shine {
   animation: shine 1.5s ease-in-out infinite;
 }
+
+/* Custom Shine Animation for Property Cards */
+@keyframes shine {
+    from {
+        transform: translateX(-150%) skewX(-12deg);
+    }
+    to {
+        transform: translateX(150%) skewX(-12deg);
+    }
+}
+.group:hover .group-hover\:animate-shine {
+    animation: shine 1.5s;
+}
