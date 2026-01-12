@@ -3,10 +3,14 @@
 
 import { useRouter, useSearchParams } from "next/navigation";
 import React, { useState } from 'react';
-import { Search, RotateCcw } from 'lucide-react';
+import { Search, RotateCcw, MapPin, Home, Bed, Euro } from 'lucide-react';
+import PriceSlider from "./ui/PriceSlider"; // Ensure this path is correct based on where you saved Step 1
 
-const inputClass = "w-full bg-transparent border-0 border-b border-gray-200 py-2.5 text-xs font-bold text-[#0A2342] placeholder-gray-400 focus:ring-0 focus:border-[#D4AF37] transition-colors appearance-none";
-const labelClass = "text-[9px] uppercase tracking-widest text-gray-400 block mb-0";
+// Styling Constants
+const inputWrapperClass = "relative flex items-center bg-gray-50 rounded-full border border-gray-100 px-4 py-3 focus-within:ring-2 focus-within:ring-[#D4AF37]/50 focus-within:border-[#D4AF37] transition-all group";
+const selectClass = "w-full bg-transparent border-none outline-none text-sm font-bold text-[#0A2342] placeholder-gray-400 appearance-none ml-2 cursor-pointer";
+const labelClass = "text-[10px] uppercase tracking-widest text-gray-400 font-bold mb-2 ml-4 block";
+const iconClass = "text-gray-400 group-focus-within:text-[#D4AF37] transition-colors shrink-0";
 
 export default function Filters({ cities }: { cities: string[] }) {
   const router = useRouter();
@@ -16,17 +20,25 @@ export default function Filters({ cities }: { cities: string[] }) {
   const [propertyType, setPropertyType] = useState(sp.get("type") || "");
   const [city, setCity] = useState(sp.get("city") || "");
   const [bedrooms, setBedrooms] = useState(sp.get("beds") || "");
-  const [maxPrice, setMaxPrice] = useState(sp.get("max") || "");
   const [refId, setRefId] = useState(sp.get("ref") || "");
+  
+  // Slider State (Default 100k - 5M)
+  const [priceRange, setPriceRange] = useState<{min: number, max: number}>({
+    min: Number(sp.get("min")) || 0,
+    max: Number(sp.get("max")) || 5000000
+  });
 
   const apply = () => {
     const params = new URLSearchParams(sp.toString());
     
-    // Status is preserved automatically
     if (propertyType) params.set("type", propertyType); else params.delete("type");
     if (city) params.set("city", city); else params.delete("city");
     if (bedrooms) params.set("beds", bedrooms); else params.delete("beds");
-    if (maxPrice) params.set("max", maxPrice); else params.delete("max");
+    
+    // Price
+    if (priceRange.min > 0) params.set("min", priceRange.min.toString()); else params.delete("min");
+    if (priceRange.max < 5000000) params.set("max", priceRange.max.toString()); else params.delete("max");
+
     if (refId) params.set("ref", refId); else params.delete("ref");
 
     router.push(`/properties?${params.toString()}`);
@@ -34,71 +46,114 @@ export default function Filters({ cities }: { cities: string[] }) {
 
   const reset = () => {
     const currentStatus = sp.get("status");
+    setPriceRange({ min: 0, max: 5000000 });
+    setPropertyType("");
+    setCity("");
+    setBedrooms("");
+    setRefId("");
     router.push(currentStatus ? `/properties?status=${currentStatus}` : "/properties");
   };
 
   return (
-    <div className="w-full bg-white rounded-2xl shadow-xl shadow-[#0A2342]/5 border border-gray-100 p-2 md:p-3 flex flex-col lg:flex-row items-stretch lg:items-center gap-4 lg:gap-8">
+    // MAIN BAR CONTAINER - Designed to look like a cockpit
+    <div className="w-full bg-white rounded-[2rem] shadow-xl shadow-[#0A2342]/5 border border-white p-6 md:p-8">
        
-       {/* GRID FOR INPUTS */}
-       <div className="flex-1 grid grid-cols-2 md:grid-cols-4 lg:flex lg:items-center gap-6 px-4">
-          
-          <div className="lg:w-32">
-             <label className={labelClass}>Location</label>
-             <select className={inputClass} value={city} onChange={(e) => setCity(e.target.value)}>
-                <option value="">Any</option>
-                {cities.map(c => <option key={c} value={c}>{c}</option>)}
-             </select>
-          </div>
+       <div className="flex flex-col lg:flex-row gap-6 lg:gap-8 items-start lg:items-end">
 
-          <div className="lg:w-32">
-             <label className={labelClass}>Type</label>
-             <select className={inputClass} value={propertyType} onChange={(e) => setPropertyType(e.target.value)}>
-                <option value="">Any</option>
-                <option value="villa">Villa</option>
-                <option value="apartment">Apartment</option>
-                <option value="penthouse">Penthouse</option>
-                <option value="commercial">Commercial</option>
-             </select>
-          </div>
-
-          <div className="lg:w-20">
-             <label className={labelClass}>Bedrooms</label>
-             <select className={inputClass} value={bedrooms} onChange={(e) => setBedrooms(e.target.value)}>
-                <option value="">Any</option>
-                <option value="1">1+</option>
-                <option value="2">2+</option>
-                <option value="3">3+</option>
-                <option value="4">4+</option>
-                <option value="5">5+</option>
-             </select>
-          </div>
-
-          <div className="lg:w-32">
-             <label className={labelClass}>Max Price</label>
-             <input type="number" className={inputClass} placeholder="No Limit" value={maxPrice} onChange={(e) => setMaxPrice(e.target.value)} />
-          </div>
-
-          <div className="lg:flex-1 min-w-[120px]">
-             <label className={labelClass}>Ref ID</label>
-             <div className="flex items-center">
-                <input type="text" className={inputClass} placeholder="ID..." value={refId} onChange={(e) => setRefId(e.target.value)} />
-                <Search size={14} className="text-gray-400 -ml-4" />
+          {/* --- LEFT SECTION: FILTERS --- */}
+          <div className="flex-1 w-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            
+             {/* 1. Location */}
+             <div>
+                <label className={labelClass}>Location</label>
+                <div className={inputWrapperClass}>
+                   <MapPin size={18} className={iconClass} />
+                   <select className={selectClass} value={city} onChange={(e) => setCity(e.target.value)}>
+                      <option value="">All Cyprus</option>
+                      {cities.map(c => <option key={c} value={c}>{c}</option>)}
+                   </select>
+                </div>
              </div>
+
+             {/* 2. Type */}
+             <div>
+                <label className={labelClass}>Property Type</label>
+                <div className={inputWrapperClass}>
+                   <Home size={18} className={iconClass} />
+                   <select className={selectClass} value={propertyType} onChange={(e) => setPropertyType(e.target.value)}>
+                      <option value="">All Types</option>
+                      <option value="villa">Villa</option>
+                      <option value="apartment">Apartment</option>
+                      <option value="penthouse">Penthouse</option>
+                      <option value="commercial">Commercial</option>
+                      <option value="plot">Plot / Land</option>
+                   </select>
+                </div>
+             </div>
+
+             {/* 3. Bedrooms */}
+             <div>
+                <label className={labelClass}>Bedrooms</label>
+                <div className={inputWrapperClass}>
+                   <Bed size={18} className={iconClass} />
+                   <select className={selectClass} value={bedrooms} onChange={(e) => setBedrooms(e.target.value)}>
+                      <option value="">Any Beds</option>
+                      <option value="1">1+ Bedroom</option>
+                      <option value="2">2+ Bedrooms</option>
+                      <option value="3">3+ Bedrooms</option>
+                      <option value="4">4+ Bedrooms</option>
+                      <option value="5">5+ Bedrooms</option>
+                   </select>
+                </div>
+             </div>
+
+             {/* 4. Price Slider (Replaces simple input) */}
+             <div>
+                <label className={labelClass}>Price Range</label>
+                <div className="px-2">
+                   <PriceSlider 
+                      min={0} 
+                      max={5000000} 
+                      initialMin={priceRange.min}
+                      initialMax={priceRange.max}
+                      onChange={(min, max) => setPriceRange({ min, max })} 
+                   />
+                </div>
+             </div>
+
+          </div>
+
+          {/* --- RIGHT SECTION: ACTIONS --- */}
+          <div className="w-full lg:w-auto flex items-center gap-3">
+             
+             {/* Ref ID (Hidden on mobile? No, let's keep it compacted) */}
+             <div className="flex-1 lg:w-32">
+                <label className={`${labelClass} lg:hidden`}>Ref ID</label>
+                <div className={`${inputWrapperClass} !py-2.5`}>
+                   <Search size={16} className={iconClass} />
+                   <input 
+                      type="text" 
+                      className={selectClass} 
+                      placeholder="Ref ID" 
+                      value={refId} 
+                      onChange={(e) => setRefId(e.target.value)} 
+                   />
+                </div>
+             </div>
+
+             {/* Search Button */}
+             <button onClick={apply} className="bg-[#0A2342] text-white h-[46px] px-8 rounded-full font-bold uppercase text-xs tracking-widest hover:bg-[#D4AF37] transition-all shadow-lg hover:shadow-xl hover:-translate-y-0.5 flex-1 lg:flex-none">
+                Search
+             </button>
+
+             {/* Reset Button */}
+             <button onClick={reset} className="h-[46px] w-[46px] flex items-center justify-center rounded-full border border-gray-200 text-gray-400 hover:text-[#0A2342] hover:border-[#0A2342] hover:bg-white transition-all bg-gray-50" title="Reset Filters">
+                <RotateCcw size={18} />
+             </button>
+
           </div>
 
        </div>
-
-       {/* BUTTONS */}
-       <div className="flex items-center gap-2 p-1">
-          <button onClick={apply} className="bg-[#0A2342] text-white h-12 px-6 rounded-xl font-bold uppercase text-xs tracking-widest hover:bg-[#D4AF37] transition-colors shadow-lg">
-             Search
-          </button>
-          <button onClick={reset} className="h-12 w-12 flex items-center justify-center rounded-xl border border-gray-100 text-gray-400 hover:text-[#0A2342] hover:border-gray-300 transition-all" title="Reset">
-             <RotateCcw size={16} />
-          </button>
-       </div>
-
     </div>
   );
 }
