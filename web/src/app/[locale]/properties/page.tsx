@@ -6,28 +6,33 @@ import Filters from "@/components/Filters";
 import { fetchProperties, Property } from "@/lib/cms";
 import type { SearchParams } from "@/lib/types";
 
-export const revalidate = 0;
+export const revalidate = 0; // Ensure fresh data for filtering
 
+// Define props for Next.js 15
 type Props = {
   searchParams: Promise<SearchParams>;
 };
 
 export default async function PropertiesPage({ searchParams }: Props) {
+  // Await params for Next.js 15 compatibility
   const params = await searchParams;
-  const activeStatus = params.status || 'all'; // Default to 'all' internally for UI
+  
+  // Determine active tab (defaults to 'all')
+  const activeStatus = params.status || 'all';
 
-  // 2. Build Filter Params
+  // 1. Build Filter Params for Strapi
   const apiFilters: Record<string, string> = {
     "pagination[pageSize]": "100",
     "sort[0]": "updatedAt:desc",
   };
 
-  // Only filter by status if it's NOT 'all'
+  // Status Filter: Map URL 'status' to Database 'prop_status'
+  // 'all' means we don't send a status filter (show everything)
   if (activeStatus !== 'all') {
       apiFilters["filters[prop_status][$eq]"] = activeStatus;
   }
 
-  // Other filters
+  // Map other filters
   if (params.type) apiFilters["filters[propertyType][$eq]"] = params.type;
   if (params.city) apiFilters["filters[city][$eq]"] = params.city;
   if (params.beds) apiFilters["filters[bedrooms][$gte]"] = params.beds;
@@ -35,16 +40,21 @@ export default async function PropertiesPage({ searchParams }: Props) {
   if (params.max) apiFilters["filters[price][$lte]"] = params.max;
   if (params.ref) apiFilters["filters[id][$eq]"] = params.ref;
 
+  // 2. Fetch Data
   const { data: properties } = await fetchProperties(apiFilters);
+  
+  // Fetch cities for dropdown (helper call to get unique list)
   const { data: allData } = await fetchProperties({ "pagination[pageSize]": "200", "fields[0]": "city" });
   const cities = [...new Set(allData.map((p: any) => p.city).filter(Boolean))];
 
   return (
     <main className="min-h-screen bg-[#F9F9F9]">
       
-      {/* HEADER WITH POSTER BACKGROUND */}
-      <div className="relative pt-48 pb-24 px-6 text-center text-white overflow-hidden">
-         {/* Background Image */}
+      {/* --- HEADER --- */}
+      {/* Increased bottom padding (pb-32) to create space for the overlapping filter bar */}
+      <div className="relative pt-40 pb-32 px-6 text-center text-white overflow-hidden bg-[#0A2342]">
+         
+         {/* Background Image (Hero Poster) */}
          <div className="absolute inset-0 z-0">
              <Image 
                src="/assets/hero-poster.jpg" 
@@ -53,33 +63,39 @@ export default async function PropertiesPage({ searchParams }: Props) {
                className="object-cover"
                priority
              />
-             <div className="absolute inset-0 bg-[#0A2342]/80 backdrop-blur-[2px]" />
+             {/* Navy Overlay for readability */}
+             <div className="absolute inset-0 bg-[#0A2342]/85 backdrop-blur-[2px]" />
          </div>
 
          <div className="relative z-10 max-w-3xl mx-auto">
-             <h1 className="text-4xl md:text-6xl font-montserrat font-bold mb-4 drop-shadow-lg">
+             <h1 className="text-4xl md:text-5xl font-montserrat font-bold mb-4 drop-shadow-xl">
                 Our Portfolio
              </h1>
-             <p className="text-white/80 text-lg">
-                Discover the finest residential and investment opportunities in Cyprus.
+             <p className="text-white/80 text-lg max-w-2xl mx-auto font-light leading-relaxed">
+                Discover the finest residential and investment opportunities across Cyprus.
              </p>
          </div>
       </div>
 
-      <div className="max-w-7xl mx-auto px-4 -mt-8 relative z-20 pb-24">
+      {/* --- MAIN CONTENT AREA --- */}
+      <div className="max-w-7xl mx-auto px-4 relative z-20 pb-24">
          
-         {/* --- CONTROLS STRIPE (Tabs + Filters Integrated) --- */}
-         <div className="flex flex-col gap-4">
-             
-             {/* TABS ROW */}
-             <div className="flex justify-center">
-                <div className="inline-flex bg-white rounded-full p-1.5 shadow-xl border border-gray-100">
-                   {['all', 'for-sale', 'for-rent'].map((tab) => (
+         {/* 
+            THE "DOCK" CONTAINER 
+            Negative margin pulls this section UP over the header background.
+            This creates the "Attached" / "Dashboard" look.
+         */}
+         <div className="-mt-16 mb-16 space-y-4">
+            
+            {/* 1. TABS (Centered & Touching the Filters) */}
+            <div className="flex justify-center relative z-10">
+               <div className="inline-flex bg-white rounded-full p-1.5 shadow-xl border border-gray-100">
+                  {['all', 'for-sale', 'for-rent'].map((tab) => (
                       <Link 
                         key={tab}
                         href={tab === 'all' ? '/properties' : `/properties?status=${tab}`} 
                         scroll={false}
-                        className={`px-6 py-2.5 rounded-full text-xs font-bold uppercase tracking-widest transition-all
+                        className={`px-6 md:px-8 py-3 rounded-full text-xs font-bold uppercase tracking-widest transition-all
                            ${activeStatus === tab 
                              ? 'bg-[#0A2342] text-white shadow-md' 
                              : 'text-gray-500 hover:text-[#0A2342] hover:bg-gray-50'}
@@ -88,15 +104,16 @@ export default async function PropertiesPage({ searchParams }: Props) {
                         {tab === 'all' ? 'All Listings' : tab.replace('-', ' ')}
                       </Link>
                    ))}
-                </div>
-             </div>
+               </div>
+            </div>
 
-             {/* FILTERS STRIPE */}
-             <Filters cities={cities} />
+            {/* 2. FILTERS (The Dashboard) */}
+            <Filters cities={cities} />
+            
          </div>
 
-         {/* --- RESULTS --- */}
-         <div className="mt-12">
+         {/* --- RESULTS GRID --- */}
+         <div className="min-h-[40vh]">
             {properties && properties.length > 0 ? (
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                 {properties.map((p: Property) => (
@@ -104,10 +121,13 @@ export default async function PropertiesPage({ searchParams }: Props) {
                 ))}
                 </div>
             ) : (
-                <div className="text-center py-32 bg-white rounded-3xl border border-dashed border-gray-200">
-                    <div className="text-4xl mb-4 opacity-50">🔍</div>
+                <div className="text-center py-20 bg-white rounded-3xl border border-dashed border-gray-200">
+                    <div className="text-4xl mb-4 opacity-50 grayscale">🔍</div>
                     <h3 className="text-lg font-bold text-[#0A2342]">No properties found</h3>
-                    <p className="text-gray-400 text-sm mt-1">Adjust your filters to see more results.</p>
+                    <p className="text-gray-400 text-sm mt-1 max-w-md mx-auto">
+                       We couldn't find any matches for your current filters. 
+                       Try adjusting the price range or switching between Rent/Sale.
+                    </p>
                 </div>
             )}
          </div>
