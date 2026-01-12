@@ -1,5 +1,4 @@
-/* UPDATED: src/components/ExclusiveMandates.tsx */
-import Link from "next/link";
+/* FULL REPLACEMENT: src/components/ExclusiveMandates.tsx */
 import { Crown } from "lucide-react";
 import { headers } from "next/headers";
 import PropertyCard from "@/components/PropertyCard";
@@ -10,7 +9,6 @@ export const revalidate = 0;
 export default async function ExclusiveMandates() {
   headers();
   
-  // Fetch VIP properties
   const { data: items } = await fetchProperties({
     "filters[vip][$eq]": "true",
     "populate": "*",
@@ -21,22 +19,28 @@ export default async function ExclusiveMandates() {
   if (!items?.length) return null;
 
   return (
-    <section className="relative z-10 mx-auto max-w-7xl px-6">
+    <section className="relative z-10 mx-auto max-w-7xl px-6 w-full">
       {/* Header */}
       <div className="mb-10 text-center md:text-left">
-        <div className="inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/5 px-3 py-1 text-[9px] font-bold uppercase tracking-widest text-white backdrop-blur-md">
+        <div className="inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/5 px-3 py-1 text-[9px] font-bold uppercase tracking-widest text-white backdrop-blur-md mb-4">
           <Crown className="h-3 w-3 text-[#D4AF37]" />
           The Collection
         </div>
-        <h2 className="mt-4 text-3xl font-bold font-montserrat text-white drop-shadow-lg md:text-4xl">
+        <h2 className="text-3xl font-bold font-montserrat text-white drop-shadow-lg md:text-4xl">
           Exclusive Mandates
         </h2>
       </div>
 
-      {/* Grid using the Universal Card */}
-      <div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
+      {/* 
+         ✅ FIX: Added 'items-start'. 
+         This prevents the grid rows from stretching all cards to the height of the tallest one.
+         Combined with the card fix above, this eliminates the white gap.
+      */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 items-start">
         {items.map((item) => (
-           <PropertyCard key={item.id} p={item} showVipBadge={true} />
+           <div key={item.id} className="w-full">
+               <PropertyCard p={item} showVipBadge={true} />
+           </div>
         ))}
       </div>
     </section>
