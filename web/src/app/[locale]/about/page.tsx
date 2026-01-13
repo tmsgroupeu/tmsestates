@@ -126,8 +126,7 @@ export default function AboutPage() {
                       </p>
                       <p className="tracking-wide">
                         As part of the <strong className="text-[#D4AF37] font-medium">TMS Group</strong>, an international organisation with worldwide activities, we benefit from a 
-                        strong global network while maintaining a focused, disciplined local presence. Our boutique operating model allows us 
-                        to remain selective in our property portfolio, ensuring consistent quality.
+                        strong global network while maintaining a focused, disciplined local presence. Our boutique-office operating model allows us to remain selective in our property portfolio and strategic in our partnerships, ensuring consistent quality and alignment with our corporate standards.
                       </p>
                   </div>
               </div>
@@ -186,7 +185,7 @@ export default function AboutPage() {
                 <h3 className="text-3xl font-montserrat font-bold text-white mb-4">Our Values</h3>
                 <p className="text-white/80 leading-relaxed mb-6 font-light text-lg">
                    Centered on professional excellence, integrity, and a client-focused approach. 
-                   We operate with accountability and strong ethical standards, combining market expertise with financial insight.
+                   We operate with accountability and strong ethical standards, ensuring trust and consistency in every engagement. By combining in-depth real estate expertise with strong financial insight, we deliver informed and reliable solutions. Through innovation and a disciplined, selective strategy, we create sustainable value for our clients and long-term partnerships.
                 </p>
                 <div className="flex flex-wrap gap-4 mt-auto">
                    <span className="text-[10px] uppercase tracking-widest font-bold text-[#0A2342] bg-[#D4AF37] px-4 py-1.5 rounded-full shadow-lg">Integrity</span>
