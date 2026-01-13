@@ -145,7 +145,7 @@ export async function POST(req: Request) {
               // Send Email to TMS Admin
               const { error } = await resend.emails.send({
                 from: 'TMS AI Concierge <onboarding@resend.dev>', // Use verified domain here in production
-                to: ['info@tmsestates.com'], // The recipient email
+                to: ['xsirimis.xs@gmail.com'], // The recipient email
                 subject: `🔥 New Lead: ${name}`,
                 html: `
                   <div style="font-family: sans-serif; padding: 20px; border: 1px solid #eee;">
