@@ -149,7 +149,7 @@ export async function POST(req: Request) {
             try {
               // 2. Attempt Real Email Send
               const { data, error } = await resend.emails.send({
-                from: 'TMS AI <onboarding@resend.dev>', 
+                from: 'TMS Concierge <noreply@tmsgroupeu.com>', 
                 // ⚠️ NOTE: Only send to the email you used to SIGN UP for Resend until you verify domain
                 to: ['chrysostomoss@tmsgroupeu.com'], 
                 subject: `🔥 New AI Lead: ${name}`,
