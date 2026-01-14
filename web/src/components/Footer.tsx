@@ -32,7 +32,7 @@ export default function Footer() {
 
                 <div className="flex justify-center items-center gap-4 flex-wrap">
                     {/* Standard Contacts */}
-                    <a href="https://wa.me/YOUR_NUMBER" target="_blank" rel="noreferrer" className="footer-bubble group">
+                    <a href="https://wa.me/99875500" target="_blank" rel="noreferrer" className="footer-bubble group">
                         <div className="icon-circle"><MessageCircle size={20} /></div>
                         <span>WhatsApp</span>
                     </a>
