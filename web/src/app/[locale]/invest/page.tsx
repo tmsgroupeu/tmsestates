@@ -81,7 +81,7 @@ export default function InvestPage() {
                     Cyprus has established itself as one of Europe’s most attractive real estate destinations, offering a powerful combination of lifestyle appeal, investment security, and long-term growth potential.
                  </p>
                  <p>
-                    As a member of the European Union and a key hub in the Eastern Mediterranean, the island continues to attract international buyers seeking both financial returns and a high quality of life.
+                    As a member of the European Union and a key hub in the Eastern Mediterranean, the island continues to attract international buyers, investors, and families seeking both financial returns and a high quality of life.
                  </p>
                </div>
             </motion.div>
@@ -106,17 +106,17 @@ export default function InvestPage() {
               <FeatureCard 
                 icon={Globe}
                 title="Strategic Gateway"
-                text="Ideally positioned at the crossroads of Europe, Asia, and Africa. A natural investment hub supported by modern infrastructure."
+                text="One of Cyprus’ greatest strengths is its strategic geographical position at the crossroads of Europe, Asia and Africa. This makes the island a natural investment gateway, supported by modern infrastructure and two international airports. Together with a warm Mediterranean climate, beautiful coastlines and a wide range of residential options, Cyprus offers a lifestyle that consistently sustains strong demand for property."
               />
               <FeatureCard 
                 icon={ShieldCheck}
                 title="Safe & Stable"
-                text="Low crime rates, multicultural population, and widespread English usage make ownership straightforward for investors."
+                text="Cyprus is also known for its safe, stable, and welcoming environment. The country benefits from a strong legal framework based on English Common Law principles, low crime rates, and a transparent property ownership system. English is widely spoken, and the multicultural population makes relocation and property ownership straightforward for foreign investors."
               />
               <FeatureCard 
                 icon={TrendingUp}
                 title="Market Growth"
-                text="Driven by tourism and residential demand. High potential for capital appreciation and steady rental yields in prime locations."
+                text="From an investment perspective, the Cyprus real estate market continues to grow, driven by tourism, residential demand, and limited supply in prime locations. These factors create attractive opportunities for both capital appreciation and steady rental income, whether through holiday rentals or long-term leasing."
               />
            </motion.div>
         </div>
@@ -131,17 +131,19 @@ export default function InvestPage() {
                   <div className="flex-1">
                       <div className="flex items-center gap-3 mb-4 text-[#D4AF37]">
                           <Landmark size={24} />
-                          <span className="text-xs font-bold uppercase tracking-widest">Legal Framework</span>
+                          <span className="text-xs font-bold uppercase tracking-widest">Strong Legal & Business Environment</span>
                       </div>
                       <h2 className="text-3xl font-montserrat font-bold mb-4 text-white">English Common Law System</h2>
                       <p className="text-white/70 mb-8 leading-relaxed">
-                          Cyprus operates under a robust legal system widely recognised for transparency, investor protection, and reliability.
+                          Cyprus operates under a robust and well-established legal and regulatory system based on English Common Law. This framework is widely recognised for its transparency, investor protection, and reliability, making Cyprus one of the safest jurisdictions in Europe for real estate investment.
+<br> <br>The regulatory environment ensures:
+
                       </p>
                       <div className="grid grid-cols-1 sm:grid-cols-2 gap-y-3 gap-x-6">
-                          <CheckItem text="Secure property ownership" />
+                          <CheckItem text="Secure and clearly defined property ownership" />
                           <CheckItem text="Transparent registry procedures" />
                           <CheckItem text="Reliable contract enforcement" />
-                          <CheckItem text="Business-friendly policies" />
+                          <CheckItem text="Business-friendly policies for foreign investors" />
                       </div>
                   </div>
                   {/* Decorative Icon */}
@@ -156,7 +158,7 @@ export default function InvestPage() {
         <div className="w-full bg-[#F9F9F9] text-[#0A2342] py-32 rounded-[3rem] relative overflow-hidden my-10">
            <div className="max-w-7xl mx-auto px-6">
               <div className="text-center mb-16">
-                 <h2 className="text-4xl md:text-5xl font-montserrat font-bold">Attractive Tax Benefits</h2>
+                 <h2 className="text-4xl md:text-5xl font-montserrat font-bold">Attractive Tax & Financial Benefits</h2>
                  <p className="text-[#0A2342]/60 mt-4 max-w-2xl mx-auto">
                     One of the most competitive tax regimes in the European Union.
                  </p>
@@ -197,6 +199,9 @@ export default function InvestPage() {
             <div className="text-center mb-16">
                <span className="text-[#D4AF37] font-bold tracking-widest uppercase text-xs">EU Access</span>
                <h2 className="text-3xl md:text-5xl font-montserrat font-bold text-white mt-2">Permanent Residency</h2>
+              <p className="text-[#0A2342]/60 mt-4 max-w-2xl mx-auto">
+                    Cyprus offers different permanent residency categories to accommodate various investor profiles:
+                 </p>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
