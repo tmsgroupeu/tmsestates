@@ -15,7 +15,6 @@ export default function Header({ locale }: { locale: string }) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   useEffect(() => {
-    // Detect scroll earlier (10px) to switch logo faster
     const handleScroll = () => setIsScrolled(window.scrollY > 10);
     window.addEventListener("scroll", handleScroll, { passive: true });
     handleScroll(); 
@@ -24,12 +23,10 @@ export default function Header({ locale }: { locale: string }) {
 
   const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
 
-  // Close menu if window resizes (good UX practice)
   useEffect(() => {
     const handleResize = () => {
       if (window.innerWidth > 768 && isMenuOpen) {
-        // Optional: setIsMenuOpen(false); 
-        // Keeping it open is fine too, but usually side drawers close on resize
+        // Optional auto-close on resize logic
       }
     };
     window.addEventListener('resize', handleResize);
@@ -51,10 +48,7 @@ export default function Header({ locale }: { locale: string }) {
     }
   };
 
-  // Logic: Always white logo/text on Scroll. Only Original logo at Top Hero.
   const logoSrc = isScrolled ? "/tms-logo-white.svg" : "/tms-logo.svg";
-  
-  // Navigation Text Color Logic
   const navTextColor = isScrolled ? "text-white" : "text-[#0A2342] md:text-white";
 
   return (
@@ -67,7 +61,7 @@ export default function Header({ locale }: { locale: string }) {
       >
         <div className="mx-auto max-w-7xl h-full px-6 flex items-center justify-between">
           
-          {/* 1. LOGO */}
+          {/* LOGO */}
           <Link href="/" className="relative flex-shrink-0 z-50">
             <motion.div layout className="relative w-32 md:w-40"> 
               <Image
@@ -82,10 +76,10 @@ export default function Header({ locale }: { locale: string }) {
             </motion.div>
           </Link>
 
-          {/* 2. RIGHT GROUP */}
+          {/* RIGHT GROUP */}
           <div className="flex items-center gap-6 md:gap-8">
 
-            {/* A. SCROLL NAVIGATION LINKS (Desktop Only) */}
+            {/* Desktop Navigation */}
             <AnimatePresence>
               {isScrolled && (
                 <motion.div 
@@ -109,7 +103,7 @@ export default function Header({ locale }: { locale: string }) {
               )}
             </AnimatePresence>
 
-            {/* B. HAMBURGER (Visible Always) */}
+            {/* Hamburger Button */}
             <button 
                 onClick={toggleMenu} 
                 className={`p-2 transition-colors hover:text-[#D4AF37] ${navTextColor}`}
@@ -117,46 +111,32 @@ export default function Header({ locale }: { locale: string }) {
                <Menu size={28} strokeWidth={1.5} className="text-current" />
             </button>
 
-            {/* C. LANG SWITCHER (Desktop Only) */}
+            {/* Desktop Switcher (Right Aligned) */}
             <div className="hidden md:block">
-               <LanguageSwitcher currentLocale={locale} />
+               <LanguageSwitcher currentLocale={locale} align="right" />
             </div>
 
           </div>
         </div>
       </motion.header>
 
-      {/* --- MENU OVERLAY (Responsive Drawer) --- */}
+      {/* --- SIDE DRAWER MENU (Responsive) --- */}
       <AnimatePresence>
         {isMenuOpen && (
           <>
-            {/* 1. Backdrop (Dims the site) */}
             <motion.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
+                initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
                 onClick={toggleMenu}
                 className="fixed inset-0 z-[199] bg-black/60 backdrop-blur-sm"
             />
 
-            {/* 2. The Drawer Panel */}
             <motion.div
-                initial={{ x: "100%" }}
-                animate={{ x: 0 }}
-                exit={{ x: "100%" }}
+                initial={{ x: "100%" }} animate={{ x: 0 }} exit={{ x: "100%" }}
                 transition={{ type: "spring", stiffness: 300, damping: 30 }}
-                // RESPONSIVE CLASS:
-                // w-full on mobile
-                // md:w-[450px] on desktop (Right Sidebar)
-                className="fixed inset-y-0 right-0 z-[200] 
-                           w-full md:w-[450px] h-full 
-                           bg-[#0A2342] border-l border-white/10 shadow-2xl flex flex-col p-8 md:p-12"
+                className="fixed inset-y-0 right-0 z-[200] w-full md:w-[450px] h-full bg-[#0A2342] border-l border-white/10 shadow-2xl flex flex-col p-8 md:p-12"
             >
-                
-                {/* Header inside Menu */}
                 <div className="flex justify-between items-center mb-16">
                     <div className="w-32">
-                        {/* Always White inside dark menu */}
                         <Image src="/tms-logo-white.svg" alt="TMS" width={128} height={32} className="w-full h-auto" />
                     </div>
                     <button onClick={toggleMenu} className="text-white hover:text-[#D4AF37]">
@@ -164,7 +144,6 @@ export default function Header({ locale }: { locale: string }) {
                     </button>
                 </div>
 
-                {/* Navigation List */}
                 <nav className="flex flex-col gap-8 items-start">
                     <Link href="/" onClick={toggleMenu} className="text-3xl font-montserrat font-bold text-white hover:text-[#D4AF37]">
                         Home
@@ -184,17 +163,15 @@ export default function Header({ locale }: { locale: string }) {
                     </Link>
                 </nav>
 
-                {/* Footer Actions (Language for Mobile/Drawer) */}
                 <div className="mt-auto pt-8 border-t border-white/10 flex justify-between items-end">
                     <div>
                         <span className="block text-xs text-white/50 mb-2 uppercase tracking-widest">Language</span>
                         <div className="scale-125 origin-bottom-left relative z-[201]">
-                            {/* Pass 'upwards={true}' so it doesn't fall off screen */}
-                            <LanguageSwitcher currentLocale={locale} upwards={true} />
+                            {/* ✅ FIX: Open Upwards AND align to the Left edge to fit screen */}
+                            <LanguageSwitcher currentLocale={locale} upwards={true} align="left" />
                         </div>
                     </div>
                 </div>
-
             </motion.div>
           </>
         )}
