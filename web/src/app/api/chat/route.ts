@@ -69,6 +69,8 @@ export async function POST(req: Request) {
 
       CONTACT:
       - Email: info@tmsestates.com
+      - Address: Onisilou Street 4, Ayios Tychonas, 4532, Limassol, Cyprus, Office No 70070085
+      - Office tel: 70070085 or +357 99875500
       - Action: We offer private consultations for high-net-worth individuals.
     `;
 
