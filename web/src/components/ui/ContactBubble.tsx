@@ -11,7 +11,7 @@ import Link from 'next/link';
 // Define the contact channels
 const channels = [
 
-  { href: 'https://wa.me/YOUR_WHATSAPP_NUMBER', icon: MessageCircle, label: 'WhatsApp' },
+  { href: 'https://wa.me/99875500', icon: MessageCircle, label: 'WhatsApp' },
   { href: 'https://t.me/YOUR_TELEGRAM_USERNAME', icon: Send, label: 'Telegram' },
   { href: 'mailto:info@tmsestates.com', icon: Mail, label: 'Email' },
 ];
