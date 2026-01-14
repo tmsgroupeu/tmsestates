@@ -136,7 +136,7 @@ export default function InvestPage() {
                       <h2 className="text-3xl font-montserrat font-bold mb-4 text-white">English Common Law System</h2>
                       <p className="text-white/70 mb-8 leading-relaxed">
                           Cyprus operates under a robust and well-established legal and regulatory system based on English Common Law. This framework is widely recognised for its transparency, investor protection, and reliability, making Cyprus one of the safest jurisdictions in Europe for real estate investment.
-<br> <br>The regulatory environment ensures:
+<br/> <br/>The regulatory environment ensures:
 
                       </p>
                       <div className="grid grid-cols-1 sm:grid-cols-2 gap-y-3 gap-x-6">
