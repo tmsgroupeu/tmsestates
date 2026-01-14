@@ -12,8 +12,13 @@ const languages = [
   { code: 'zh', label: '中文' },
 ];
 
-// Added 'upwards' prop to control drop direction
-export default function LanguageSwitcher({ currentLocale, upwards = false }: { currentLocale: string, upwards?: boolean }) {
+interface Props {
+  currentLocale: string;
+  upwards?: boolean;
+  align?: 'left' | 'right'; // ✅ NEW: Control horizontal alignment
+}
+
+export default function LanguageSwitcher({ currentLocale, upwards = false, align = 'right' }: Props) {
   const router = useRouter();
   const pathname = usePathname();
   const [isOpen, setIsOpen] = useState(false);
@@ -40,8 +45,12 @@ export default function LanguageSwitcher({ currentLocale, upwards = false }: { c
             initial={{ opacity: 0, y: upwards ? 10 : -10 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: upwards ? 10 : -10 }}
-            className={`absolute right-0 bg-[#0A2342]/95 border border-white/10 rounded-xl overflow-hidden shadow-2xl backdrop-blur-md min-w-[120px]
-                ${upwards ? 'bottom-full mb-3 origin-bottom-right' : 'top-full mt-3 origin-top-right'}
+            // ✅ LOGIC: Dynamic Alignment
+            // If align="left" -> use 'left-0' (Grows to the right)
+            // If align="right" -> use 'right-0' (Grows to the left)
+            className={`absolute bg-[#0A2342]/95 border border-white/10 rounded-xl overflow-hidden shadow-2xl backdrop-blur-md min-w-[120px]
+                ${align === 'left' ? 'left-0' : 'right-0'}
+                ${upwards ? 'bottom-full mb-3 origin-bottom' : 'top-full mt-3 origin-top'}
             `}
           >
             <div className="flex flex-col py-1">
