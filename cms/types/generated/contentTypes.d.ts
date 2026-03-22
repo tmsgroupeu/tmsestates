@@ -467,6 +467,49 @@ export interface ApiArticleArticle extends Struct.CollectionTypeSchema {
   };
 }
 
+export interface ApiProjectProject extends Struct.CollectionTypeSchema {
+  collectionName: 'projects';
+  info: {
+    displayName: 'Project';
+    pluralName: 'projects';
+    singularName: 'project';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  attributes: {
+    CompletionStatus: Schema.Attribute.String;
+    coverImage: Schema.Attribute.Media<
+      'images' | 'files' | 'videos' | 'audios',
+      true
+    >;
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    Description: Schema.Attribute.Text;
+    gallery: Schema.Attribute.Media<
+      'images' | 'files' | 'videos' | 'audios',
+      true
+    >;
+    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::project.project'
+    > &
+      Schema.Attribute.Private;
+    properties: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::property.property'
+    >;
+    publishedAt: Schema.Attribute.DateTime;
+    slug: Schema.Attribute.UID;
+    Title: Schema.Attribute.String;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+  };
+}
+
 export interface ApiPropertyProperty extends Struct.CollectionTypeSchema {
   collectionName: 'properties';
   info: {
@@ -494,7 +537,18 @@ export interface ApiPropertyProperty extends Struct.CollectionTypeSchema {
       'api::property.property'
     > &
       Schema.Attribute.Private;
-    price: Schema.Attribute.Decimal & Schema.Attribute.Required;
+    marketing_tags: Schema.Attribute.Enumeration<
+      [
+        'Sold',
+        'Reserved',
+        'New Launch',
+        'Penthouse Collection',
+        'Under Construction',
+        'ROI Opportunity',
+      ]
+    >;
+    price: Schema.Attribute.Decimal;
+    project: Schema.Attribute.Relation<'manyToOne', 'api::project.project'>;
     prop_status: Schema.Attribute.Enumeration<
       ['for-sale', 'for-rent', 'sold', 'rented']
     > &
@@ -1026,6 +1080,7 @@ declare module '@strapi/strapi' {
       'admin::transfer-token-permission': AdminTransferTokenPermission;
       'admin::user': AdminUser;
       'api::article.article': ApiArticleArticle;
+      'api::project.project': ApiProjectProject;
       'api::property.property': ApiPropertyProperty;
       'plugin::content-releases.release': PluginContentReleasesRelease;
       'plugin::content-releases.release-action': PluginContentReleasesReleaseAction;

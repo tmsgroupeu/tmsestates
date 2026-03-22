@@ -1,41 +1,33 @@
 /* FULL REPLACEMENT: src/components/PropertyCard.tsx */
 import Image from "next/image";
 import Link from "next/link";
-import { BedDouble, Ruler, MapPin, Crown, ArrowUpRight } from "lucide-react";
+import { BedDouble, Ruler, MapPin, ArrowUpRight } from "lucide-react";
 import type { Property } from "@/lib/cms";
 import { getStrapiMediaUrl } from "@/lib/media";
 
-// Helper to format price elegantly
 const formatPrice = (price?: number, currency = 'EUR') => {
   if (!price) return 'Price Upon Request';
   return new Intl.NumberFormat('en-IE', {
-    style: 'currency',
-    currency: currency,
-    maximumFractionDigits: 0,
+    style: 'currency', currency: currency, maximumFractionDigits: 0
   }).format(price);
 };
 
-export default function PropertyCard({ p, showVipBadge = false }: { p: Property; showVipBadge?: boolean }) {
+export default function PropertyCard({ p }: { p: Property }) {
   const imgUrl = getStrapiMediaUrl(p.images?.[0]);
-
-  // Determine Label Colors
-  const isSold = p.prop_status === 'sold' || p.prop_status === 'rented';
-  const statusLabel = p.prop_status ? p.prop_status.replace('-', ' ') : 'Listing';
+  const tag = p.marketing_tags; // The new label
 
   return (
     <Link
       href={`/properties/${p.slug}`}
-      // ✅ FIX 1: Removed 'h-full'. Now the card only takes the height it needs.
       className="group relative block w-full overflow-hidden rounded-3xl bg-white shadow-[0_10px_40px_-10px_rgba(0,0,0,0.08)] transition-all duration-500 hover:-translate-y-2 hover:shadow-[0_20px_50px_-10px_rgba(10,35,66,0.15)] flex flex-col border border-gray-100/50"
     >
-      {/* IMAGE CONTAINER */}
       <div className="relative aspect-[4/3] w-full overflow-hidden bg-gray-100">
         <Image
           src={imgUrl}
           alt={p.title || "Property"}
           fill
           sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-          className={`object-cover transition-transform duration-700 ease-out will-change-transform group-hover:scale-110 ${isSold ? 'grayscale opacity-80' : ''}`}
+          className="object-cover transition-transform duration-700 ease-out will-change-transform group-hover:scale-110"
         />
 
         {/* Shine Effect */}
@@ -43,68 +35,45 @@ export default function PropertyCard({ p, showVipBadge = false }: { p: Property;
              <div className="absolute top-0 -inset-full h-full w-1/2 z-5 block transform -skew-x-12 bg-gradient-to-r from-transparent to-white/20 opacity-40 group-hover:animate-shine" />
         </div>
 
-        {/* Badges */}
-        <div className="absolute top-0 left-0 w-full p-4 flex justify-between items-start z-20">
-            {/* VIP Badge */}
-            <div>
-              {(p.vip || showVipBadge) && (
-                <div className="inline-flex items-center gap-1.5 bg-[#D4AF37] text-white px-3 py-1.5 rounded-full text-[10px] font-bold uppercase tracking-widest shadow-lg backdrop-blur-md border border-white/20">
-                  <Crown size={12} fill="currentColor" />
-                  <span>Exclusive</span>
-                </div>
-              )}
-            </div>
-
-            {/* Status Badge */}
-            {p.prop_status && (
-              <div className={`
-                 px-3 py-1.5 rounded-full text-[10px] font-bold uppercase tracking-widest shadow-lg backdrop-blur-md border border-white/20
-                 ${isSold ? 'bg-red-600 text-white' : 'bg-[#0A2342]/90 text-white'}
-              `}>
-                {statusLabel}
-              </div>
-            )}
-        </div>
+        {/* ✅ NEW DYNAMIC TAG (Top Right) */}
+        {tag && (
+          <div className="absolute top-3 right-3 px-3 py-1.5 rounded-full text-[10px] font-bold uppercase tracking-widest bg-[#0A2342] text-white shadow-lg border border-white/10 z-20">
+            {tag.replace(/_/g, ' ')}
+          </div>
+        )}
         
-        {/* Bottom Gradient */}
         <div className="absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-black/40 to-transparent opacity-60" />
       </div>
 
-      {/* INFO CONTAINER */}
-      <div className="relative flex flex-col p-6 bg-white">
-        
-        {/* Eyebrow */}
-        <div className="flex items-center justify-between mb-3">
-            <div className="flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-widest text-[#D4AF37]">
-                <span className="truncate max-w-[120px]">{p.propertyType || 'Residence'}</span>
-                <span className="text-gray-300">•</span>
-                <div className="flex items-center gap-1">
-                    <MapPin size={10} />
-                    <span className="truncate max-w-[100px]">{p.city}</span>
+      <div className="relative flex flex-col p-6 bg-white h-full justify-between">
+        <div>
+            {/* Eyebrow: Type + City */}
+            <div className="flex items-center justify-between mb-3">
+                <div className="flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-widest text-[#D4AF37]">
+                    <span className="truncate max-w-[120px]">{p.propertyType || 'Residence'}</span>
+                    <span className="text-gray-300">•</span>
+                    <div className="flex items-center gap-1">
+                        <MapPin size={10} />
+                        <span className="truncate max-w-[100px]">{p.city}</span>
+                    </div>
+                </div>
+                <div className="text-[#0A2342] opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-300">
+                  <ArrowUpRight size={18} />
                 </div>
             </div>
+
+            <h3 className="font-montserrat text-lg font-bold leading-snug text-[#0A2342] line-clamp-2 group-hover:text-[#D4AF37] transition-colors">
+              {p.title}
+            </h3>
             
-            <div className="text-[#0A2342] opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-300">
-               <ArrowUpRight size={18} />
-            </div>
+            {/* Price (or "Upon Request") */}
+            <p className="text-sm font-medium text-gray-500 mt-2">
+               {formatPrice(p.price, p.currency)}
+            </p>
         </div>
 
-        {/* Title */}
-        <h3 className="font-montserrat text-lg font-bold leading-snug text-[#0A2342] mb-2 line-clamp-1 group-hover:text-[#D4AF37] transition-colors">
-          {p.title}
-        </h3>
+        <div className="w-full h-px bg-gray-100 mt-6 mb-4" />
 
-        {/* Price */}
-        <div className="text-xl font-medium text-[#0A2342]">
-           {formatPrice(p.price, p.currency)}
-           {p.prop_status === 'for-rent' && <span className="text-xs text-gray-400 font-normal ml-1">/ month</span>}
-        </div>
-
-        {/* Divider */}
-        {/* ✅ FIX 2: Changed 'mt-auto' to fixed 'mt-6'. Removes large gap. */}
-        <div className="w-full h-px bg-gray-100 mb-4 mt-6" />
-
-        {/* Stats */}
         <div className="flex items-center gap-6 text-xs font-medium text-gray-500">
             {p.bedrooms && (
                 <div className="flex items-center gap-2">
@@ -112,7 +81,6 @@ export default function PropertyCard({ p, showVipBadge = false }: { p: Property;
                     <span className="text-[#0A2342] font-bold">{p.bedrooms}</span> Beds
                 </div>
             )}
-            
             {p.area && (
                 <div className="flex items-center gap-2">
                     <Ruler size={16} className="text-[#D4AF37]" />
@@ -120,7 +88,6 @@ export default function PropertyCard({ p, showVipBadge = false }: { p: Property;
                 </div>
             )}
         </div>
-
       </div>
     </Link>
   );

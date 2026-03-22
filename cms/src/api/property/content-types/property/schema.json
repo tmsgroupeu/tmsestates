@@ -54,7 +54,7 @@
     },
     "price": {
       "type": "decimal",
-      "required": true
+      "required": false
     },
     "currency": {
       "type": "enumeration",
@@ -84,6 +84,23 @@
         "Commercial/Offices",
         "Plot/Land"
       ]
+    },
+    "marketing_tags": {
+      "type": "enumeration",
+      "enum": [
+        "Sold",
+        "Reserved",
+        "New Launch",
+        "Penthouse Collection",
+        "Under Construction",
+        "ROI Opportunity"
+      ]
+    },
+    "project": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::project.project",
+      "inversedBy": "properties"
     }
   }
 }

@@ -1,30 +1,26 @@
-/* UPDATED: next.config.ts */
 import createNextIntlPlugin from 'next-intl/plugin';
 import type { NextConfig } from "next";
 
-// 1. Initialize the i18n plugin
-// Point this to where we created the request.ts file earlier
 const withNextIntl = createNextIntlPlugin('./src/i18n/request.ts');
 
-// 2. Define your existing config
 const nextConfig: NextConfig = {
   images: {
     loader: 'custom',
     loaderFile: './src/lib/cloudinaryLoader.ts',
+    // ✅ FIX: Add localhost and your production backend to remotePatterns
     remotePatterns: [
-      {
-        protocol: 'https',
-        hostname: 'res.cloudinary.com',
-      },
+      { protocol: 'https', hostname: 'res.cloudinary.com' },
+      { protocol: 'http', hostname: 'localhost' },
+      { protocol: 'https', hostname: 'tmsestates.onrender.com' },
     ],
   },
-  eslint: {
-    ignoreDuringBuilds: true,
-  },
-  typescript: {
-    ignoreBuildErrors: true,
+  // Keep your existing build settings
+  eslint: { ignoreDuringBuilds: true },
+  typescript: { ignoreBuildErrors: true },
+  
+  webpack: (config, { isServer }) => {
+    return config;
   },
 };
 
-// 3. Wrap and Export
 export default withNextIntl(nextConfig);

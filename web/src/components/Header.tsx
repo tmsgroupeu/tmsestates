@@ -6,32 +6,25 @@ import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Menu, X } from "lucide-react";
 import { useTranslations } from "next-intl";
-import { Link } from "@/i18n/routing"; 
+import { Link, usePathname } from "@/i18n/routing"; 
 import LanguageSwitcher from "./LanguageSwitcher";
 
 export default function Header({ locale }: { locale: string }) {
   const t = useTranslations('Navigation');
+  const pathname = usePathname();
   const [isScrolled, setIsScrolled] = useState(false);
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const[isMenuOpen, setIsMenuOpen] = useState(false);
+
+  const isHomePage = pathname === '/';
 
   useEffect(() => {
-    const handleScroll = () => setIsScrolled(window.scrollY > 10);
+    const handleScroll = () => setIsScrolled(window.scrollY > 20);
     window.addEventListener("scroll", handleScroll, { passive: true });
     handleScroll(); 
     return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
+  },[]);
 
   const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
-
-  useEffect(() => {
-    const handleResize = () => {
-      if (window.innerWidth > 768 && isMenuOpen) {
-        // Optional auto-close on resize logic
-      }
-    };
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
-  }, [isMenuOpen]);
 
   const headerVariants = {
     top: {
@@ -48,8 +41,9 @@ export default function Header({ locale }: { locale: string }) {
     }
   };
 
-  const logoSrc = isScrolled ? "/tms-logo-white.svg" : "/tms-logo.svg";
-  const navTextColor = isScrolled ? "text-white" : "text-[#0A2342] md:text-white";
+  const showWhiteVersion = isScrolled || !isHomePage;
+  const logoSrc = showWhiteVersion ? "/tms-logo-white.svg" : "/tms-logo.svg";
+  const navTextColor = showWhiteVersion ? "text-white" : "text-[#0A2342] md:text-white";
 
   return (
     <>
@@ -61,7 +55,7 @@ export default function Header({ locale }: { locale: string }) {
       >
         <div className="mx-auto max-w-7xl h-full px-6 flex items-center justify-between">
           
-          {/* LOGO */}
+          {/* --- LOGO --- */}
           <Link href="/" className="relative flex-shrink-0 z-50">
             <motion.div layout className="relative w-32 md:w-40"> 
               <Image
@@ -70,40 +64,40 @@ export default function Header({ locale }: { locale: string }) {
                 alt="TMS Estates"
                 width={160}
                 height={40}
-                className="w-full h-auto object-contain"
+                className="w-full h-auto object-contain transition-opacity duration-300"
                 priority
+                unoptimized={true}
               />
             </motion.div>
           </Link>
 
-          {/* RIGHT GROUP */}
+          {/* --- RIGHT CONTROLS --- */}
           <div className="flex items-center gap-6 md:gap-8">
 
-            {/* Desktop Navigation */}
+            {/* 1. VISIBLE NAVBAR (Anchors on Main Page) */}
             <AnimatePresence>
-              {isScrolled && (
+              {isScrolled && isHomePage && (
                 <motion.div 
                   initial={{ opacity: 0, x: 20 }}
                   animate={{ opacity: 1, x: 0 }}
                   exit={{ opacity: 0, x: 10 }}
                   className="hidden md:flex items-center gap-8"
                 >
-                  <Link href="/properties" className="text-white text-[11px] font-bold uppercase tracking-[0.15em] hover:text-[#D4AF37] transition-colors">
-                    {t('properties')}
+                  <Link href="/#projects" className="text-white text-[10px] font-bold uppercase tracking-[0.15em] hover:text-[#D4AF37] transition-colors">
+                    Our Projects
                   </Link>
-                  <Link href="/insights" className="text-white text-[11px] font-bold uppercase tracking-[0.15em] hover:text-[#D4AF37] transition-colors">
-                    {t('insights')}
+                  <Link href="/#portfolio" className="text-white text-[10px] font-bold uppercase tracking-[0.15em] hover:text-[#D4AF37] transition-colors">
+                    Our Portfolio
                   </Link>
-                  <Link href="/invest" className="text-white text-[11px] font-bold uppercase tracking-[0.15em] hover:text-[#D4AF37] transition-colors">
-                    {t('invest')}
+                  <Link href="/#invest" className="text-white text-[10px] font-bold uppercase tracking-[0.15em] hover:text-[#D4AF37] transition-colors">
+                    Invest
                   </Link>
-                  
                   <div className="h-4 w-[1px] bg-white/20" />
                 </motion.div>
               )}
             </AnimatePresence>
 
-            {/* Hamburger Button */}
+            {/* 2. HAMBURGER MENU */}
             <button 
                 onClick={toggleMenu} 
                 className={`p-2 transition-colors hover:text-[#D4AF37] ${navTextColor}`}
@@ -111,7 +105,7 @@ export default function Header({ locale }: { locale: string }) {
                <Menu size={28} strokeWidth={1.5} className="text-current" />
             </button>
 
-            {/* Desktop Switcher (Right Aligned) */}
+            {/* 3. LANGUAGE SWITCHER */}
             <div className="hidden md:block">
                <LanguageSwitcher currentLocale={locale} align="right" />
             </div>
@@ -120,7 +114,7 @@ export default function Header({ locale }: { locale: string }) {
         </div>
       </motion.header>
 
-      {/* --- SIDE DRAWER MENU (Responsive) --- */}
+      {/* --- MASTER DIRECTORY (Hamburger Menu) --- */}
       <AnimatePresence>
         {isMenuOpen && (
           <>
@@ -129,7 +123,6 @@ export default function Header({ locale }: { locale: string }) {
                 onClick={toggleMenu}
                 className="fixed inset-0 z-[199] bg-black/60 backdrop-blur-sm"
             />
-
             <motion.div
                 initial={{ x: "100%" }} animate={{ x: 0 }} exit={{ x: "100%" }}
                 transition={{ type: "spring", stiffness: 300, damping: 30 }}
@@ -137,29 +130,30 @@ export default function Header({ locale }: { locale: string }) {
             >
                 <div className="flex justify-between items-center mb-16">
                     <div className="w-32">
-                        <Image src="/tms-logo-white.svg" alt="TMS" width={128} height={32} className="w-full h-auto" />
+                        <Image src="/tms-logo-white.svg" alt="TMS" width={128} height={32} className="w-full h-auto" unoptimized={true} />
                     </div>
                     <button onClick={toggleMenu} className="text-white hover:text-[#D4AF37]">
                         <X size={32} />
                     </button>
                 </div>
 
-                <nav className="flex flex-col gap-8 items-start">
-                    <Link href="/" onClick={toggleMenu} className="text-3xl font-montserrat font-bold text-white hover:text-[#D4AF37]">
+                {/* ✅ ALL SUBPAGES DIRECTORY */}
+                <nav className="flex flex-col gap-6 items-start">
+                    <Link href="/" onClick={toggleMenu} className="text-3xl font-montserrat font-bold text-white hover:text-[#D4AF37] transition-colors">
                         Home
                     </Link>
-                    <Link href="/about" onClick={toggleMenu} className="text-3xl font-montserrat font-bold text-white hover:text-[#D4AF37]">
-                        {t('about')}
+                    <Link href="/about" onClick={toggleMenu} className="text-3xl font-montserrat font-bold text-white hover:text-[#D4AF37] transition-colors">
+                        Who We Are
                     </Link>
-                    <Link href="/properties" onClick={toggleMenu} className="text-3xl font-montserrat font-bold text-white hover:text-[#D4AF37]">
-                        {t('portfolio')}
+                    <Link href="/properties" onClick={toggleMenu} className="text-3xl font-montserrat font-bold text-white hover:text-[#D4AF37] transition-colors">
+                        All Properties
                     </Link>
-                    <Link href="/invest" onClick={toggleMenu} className="text-3xl font-montserrat font-bold text-white hover:text-[#D4AF37]">
-                        {t('invest')}
+                    <Link href="/invest" onClick={toggleMenu} className="text-3xl font-montserrat font-bold text-white hover:text-[#D4AF37] transition-colors">
+                        Investment Guide
                     </Link>
                     <div className="h-[1px] w-full bg-white/10 my-2" />
-                    <Link href="/insights" onClick={toggleMenu} className="text-xl font-light text-white/70 hover:text-white">
-                        {t('insights')}
+                    <Link href="/insights" onClick={toggleMenu} className="text-xl font-light text-white/70 hover:text-white transition-colors">
+                        Market Insights
                     </Link>
                 </nav>
 
@@ -167,7 +161,6 @@ export default function Header({ locale }: { locale: string }) {
                     <div>
                         <span className="block text-xs text-white/50 mb-2 uppercase tracking-widest">Language</span>
                         <div className="scale-125 origin-bottom-left relative z-[201]">
-                            {/* ✅ FIX: Open Upwards AND align to the Left edge to fit screen */}
                             <LanguageSwitcher currentLocale={locale} upwards={true} align="left" />
                         </div>
                     </div>

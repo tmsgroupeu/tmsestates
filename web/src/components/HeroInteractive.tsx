@@ -1,4 +1,4 @@
-/* UPDATED: src/components/HeroInteractive.tsx */
+/* FULL REPLACEMENT: src/components/HeroInteractive.tsx */
 "use client";
 
 import { useRef } from "react";
@@ -9,58 +9,30 @@ import { ArrowRight } from "lucide-react";
 export default function HeroInteractive() {
   const containerRef = useRef<HTMLDivElement>(null);
 
-  // --- PARALLAX LOGIC ---
   const { scrollYProgress } = useScroll({
     target: containerRef,
-    offset: ["start start", "end start"],
+    offset:["start start", "end start"],
   });
 
-  // ✅ FIX 1: Slow down the text movement. 
-  // Previously ["0%", "-50%"] moved it up too fast. 
-  // Now ["0%", "-30%"] keeps it readable longer as you scroll.
-  const yText = useTransform(scrollYProgress, [0, 1], ["0%", "-30%"]);
-  
-  // Fade text out as you leave the hero
-  const opacityText = useTransform(scrollYProgress, [0, 0.6], [1, 0]);
-  
-  // Fade indicator out quickly
-  const opacityIndicator = useTransform(scrollYProgress, [0, 0.15], [1, 0]);
+  const yText = useTransform(scrollYProgress,[0, 1], ["0%", "-30%"]);
+  const opacityText = useTransform(scrollYProgress,[0, 0.6], [1, 0]);
+  const opacityIndicator = useTransform(scrollYProgress,[0, 0.15], [1, 0]);
 
-  // --- ANIMATION VARIANTS ---
   const containerVariants = {
     hidden: { opacity: 0 },
-    visible: { 
-      opacity: 1, 
-      transition: { 
-        staggerChildren: 0.15, 
-        delayChildren: 0.2 
-      } 
-    },
+    visible: { opacity: 1, transition: { staggerChildren: 0.15, delayChildren: 0.2 } },
   };
 
   const itemVariants = {
     hidden: { y: 30, opacity: 0, rotateX: -10 },
-    visible: { 
-      y: 0, 
-      opacity: 1, 
-      rotateX: 0, 
-      transition: { 
-        type: "spring", 
-        stiffness: 80, 
-        damping: 20 
-      } 
-    },
+    visible: { y: 0, opacity: 1, rotateX: 0, transition: { type: "spring", stiffness: 80, damping: 20 } },
   };
 
   return (
     <section
       ref={containerRef}
-      // ✅ FIX 2: Added `pt-20` (or `md:pt-32`).
-      // This offsets the Flexbox centering to account for the Navigation Bar height.
-      // The content now centers visually in the *available* space, not the *screen* space.
       className="relative h-screen w-full flex flex-col items-center justify-center pt-20 md:pt-32 z-20 overflow-hidden"
     >
-      {/* --- CONTENT WRAPPER --- */}
       <motion.div
         style={{ y: yText, opacity: opacityText }}
         className="relative z-20 flex flex-col items-center justify-center px-6 text-center w-full"
@@ -71,25 +43,17 @@ export default function HeroInteractive() {
           animate="visible"
           className="max-w-5xl mx-auto flex flex-col items-center"
         >
-          
-          {/* 1. Main Headline */}
           <motion.h1
             variants={itemVariants}
-            // ✅ FIX 3: Responsive Font Sizing
-            // Adjusted sizes to ensure it doesn't touch edges on laptops (md/lg).
-            className="font-montserrat font-bold tracking-tight text-white 
-                       text-5xl sm:text-6xl md:text-7xl xl:text-8xl 
-                       drop-shadow-[0_10px_20px_rgba(0,0,0,0.5)] leading-[1.1] pb-2"
+            className="font-montserrat font-bold tracking-tight text-white text-5xl sm:text-6xl md:text-7xl xl:text-8xl drop-shadow-[0_10px_20px_rgba(0,0,0,0.5)] leading-[1.1] pb-2"
           >
-            Beyond Ordinary
+            Living Elevated.
             <br />
-            {/* Elegant Gradient for "Luxury" */}
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#FBF5E8] via-[#D4AF37] to-[#AA8C2C]">
-              Estates
+              Defining Luxury.
             </span>
           </motion.h1>
 
-          {/* 2. Subheading */}
           <motion.p
             variants={itemVariants}
             className="mt-6 md:mt-8 max-w-2xl mx-auto text-lg md:text-xl font-light text-white/90 leading-relaxed drop-shadow-md"
@@ -98,36 +62,26 @@ export default function HeroInteractive() {
             in the Mediterranean&apos;s most dynamic metropolis.
           </motion.p>
 
-          {/* 3. Buttons / CTAs */}
+          {/* ✅ FIX: Single, prominent CTA Button */}
           <motion.div
             variants={itemVariants}
-            className="mt-10 md:mt-12 flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-6 w-full"
+            className="mt-10 md:mt-12 flex w-full justify-center"
           >
             <Link
-              href="/properties"
-              className="group relative overflow-hidden rounded-full bg-white px-8 py-4 text-sm font-bold uppercase tracking-wider text-[var(--navy)] transition-all duration-300 hover:scale-105 hover:shadow-[0_0_40px_rgba(255,255,255,0.4)] w-full sm:w-auto text-center"
+              href="/#projects" // Scrolls directly to the projects section
+              className="group relative overflow-hidden rounded-full bg-white px-10 py-5 text-sm font-bold uppercase tracking-widest text-[#0A2342] transition-all duration-300 hover:scale-105 hover:shadow-[0_0_40px_rgba(255,255,255,0.4)] text-center shadow-xl"
             >
-              <span className="relative z-10 flex items-center justify-center gap-2">
-                BUY
-                <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
+              <span className="relative z-10 flex items-center justify-center gap-3">
+                Explore Our Projects
+                <ArrowRight className="h-5 w-5 transition-transform group-hover:translate-x-1" />
               </span>
             </Link>
-
-            <button
-              onClick={() => document.getElementById("contact")?.scrollIntoView({ behavior: "smooth" })}
-              className="group w-full sm:w-auto rounded-full border border-white/30 bg-white/5 px-8 py-4 text-sm font-bold uppercase tracking-wider text-white backdrop-blur-sm transition-all duration-300 hover:bg-white/10 hover:border-white hover:shadow-[0_0_30px_rgba(255,255,255,0.15)]"
-            >
-              RENT
-            </button>
           </motion.div>
+
         </motion.div>
       </motion.div>
 
-      {/* --- 4. SCROLL INDICATOR --- */}
-      {/* 
-         Remains part of the flex flow, pushed down by margin.
-         Fades out on scroll via opacityIndicator.
-      */}
+      {/* SCROLL INDICATOR */}
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
@@ -139,7 +93,6 @@ export default function HeroInteractive() {
           <span className="text-[9px] font-bold uppercase tracking-[0.25em] text-white/70 animate-pulse">
             Start the Journey
           </span>
-          {/* Animated Mouse Icon */}
           <div className="h-11 w-6 rounded-full border-[1.5px] border-white/30 bg-white/5 p-1 backdrop-blur-sm shadow-lg">
             <motion.div
               animate={{ y: [0, 12, 0] }}
@@ -149,7 +102,6 @@ export default function HeroInteractive() {
           </div>
         </div>
       </motion.div>
-
     </section>
   );
 }
