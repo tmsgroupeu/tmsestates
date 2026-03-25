@@ -85,7 +85,11 @@ export default function HeroInteractive() {
             <br />
             {/* Elegant Gradient for "Luxury" */}
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#FBF5E8] via-[#D4AF37] to-[#AA8C2C]">
+<<<<<<< Updated upstream
               Estates
+=======
+              Estates.
+>>>>>>> Stashed changes
             </span>
           </motion.h1>
 
@@ -95,7 +99,7 @@ export default function HeroInteractive() {
             className="mt-6 md:mt-8 max-w-2xl mx-auto text-lg md:text-xl font-light text-white/90 leading-relaxed drop-shadow-md"
           >
             Discover a curated portfolio of prestigious residences and high-yield investments 
-            in the Mediterranean&apos;s most dynamic metropolis.
+            in the Mediterranean&apos;s most dynamic crossroad.
           </motion.p>
 
           {/* 3. Buttons / CTAs */}
