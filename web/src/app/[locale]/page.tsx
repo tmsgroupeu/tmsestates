@@ -3,7 +3,7 @@
 import VideoScroller from "@/components/ui/VideoScroller";
 import HeroInteractive from "@/components/HeroInteractive";
 import WhyChooseUs from "@/components/sections/WhyChooseUs";
-import OurProjects from "@/components/OurProjects"; 
+import OurProjects from "@/components/OurProjects"; // ✅ Swapped Component
 import MarketInsights from "@/components/sections/MarketInsights";
 import LimassolAdvantage from "@/components/LimassolAdvantage";
 import TestimonialsGlass from "@/components/Testimonials";
@@ -27,7 +27,7 @@ export default function Home() {
            <div>
               <WhyChooseUs />
            </div>
-           {/* ✅ FIX: Added id="projects" for the Header link */}
+           {/* ✅ FIX: Added id="projects" for the Header Navbar anchor */}
            <div id="projects" className="scroll-mt-32">
               <OurProjects />
            </div>
@@ -37,16 +37,16 @@ export default function Home() {
         <div className="w-full py-40 md:py-60 flex flex-col items-center justify-center text-center">
            <div className="mb-12">
               <h2 className="text-4xl md:text-6xl font-montserrat font-bold text-white drop-shadow-2xl">
-                 The Portfolio.
+                 Welcome Home.
               </h2>
               <p className="text-white/90 mt-4 text-xl font-light tracking-wide drop-shadow-lg max-w-2xl mx-auto">
-                 Explore our curated selection of properties.
+                 Step inside our curated selection of properties.
               </p>
            </div>
         </div>
 
         {/* LISTINGS CAROUSEL */}
-        {/* ✅ FIX: Changed id to "portfolio" for the Header link */}
+        {/* ✅ FIX: Changed ID to "portfolio" to match Header navigation */}
         <div id="portfolio" className="w-full mb-60 scroll-mt-32">
            <MarketInsights />
         </div>
@@ -59,12 +59,16 @@ export default function Home() {
         </div>
         
         {/* INVEST */}
-        {/* ✅ FIX: Changed id to "invest" for the Header link */}
+        {/* ✅ FIX: Changed ID to "invest" to match Header navigation */}
         <div id="invest" className="w-full max-w-7xl px-6 space-y-40 mb-40 scroll-mt-32">
            <LimassolAdvantage />
            <TestimonialsGlass />
         </div>
 
+        {/* FOOTER AREA
+        <div className="relative z-20 bg-[#0A2342] pt-24 pb-12 rounded-t-[3rem] shadow-[0_-20px_60px_rgba(0,0,0,0.4)] w-full">
+           <CTAContact />
+        </div> */}
 
       </div>
     </main>
