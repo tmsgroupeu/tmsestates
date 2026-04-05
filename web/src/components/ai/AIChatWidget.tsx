@@ -13,6 +13,7 @@ export default function AIChatWidget() {
   const [localInput, setLocalInput] = useState('');
   const [showInvite, setShowInvite] = useState(false);
   const [hideToggle, setHideToggle] = useState(false);
+  const [isScrolled, setIsScrolled] = useState(false);
 
   const messagesContainerRef = useRef<HTMLDivElement>(null);
 
@@ -45,18 +46,20 @@ export default function AIChatWidget() {
     window.addEventListener("open-ai-chat", handleOpen);
     const timer = setTimeout(() => setShowInvite(true), 5000);
     
-    // Hide when scrolling near footer
-    const checkFooter = () => {
+    // Hide when scrolling near footer or scrolling down rapidly
+    const checkScroll = () => {
+        setIsScrolled(window.scrollY > 150);
+
         const footer = document.getElementById('page-footer');
         if (!footer) return;
         const rect = footer.getBoundingClientRect();
         setHideToggle(rect.top < window.innerHeight);
     };
-    window.addEventListener('scroll', checkFooter);
+    window.addEventListener('scroll', checkScroll, { passive: true });
     
     return () => {
         window.removeEventListener("open-ai-chat", handleOpen);
-        window.removeEventListener('scroll', checkFooter);
+        window.removeEventListener('scroll', checkScroll);
         clearTimeout(timer);
     };
   }, []);
@@ -200,17 +203,34 @@ export default function AIChatWidget() {
            >
               {/* Invite Bubble */}
               <AnimatePresence>
-                 {showInvite && (
+                 {showInvite && !isScrolled && (
                     <motion.div
-                      initial={{ opacity: 0, x: 20 }}
-                      animate={{ opacity: 1, x: 0 }}
-                      exit={{ opacity: 0, scale: 0.9 }}
-                      className="mb-4 mr-2 bg-white text-[#0A2342] p-4 rounded-xl shadow-xl border border-gray-100 w-64 relative"
+                      initial={{ opacity: 0, y: 30, scale: 0.95, filter: "blur(10px)" }}
+                      animate={{ opacity: 1, y: 0, scale: 1, filter: "blur(0px)" }}
+                      exit={{ opacity: 0, scale: 0.9, filter: "blur(5px)", transition: { duration: 0.2 } }}
+                      transition={{ type: "spring", stiffness: 300, damping: 25 }}
+                      className="mb-8 mr-2 bg-gradient-to-br from-white/10 to-white/5 backdrop-blur-3xl p-5 md:p-6 rounded-[2rem] shadow-[0_30px_60px_rgba(0,0,0,0.4)] border border-white/20 w-72 md:w-80 relative isolate group cursor-pointer"
+                      onClick={() => setIsOpen(true)}
                     >
-                       <p className="text-xs font-bold mb-1">👋 Need assistance?</p>
-                       <p className="text-xs text-gray-600">I can help you find properties or explain investment benefits.</p>
-                       <div className="absolute -bottom-1 right-6 w-3 h-3 bg-white transform rotate-45 border-r border-b border-gray-100"></div>
-                       <button onClick={(e) => { e.stopPropagation(); setShowInvite(false); }} className="absolute top-2 right-2 text-gray-400 hover:text-[#0A2342]"><X size={12}/></button>
+                       <div className="absolute inset-0 bg-[#0A2342]/10 rounded-[2rem] z-[-1]" />
+                       
+                       {/* Glassmorphic Tail rendering safely behind */}
+                       <div className="absolute -bottom-2 right-8 w-6 h-6 bg-white/5 backdrop-blur-3xl transform rotate-45 border-r border-b border-white/20" />
+                       
+                       <p className="text-sm font-playfair font-semibold text-white mb-2 flex items-center gap-2 drop-shadow-md">
+                          <span className="text-[#D4AF37]"><Bot size={18}/></span> 
+                          TMS Concierge
+                       </p>
+                       <p className="text-xs font-light text-white/80 leading-relaxed group-hover:text-white transition-colors duration-300">
+                          I can assist you with discovering signature properties or explain the core investment benefits.
+                       </p>
+                       
+                       <button 
+                         onClick={(e) => { e.stopPropagation(); setShowInvite(false); }} 
+                         className="absolute top-5 right-5 text-white/40 hover:text-[#D4AF37] transition-colors duration-300 z-10"
+                       >
+                          <X size={16}/>
+                       </button>
                     </motion.div>
                  )}
               </AnimatePresence>
