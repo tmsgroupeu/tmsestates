@@ -5,7 +5,7 @@ import { useState, useRef } from 'react';
 import { motion, useScroll, useTransform, AnimatePresence } from 'framer-motion';
 import Image from "next/image";
 import Link from "next/link";
-import { MapPin, CalendarClock, ChevronLeft, Building2, X } from "lucide-react";
+import { MapPin, CalendarClock, ChevronLeft, ChevronRight, Building2, X } from "lucide-react";
 import ReactMarkdown from 'react-markdown';
 import PropertyCard from './PropertyCard';
 
@@ -60,6 +60,34 @@ export default function ProjectPageClient({ project }: { project: any }) {
   const yHero = useTransform(scrollYProgress, [0, 1], ["0%", "50%"]);
   
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
+
+  // --- CAROUSEL LOGIC ---
+  const carouselRef = useRef<HTMLDivElement>(null);
+  const [isHovered, setIsHovered] = useState(false);
+
+  useEffect(() => {
+    if (isHovered || galleryUrls.length === 0) return;
+    const interval = setInterval(() => {
+      if (carouselRef.current) {
+         const maxScroll = carouselRef.current.scrollWidth - carouselRef.current.clientWidth;
+         // If we are at the end, smoothly scroll back to the start
+         if (carouselRef.current.scrollLeft >= maxScroll - 10) {
+            carouselRef.current.scrollTo({ left: 0, behavior: 'smooth' });
+         } else {
+            // Otherwise, jump forward by roughly half a screen length, aligning to the next snap point natively
+            carouselRef.current.scrollBy({ left: carouselRef.current.clientWidth * 0.4, behavior: 'smooth' });
+         }
+      }
+    }, 2800);
+    return () => clearInterval(interval);
+  }, [isHovered, galleryUrls]);
+
+  const handleScrollLeft = () => {
+    carouselRef.current?.scrollBy({ left: -(carouselRef.current.clientWidth * 0.6), behavior: 'smooth' });
+  };
+  const handleScrollRight = () => {
+    carouselRef.current?.scrollBy({ left: (carouselRef.current.clientWidth * 0.6), behavior: 'smooth' });
+  };
 
   return (
     <main ref={containerRef} className="min-h-screen bg-[#F0F2F5] font-sans overflow-x-hidden selection:bg-[#D4AF37] selection:text-[#0A2342]">
@@ -176,36 +204,50 @@ export default function ProjectPageClient({ project }: { project: any }) {
              </motion.div>
           </div>
 
-          {/* --- 4. INFINITE SCROLLING GALLERY --- */}
+          {/* --- 4. AUTO-SCROLLING DISCRETE CAROUSEL --- */}
           {galleryUrls.length > 0 && (
              <div className="mb-32 md:mb-60 w-full overflow-hidden">
-                <div className="flex items-center gap-4 mb-16 max-w-6xl mx-auto px-6">
-                   <div className="w-12 h-[2px] bg-[#D4AF37]" />
-                   <h2 className="text-2xl md:text-4xl font-montserrat font-bold text-[#0A2342] bg-clip-text">Gallery Overview</h2>
+                <div className="flex items-center justify-between gap-4 mb-10 max-w-6xl mx-auto px-6">
+                   <div className="flex items-center gap-4">
+                      <div className="w-12 h-[2px] bg-[#D4AF37]" />
+                      <h2 className="text-2xl md:text-4xl font-montserrat font-bold text-[#0A2342]">Gallery Overview</h2>
+                   </div>
+                   
+                   {/* NAV BUTTONS */}
+                   <div className="hidden sm:flex items-center gap-3">
+                       <button onClick={handleScrollLeft} className="w-12 h-12 rounded-full border border-[#0A2342]/10 flex items-center justify-center text-[#0A2342] hover:bg-[#D4AF37] hover:border-[#D4AF37] hover:text-white transition-colors duration-300">
+                          <ChevronLeft size={20} />
+                       </button>
+                       <button onClick={handleScrollRight} className="w-12 h-12 rounded-full border border-[#0A2342]/10 flex items-center justify-center text-[#0A2342] hover:bg-[#D4AF37] hover:border-[#D4AF37] hover:text-white transition-colors duration-300">
+                          <ChevronRight size={20} />
+                       </button>
+                   </div>
                 </div>
                 
-                <div className="relative w-full flex overflow-hidden group">
-                   <motion.div 
-                      animate={{ x: ["0%", "-50%"] }}
-                      transition={{ ease: "linear", duration: 60, repeat: Infinity }}
-                      className="flex gap-6 md:gap-10 items-center w-max pr-6 md:pr-10"
+                <div 
+                  className="relative w-full group"
+                  onMouseEnter={() => setIsHovered(true)}
+                  onMouseLeave={() => setIsHovered(false)}
+                >
+                   <div 
+                      ref={carouselRef}
+                      className="flex gap-6 md:gap-10 items-center overflow-x-auto snap-x snap-mandatory pb-8 scrollbar-hide px-6 md:px-12 w-full"
+                      style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
                    >
-                      {[...galleryUrls, ...galleryUrls, ...galleryUrls, ...galleryUrls, ...galleryUrls, ...galleryUrls, ...galleryUrls, ...galleryUrls].map((url, i) => {
-                          const isFull = i % 3 === 0;
+                      {galleryUrls.map((url, i) => {
                           const isPortrait = i % 3 === 1;
                           const isSquare = i % 3 === 2;
 
-                          let aspectClass = "w-[80vw] md:w-[50vw] lg:w-[40vw] aspect-[16/9]";
-                          if (isPortrait) aspectClass = "w-[60vw] md:w-[35vw] lg:w-[25vw] aspect-[4/5]";
-                          else if (isSquare) aspectClass = "w-[60vw] md:w-[40vw] lg:w-[30vw] aspect-square";
+                          let aspectClass = "w-[85vw] sm:w-[60vw] md:w-[50vw] lg:w-[40vw] aspect-[16/9]";
+                          if (isPortrait) aspectClass = "w-[75vw] sm:w-[45vw] md:w-[35vw] lg:w-[25vw] aspect-[4/5]";
+                          else if (isSquare) aspectClass = "w-[75vw] sm:w-[50vw] md:w-[40vw] lg:w-[30vw] aspect-square";
 
                           return (
                              <div 
                                key={`${url}-${i}`}
-                               className={`relative ${aspectClass} rounded-2xl md:rounded-3xl overflow-hidden shadow-[0_10px_30px_rgba(0,0,0,0.1)] flex-shrink-0 cursor-zoom-in isolate group/item hover:!opacity-100 group-hover:opacity-60 transition-opacity duration-300`}
+                               className={`relative ${aspectClass} rounded-2xl md:rounded-[2.5rem] overflow-hidden shadow-[0_10px_30px_rgba(0,0,0,0.1)] flex-shrink-0 cursor-zoom-in group/item hover:opacity-90 transition-opacity duration-300 snap-center`}
                                onClick={() => setSelectedImage(url)}
                              >
-                                <div className="absolute inset-0 bg-[#0A2342]/5 z-10 pointer-events-none group-hover/item:bg-transparent transition-colors duration-500" />
                                 <Image 
                                    src={url}
                                    alt={`Gallery item ${i}`}
@@ -216,7 +258,7 @@ export default function ProjectPageClient({ project }: { project: any }) {
                              </div>
                           );
                       })}
-                   </motion.div>
+                   </div>
                 </div>
              </div>
           )}
