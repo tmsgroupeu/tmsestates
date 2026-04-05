@@ -11,11 +11,11 @@ export default function HeroInteractive() {
 
   const { scrollYProgress } = useScroll({
     target: containerRef,
-    offset:["start start", "end start"],
+    offset: ["start start", "end start"],
   });
 
-  const yText = useTransform(scrollYProgress,[0, 1], ["0%", "-30%"]);
-  const opacityText = useTransform(scrollYProgress,[0, 0.6], [1, 0]);
+  const yText = useTransform(scrollYProgress, [0, 1],["0%", "-30%"]);
+  const opacityText = useTransform(scrollYProgress, [0, 0.6],[1, 0]);
   const opacityIndicator = useTransform(scrollYProgress,[0, 0.15], [1, 0]);
 
   const containerVariants = {
@@ -47,10 +47,10 @@ export default function HeroInteractive() {
             variants={itemVariants}
             className="font-montserrat font-bold tracking-tight text-white text-5xl sm:text-6xl md:text-7xl xl:text-8xl drop-shadow-[0_10px_20px_rgba(0,0,0,0.5)] leading-[1.1] pb-2"
           >
-            Living Elevated.
+            Beyond Ordinary
             <br />
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#FBF5E8] via-[#D4AF37] to-[#AA8C2C]">
-              Defining Luxury.
+              Estates
             </span>
           </motion.h1>
 
@@ -62,13 +62,12 @@ export default function HeroInteractive() {
             in the Mediterranean&apos;s most dynamic metropolis.
           </motion.p>
 
-          {/* ✅ FIX: Single, prominent CTA Button */}
           <motion.div
             variants={itemVariants}
             className="mt-10 md:mt-12 flex w-full justify-center"
           >
             <Link
-              href="/#projects" // Scrolls directly to the projects section
+              href="/#projects"
               className="group relative overflow-hidden rounded-full bg-white px-10 py-5 text-sm font-bold uppercase tracking-widest text-[#0A2342] transition-all duration-300 hover:scale-105 hover:shadow-[0_0_40px_rgba(255,255,255,0.4)] text-center shadow-xl"
             >
               <span className="relative z-10 flex items-center justify-center gap-3">
@@ -81,7 +80,6 @@ export default function HeroInteractive() {
         </motion.div>
       </motion.div>
 
-      {/* SCROLL INDICATOR */}
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
@@ -95,7 +93,7 @@ export default function HeroInteractive() {
           </span>
           <div className="h-11 w-6 rounded-full border-[1.5px] border-white/30 bg-white/5 p-1 backdrop-blur-sm shadow-lg">
             <motion.div
-              animate={{ y: [0, 12, 0] }}
+              animate={{ y:[0, 12, 0] }}
               transition={{ repeat: Infinity, duration: 2, ease: "easeInOut" }}
               className="h-2 w-full rounded-full bg-white shadow-[0_0_8px_rgba(255,255,255,0.8)]"
             />
