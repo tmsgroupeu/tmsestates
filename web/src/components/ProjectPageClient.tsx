@@ -1,7 +1,7 @@
 /* FULL REPLACEMENT: src/components/ProjectPageClient.tsx */
 "use client";
 
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { motion, useScroll, useTransform, AnimatePresence } from 'framer-motion';
 import Image from "next/image";
 import Link from "next/link";
