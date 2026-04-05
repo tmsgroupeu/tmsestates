@@ -22,7 +22,7 @@ export default function PrivateCollection() {
   };
 
   return (
-    <div className="relative w-full mx-auto p-8 md:p-16 lg:p-24 overflow-hidden rounded-[3rem] shadow-[0_30px_100px_rgba(0,0,0,0.8)] border border-white/5 min-h-[500px] flex items-center justify-center">
+    <div className="relative w-full mx-auto py-10 px-6 md:py-16 md:px-12 lg:py-20 overflow-hidden rounded-[2.5rem] md:rounded-[3rem] shadow-[0_20px_80px_rgba(0,0,0,0.7)] border border-white/5 flex items-center justify-center">
       
       {/* BACKGROUND IMAGE WITH BLUR */}
       <div className="absolute inset-0 z-0 bg-[#0A2342]">
@@ -52,9 +52,9 @@ export default function PrivateCollection() {
                    whileInView={{ opacity: 1, scale: 1 }}
                    viewport={{ once: true }}
                    transition={{ duration: 1, ease: [0.25, 1, 0.5, 1] }}
-                   className="w-16 h-16 rounded-full border border-[#D4AF37]/30 bg-[#0A2342]/50 backdrop-blur-md flex items-center justify-center mb-8 shadow-[0_0_40px_rgba(212,175,55,0.2)]"
+                   className="w-14 h-14 rounded-full border border-[#D4AF37]/30 bg-[#0A2342]/50 backdrop-blur-md flex items-center justify-center mb-6 shadow-[0_0_30px_rgba(212,175,55,0.2)]"
                  >
-                    <Lock className="text-[#D4AF37]" size={24} />
+                    <Lock className="text-[#D4AF37]" size={20} />
                  </motion.div>
 
                  <motion.h2 
@@ -72,7 +72,7 @@ export default function PrivateCollection() {
                    whileInView={{ opacity: 1, y: 0 }}
                    viewport={{ once: true }}
                    transition={{ duration: 1, delay: 0.2, ease: [0.25, 1, 0.5, 1] }}
-                   className="text-white/80 text-lg md:text-xl font-light tracking-wide max-w-2xl mx-auto leading-relaxed mb-12"
+                   className="text-white/80 text-base md:text-lg font-light tracking-wide max-w-2xl mx-auto leading-relaxed mb-10"
                  >
                    Gain exclusive access to our highly sought-after off-market Signature Developments and VIP investment opportunities before they launch to the public.
                  </motion.p>
@@ -138,9 +138,9 @@ export default function PrivateCollection() {
                     initial={{ scale: 0, rotate: -90 }}
                     animate={{ scale: 1, rotate: 0 }}
                     transition={{ delay: 0.3, type: "spring", bounce: 0.6, duration: 1 }}
-                    className="w-24 h-24 rounded-full border border-[#D4AF37] bg-gradient-to-br from-[#D4AF37]/20 to-transparent flex items-center justify-center mb-8 shadow-[0_0_60px_rgba(212,175,55,0.5)] backdrop-blur-md"
+                    className="w-20 h-20 rounded-full border border-[#D4AF37] bg-gradient-to-br from-[#D4AF37]/20 to-transparent flex items-center justify-center mb-6 shadow-[0_0_50px_rgba(212,175,55,0.4)] backdrop-blur-md"
                   >
-                     <Check className="text-[#D4AF37]" size={42} strokeWidth={1.5} />
+                     <Check className="text-[#D4AF37]" size={36} strokeWidth={1.5} />
                   </motion.div>
                   
                   <motion.h3 
