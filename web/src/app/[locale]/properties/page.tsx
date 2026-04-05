@@ -40,6 +40,12 @@ export default async function PropertiesPage({ searchParams }: Props) {
   if (params.max) apiFilters["filters[price][$lte]"] = params.max;
   if (params.ref) apiFilters["filters[id][$eq]"] = params.ref;
 
+  if (params.keyword) {
+      apiFilters["filters[$or][0][title][$containsi]"] = params.keyword;
+      apiFilters["filters[$or][1][city][$containsi]"] = params.keyword;
+      apiFilters["filters[$or][2][description][$containsi]"] = params.keyword;
+  }
+
   // 2. Fetch Data
   const { data: properties } = await fetchProperties(apiFilters);
   
@@ -87,25 +93,7 @@ export default async function PropertiesPage({ searchParams }: Props) {
          */}
          <div className="-mt-16 mb-16 space-y-4">
             
-            {/* 1. TABS (Centered & Touching the Filters) */}
-            <div className="flex justify-center relative z-10">
-               <div className="inline-flex bg-white rounded-full p-1.5 shadow-xl border border-gray-100">
-                  {['all', 'for-sale', 'for-rent'].map((tab) => (
-                      <Link 
-                        key={tab}
-                        href={tab === 'all' ? '/properties' : `/properties?status=${tab}`} 
-                        scroll={false}
-                        className={`px-6 md:px-8 py-3 rounded-full text-xs font-bold uppercase tracking-widest transition-all
-                           ${activeStatus === tab 
-                             ? 'bg-[#0A2342] text-white shadow-md' 
-                             : 'text-gray-500 hover:text-[#0A2342] hover:bg-gray-50'}
-                        `}
-                      >
-                        {tab === 'all' ? 'All Listings' : tab.replace('-', ' ')}
-                      </Link>
-                   ))}
-               </div>
-            </div>
+            {/* 1. FILTERS (The Dashboard) */}
 
             {/* 2. FILTERS (The Dashboard) */}
             <Filters cities={cities} />

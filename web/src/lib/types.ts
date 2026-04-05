@@ -5,4 +5,8 @@ export type SearchParams = {
   city?: string;
   min?: string;
   max?: string;
+  type?: string;
+  beds?: string;
+  ref?: string;
+  keyword?: string;
 };

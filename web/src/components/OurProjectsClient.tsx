@@ -81,15 +81,15 @@ export default function OurProjectsClient({ projects }: { projects: ProjectData[
                   the text never wraps or jumps. The expanding card just acts like a window 
                   sliding open to reveal it. 
               */}
+              {/* Top Right Arrow (Only on Active, Fixed to top of card) */}
+              <div className={`absolute top-6 right-6 bg-white/10 backdrop-blur-md border border-white/20 p-2 md:p-3 rounded-full text-white shadow-lg transition-all duration-500 delay-100 z-10
+                  ${isActive ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-4'}
+              `}>
+                  <ArrowUpRight size={20} />
+              </div>
+
               <div className="absolute bottom-0 left-0 p-6 md:p-8 w-[85vw] lg:w-[550px] flex flex-col justify-end">
                   
-                  {/* Top Right Arrow (Only on Active) */}
-                  <div className={`absolute top-6 right-6 bg-white/10 backdrop-blur-md border border-white/20 p-2 md:p-3 rounded-full text-white shadow-lg transition-all duration-500 delay-100
-                      ${isActive ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-4'}
-                  `}>
-                      <ArrowUpRight size={20} />
-                  </div>
-
                   {/* Title */}
                   <h3 className={`text-xl md:text-3xl font-montserrat font-bold text-white mb-2 transition-colors duration-500 line-clamp-2
                       ${isActive ? 'text-[#D4AF37]' : ''}

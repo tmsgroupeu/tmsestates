@@ -146,7 +146,7 @@ export default function ProjectPageClient({ project }: { project: any }) {
              </a>
           </motion.div>
 
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 mt-20">
+          <div className="flex flex-col gap-12 mt-20">
              
              {/* --- 3. THE STORY (Description) --- */}
              <motion.div 
@@ -154,7 +154,7 @@ export default function ProjectPageClient({ project }: { project: any }) {
                  whileInView={{ opacity: 1, y: 0 }}
                  viewport={{ once: true, margin: "-100px" }}
                  transition={{ duration: 0.8, ease: "easeOut" }}
-                 className="lg:col-span-7 space-y-12"
+                 className="w-full space-y-12 max-w-4xl"
              >
                  <div>
                      <h2 className="text-2xl font-montserrat font-bold text-[#0A2342] mb-8 flex items-center gap-3">
@@ -171,7 +171,7 @@ export default function ProjectPageClient({ project }: { project: any }) {
              </motion.div>
 
              {/* --- 4. CAROUSEL RIBBON GALLERY --- */}
-             <div className="lg:col-span-5 space-y-4">
+             <div className="w-full space-y-4">
                  {galleryUrls.length > 0 ? (
                      <div className="flex gap-4 overflow-x-auto pb-4 snap-x snap-mandatory scrollbar-hide w-full" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
                          {galleryUrls.map((url, i) => (
