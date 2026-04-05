@@ -1,17 +1,16 @@
-/* NEW FILE: src/components/ProjectPageClient.tsx */
+/* FULL REPLACEMENT: src/components/ProjectPageClient.tsx */
 "use client";
 
 import { useState, useRef } from 'react';
 import { motion, useScroll, useTransform, AnimatePresence } from 'framer-motion';
 import Image from "next/image";
 import Link from "next/link";
-import { MapPin, CalendarClock, ChevronLeft, Building2, Download, Mail, X } from "lucide-react";
+import { MapPin, CalendarClock, ChevronLeft, Building2, X } from "lucide-react";
 import ReactMarkdown from 'react-markdown';
 import PropertyCard from './PropertyCard';
 
 const API_URL = process.env.STRAPI_API_URL || process.env.NEXT_PUBLIC_API_URL || "http://127.0.0.1:1337";
 
-// --- Data Extractors ---
 const getSafeUrl = (data: any) => {
   if (!data) return null;
   const item = Array.isArray(data) ? data[0] : (data.data ? (Array.isArray(data.data) ? data.data[0] : data.data) : data);
@@ -42,7 +41,6 @@ const getGalleryArray = (galleryData: any) => {
 export default function ProjectPageClient({ project }: { project: any }) {
   const p = project.attributes || project;
   
-  // Extract clean data
   const title = p.Title || p.title || "Signature Development";
   const location = p.location || p.Location || p.city || p.City || "Cyprus";
   const completion = p.completionDate || p.CompletionDate || p.completionStatus || p.CompletionStatus || "Coming Soon";
@@ -54,214 +52,265 @@ export default function ProjectPageClient({ project }: { project: any }) {
   const rawGallery = getGalleryArray(p.gallery || p.Gallery);
   const galleryUrls = rawGallery.map((img: any) => getSafeUrl(img)).filter(Boolean);
 
-  // Extract connected properties
-  const connectedPropertiesRaw = p.properties?.data || p.properties ||[];
-  const connectedProperties = Array.isArray(connectedPropertiesRaw) ? connectedPropertiesRaw :[];
+  const connectedPropertiesRaw = p.properties?.data || p.properties || [];
+  const connectedProperties = Array.isArray(connectedPropertiesRaw) ? connectedPropertiesRaw : [];
 
-  // Parallax Setup
   const containerRef = useRef<HTMLDivElement>(null);
   const { scrollYProgress } = useScroll({ target: containerRef, offset: ["start start", "end start"] });
   const yHero = useTransform(scrollYProgress, [0, 1], ["0%", "50%"]);
-  const opacityHero = useTransform(scrollYProgress, [0, 0.8], [1, 0]);
-
-  // Lightbox State
+  
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
 
   return (
-    <main ref={containerRef} className="min-h-screen bg-[#F9F9F9] font-sans pb-32">
+    <main ref={containerRef} className="min-h-screen bg-[#F0F2F5] font-sans overflow-x-hidden selection:bg-[#D4AF37] selection:text-[#0A2342]">
       
-      {/* --- 1. HERO PARALLAX --- */}
-      <div className="relative h-[75vh] w-full overflow-hidden bg-[#0A2342]">
-        <motion.div style={{ y: yHero, opacity: opacityHero }} className="absolute inset-0 w-full h-full">
-            <Image 
-                src={coverUrl} 
-                alt={title} 
-                fill 
-                priority
-                className="object-cover object-center"
-            />
-            {/* Gradient to ensure text is readable */}
-            <div className="absolute inset-0 bg-gradient-to-t from-[#0A2342] via-[#0A2342]/40 to-transparent opacity-90" />
+      {/* --- 1. HERO REVEAL & PARALLAX --- */}
+      <motion.div 
+        initial={{ clipPath: "inset(15% 10% 15% 10% round 2rem)" }}
+        animate={{ clipPath: "inset(0% 0% 0% 0% round 0rem)" }}
+        transition={{ duration: 1.5, ease: [0.25, 1, 0.5, 1] }}
+        className="relative h-[85vh] w-full overflow-hidden bg-[#0A2342]"
+      >
+        <motion.div 
+          style={{ y: yHero }} 
+          className="absolute inset-0 w-full h-full"
+        >
+            <motion.div
+              initial={{ scale: 1.15 }}
+              animate={{ scale: 1 }}
+              transition={{ duration: 1.8, ease: [0.25, 1, 0.5, 1] }}
+              className="relative w-full h-full"
+            >
+              <Image 
+                  src={coverUrl} 
+                  alt={title} 
+                  fill 
+                  priority
+                  className="object-cover object-center opacity-80"
+              />
+            </motion.div>
+            <div className="absolute inset-0 bg-gradient-to-t from-[#0A2342] via-[#0A2342]/40 to-transparent" />
         </motion.div>
 
-        {/* Hero Content */}
-        <div className="absolute inset-0 z-10 flex flex-col justify-end px-6 pb-24 md:pb-32">
-            <div className="max-w-7xl mx-auto w-full">
-                <Link href="/#properties" className="inline-flex items-center gap-2 text-[10px] font-bold uppercase tracking-[0.2em] text-[#D4AF37] hover:text-white transition-colors mb-6 backdrop-blur-md bg-white/5 border border-white/10 px-4 py-2 rounded-full">
-                   <ChevronLeft size={14} /> Back to Projects
-                </Link>
-                
-                <h1 className="text-4xl md:text-6xl lg:text-7xl font-montserrat font-bold text-white drop-shadow-xl max-w-4xl leading-[1.1] mb-6">
-                    {title}
-                </h1>
+        <div className="absolute inset-0 z-10 flex flex-col justify-end px-6 md:px-12 pb-24 md:pb-40">
+            <div className="max-w-screen-2xl mx-auto w-full">
+                <motion.div
+                  initial={{ opacity: 0, y: 30 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 1, delay: 0.5, ease: "easeOut" }}
+                >
+                  <Link href="/properties" className="inline-flex items-center gap-2 text-[10px] sm:text-xs font-bold uppercase tracking-[0.3em] text-white/50 hover:text-[#D4AF37] transition-colors mb-8">
+                     <ChevronLeft size={16} /> The Portfolio
+                  </Link>
+                  
+                  <h1 className="text-5xl md:text-7xl lg:text-9xl font-montserrat font-extrabold text-white drop-shadow-2xl leading-[1.05] tracking-tight mb-6 w-full max-w-5xl">
+                      {title}
+                  </h1>
+                </motion.div>
             </div>
         </div>
-      </div>
+      </motion.div>
 
-      <div className="relative z-20 max-w-7xl mx-auto px-6 -mt-16">
-          
-          {/* --- 2. AT A GLANCE BAR --- */}
+      {/* --- 2. THE ANCHOR (Sticky Stats Bar) --- */}
+      <div className="relative z-40 w-full px-4 md:px-12 max-w-screen-2xl mx-auto -mt-20 sticky top-32 pointer-events-none">
           <motion.div 
-             initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }}
-             className="bg-white rounded-3xl p-6 md:p-8 shadow-2xl border border-gray-100 flex flex-wrap gap-8 items-center justify-between"
+             initial={{ opacity: 0, y: 40 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.8, duration: 1, ease: [0.25, 1, 0.5, 1] }}
+             className="w-full bg-white/70 backdrop-blur-2xl rounded-[2rem] p-6 md:p-10 flex flex-col md:flex-row flex-wrap gap-8 items-center justify-between pointer-events-auto border border-white shadow-[0_20px_60px_rgba(0,0,0,0.05)]"
           >
-             <div className="flex flex-wrap gap-8">
-                 <div className="flex items-center gap-3">
-                     <div className="w-10 h-10 rounded-full bg-[#0A2342]/5 flex items-center justify-center text-[#D4AF37]">
-                        <MapPin size={18} />
-                     </div>
-                     <div>
-                         <p className="text-[10px] uppercase tracking-widest text-gray-400 font-bold mb-0.5">Location</p>
-                         <p className="text-sm font-bold text-[#0A2342]">{location}</p>
-                     </div>
+             <div className="flex flex-wrap gap-8 md:gap-16 w-full md:w-auto">
+                 <div>
+                     <p className="text-[9px] uppercase tracking-[0.2em] text-[#0A2342]/40 font-bold mb-1">Destination</p>
+                     <p className="text-xl md:text-2xl font-playfair font-semibold text-[#0A2342] flex items-center gap-2"><MapPin size={18} className="text-[#D4AF37]" />{location}</p>
                  </div>
-                 
-                 <div className="hidden sm:block w-px h-10 bg-gray-100" />
-
-                 <div className="flex items-center gap-3">
-                     <div className="w-10 h-10 rounded-full bg-[#0A2342]/5 flex items-center justify-center text-[#D4AF37]">
-                        <CalendarClock size={18} />
-                     </div>
-                     <div>
-                         <p className="text-[10px] uppercase tracking-widest text-gray-400 font-bold mb-0.5">Status</p>
-                         <p className="text-sm font-bold text-[#0A2342]">{completion}</p>
-                     </div>
+                 <div className="hidden md:block w-px h-12 bg-black/5" />
+                 <div>
+                     <p className="text-[9px] uppercase tracking-[0.2em] text-[#0A2342]/40 font-bold mb-1">Status</p>
+                     <p className="text-xl md:text-2xl font-playfair font-semibold text-[#0A2342] flex items-center gap-2"><CalendarClock size={18} className="text-[#D4AF37]" />{completion}</p>
                  </div>
-
-                 <div className="hidden md:block w-px h-10 bg-gray-100" />
-
-                 <div className="flex items-center gap-3">
-                     <div className="w-10 h-10 rounded-full bg-[#0A2342]/5 flex items-center justify-center text-[#D4AF37]">
-                        <Building2 size={18} />
-                     </div>
-                     <div>
-                         <p className="text-[10px] uppercase tracking-widest text-gray-400 font-bold mb-0.5">Available Units</p>
-                         <p className="text-sm font-bold text-[#0A2342]">{connectedProperties.length} Residences</p>
-                     </div>
+                 <div className="hidden md:block w-px h-12 bg-black/5" />
+                 <div>
+                     <p className="text-[9px] uppercase tracking-[0.2em] text-[#0A2342]/40 font-bold mb-1">Scale</p>
+                     <p className="text-xl md:text-2xl font-playfair font-semibold text-[#0A2342]">{connectedProperties.length} Residences</p>
                  </div>
              </div>
 
-             <a href="#available-units" className="bg-[#0A2342] text-white px-8 py-3.5 rounded-full text-xs font-bold uppercase tracking-widest hover:bg-[#D4AF37] transition-colors shadow-lg">
-                View Availability
+             <a href="#available-units" className="group relative overflow-hidden bg-[#0A2342] text-white px-10 py-5 rounded-full text-[10px] md:text-xs font-bold uppercase tracking-[0.2em] transition-all shadow-xl hover:shadow-[0_15px_40px_rgba(10,35,66,0.25)] w-full md:w-auto text-center isolate">
+                <span className="relative z-10 transition-colors group-hover:text-[#D4AF37]">Explore Availability</span>
+                <div className="absolute inset-0 h-full w-full bg-gradient-to-r from-transparent via-white/10 to-transparent -translate-x-[150%] skew-x-[-15deg] group-hover:transition-transform group-hover:duration-700 group-hover:translate-x-[150%] z-0" />
              </a>
           </motion.div>
+      </div>
 
-          <div className="flex flex-col gap-12 mt-20">
+      <div className="max-w-screen-2xl mx-auto px-6 md:px-12 pb-32">
+          
+          {/* --- 3. THE VISION (Editorial Text) --- */}
+          <div className="flex flex-col lg:flex-row gap-16 lg:gap-32 mt-32 md:mt-48 mb-32 md:mb-60 max-w-6xl mx-auto items-start">
              
-             {/* --- 3. THE STORY (Description) --- */}
+             <motion.div 
+               initial={{ opacity: 0, x: -30 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true, margin: "-100px" }} transition={{ duration: 1, ease: "easeOut" }}
+               className="lg:w-1/3 flex-shrink-0 sticky top-48"
+             >
+                <div className="w-12 h-[2px] bg-[#D4AF37] mb-8" />
+                <h2 className="text-4xl md:text-6xl font-montserrat font-bold text-[#0A2342] leading-[1.1]">
+                   The Vision
+                </h2>
+                <p className="mt-6 text-[#0A2342]/50 font-playfair text-2xl italic">A lifestyle redefined.</p>
+             </motion.div>
+
              <motion.div 
                  initial={{ opacity: 0, y: 30 }}
                  whileInView={{ opacity: 1, y: 0 }}
                  viewport={{ once: true, margin: "-100px" }}
-                 transition={{ duration: 0.8, ease: "easeOut" }}
-                 className="w-full space-y-12 max-w-4xl"
+                 transition={{ duration: 1, delay: 0.2, ease: "easeOut" }}
+                 className="lg:w-2/3"
              >
-                 <div>
-                     <h2 className="text-2xl font-montserrat font-bold text-[#0A2342] mb-8 flex items-center gap-3">
-                         <span className="w-8 h-[2px] bg-[#D4AF37]" /> The Vision
-                     </h2>
-                     <div className="prose prose-lg prose-slate max-w-none text-gray-600 font-light leading-relaxed whitespace-pre-line">
-                        {description ? (
-                            <ReactMarkdown>{description}</ReactMarkdown>
-                        ) : (
-                            <p>Exclusive details and full project vision are available upon request during a private consultation.</p>
-                        )}
-                     </div>
-                 </div>
-             </motion.div>
-
-             {/* --- 4. CAROUSEL RIBBON GALLERY --- */}
-             <div className="w-full space-y-4">
-                 {galleryUrls.length > 0 ? (
-                     <div className="flex gap-4 overflow-x-auto pb-4 snap-x snap-mandatory scrollbar-hide w-full" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
-                         {galleryUrls.map((url, i) => (
-                             <motion.div 
-                                key={url}
-                                layoutId={`gallery-${url}`}
-                                onClick={() => setSelectedImage(url)}
-                                className="relative flex-none w-64 aspect-[4/5] rounded-3xl overflow-hidden shadow-md bg-gray-200 snap-center cursor-pointer will-change-transform"
-                             >
-                                <Image src={url} alt={`Gallery ${i}`} fill sizes="(max-width: 768px) 100vw, 33vw" className="object-cover hover:scale-105 transition-transform duration-700 pointer-events-none" />
-                             </motion.div>
-                         ))}
-                     </div>
+                 {description ? (
+                    <div className="prose prose-xl md:prose-2xl prose-slate max-w-none text-[#0A2342]/80 font-light leading-[2.2] whitespace-pre-line tracking-wide 
+                                    first-letter:float-left first-letter:text-8xl first-letter:font-playfair first-letter:text-[#D4AF37] first-letter:mr-6 first-letter:-mt-2 first-letter:leading-none">
+                       <ReactMarkdown>{description}</ReactMarkdown>
+                    </div>
                  ) : (
-                     <div className="aspect-[4/3] rounded-3xl bg-gray-100 border border-dashed border-gray-300 flex items-center justify-center text-gray-400 text-sm">
-                         Gallery images coming soon.
-                     </div>
+                    <p className="text-3xl font-light text-[#0A2342]/50 italic font-playfair">Exclusive details and specific architectural vision are available upon request during a private consultation.</p>
                  )}
-                 {galleryUrls.length > 1 && (
-                     <p className="text-right text-[10px] uppercase font-bold tracking-widest text-gray-400 pt-2 flex items-center justify-end gap-2">
-                        ← Swipe to explore
-                     </p>
-                 )}
-             </div>
-
+             </motion.div>
           </div>
 
-          {/* --- 5. AVAILABLE RESIDENCES (Connected Properties) --- */}
-          <div id="available-units" className="mt-32 pt-20 border-t border-gray-200">
-              <div className="mb-12">
-                  <h2 className="text-3xl font-montserrat font-bold text-[#0A2342]">Available Residences</h2>
-                  <p className="text-gray-500 mt-2">Explore the individual units currently available within {title}.</p>
-              </div>
+          {/* --- 4. ASYMMETRICAL GALLERY --- */}
+          {galleryUrls.length > 0 && (
+             <div className="mb-48 md:mb-80 w-full overflow-hidden">
+                <div className="flex items-center gap-4 mb-16 max-w-6xl mx-auto">
+                   <div className="w-8 h-[1px] bg-[#0A2342]/20" />
+                   <p className="text-[10px] sm:text-xs font-bold uppercase tracking-[0.3em] text-[#0A2342]/40">Visual Portfolio</p>
+                </div>
+                
+                <div className="grid grid-cols-1 md:grid-cols-12 gap-8 md:gap-16">
+                   {galleryUrls.map((url, i) => {
+                      const isFirst = i % 4 === 0;
+                      const isSecond = i % 4 === 1;
+                      const isThird = i % 4 === 2;
+                      const isFourth = i % 4 === 3;
+
+                      let gridClass = "md:col-span-12 w-full aspect-[16/9]";
+                      if (isFirst) gridClass = "md:col-span-10 md:col-start-2 w-full aspect-[21/9]";
+                      else if (isSecond) gridClass = "md:col-span-5 md:col-start-1 w-full aspect-[4/5] md:mt-32";
+                      else if (isThird) gridClass = "md:col-span-5 md:col-start-7 w-full aspect-square";
+                      else if (isFourth) gridClass = "md:col-span-8 md:col-start-3 w-full aspect-[16/9] md:mt-24";
+
+                      return (
+                         <motion.div
+                           key={url}
+                           layoutId={`gallery-${url}`}
+                           initial={{ opacity: 0, scale: 0.95, filter: "blur(10px)" }}
+                           whileInView={{ opacity: 1, scale: 1, filter: "blur(0px)" }}
+                           viewport={{ once: true, margin: "-10%" }}
+                           transition={{ duration: 1.2, ease: [0.25, 1, 0.5, 1] }}
+                           className={`relative ${gridClass} cursor-zoom-in group rounded-[2rem] md:rounded-[4rem] overflow-hidden shadow-2xl z-10 isolate bg-[#0A2342]/5`}
+                           onClick={() => setSelectedImage(url)}
+                         >
+                            <div className="absolute inset-0 bg-[#0A2342]/10 z-10 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                            <motion.div
+                               whileHover={{ scale: 1.05 }}
+                               transition={{ duration: 1.5, ease: [0.25, 1, 0.5, 1] }}
+                               className="w-full h-full"
+                            >
+                               <Image 
+                                  src={url} 
+                                  alt={`Project Gallery ${i}`} 
+                                  fill 
+                                  sizes="(max-width: 768px) 100vw, 80vw" 
+                                  className="object-cover" 
+                               />
+                            </motion.div>
+                         </motion.div>
+                      );
+                   })}
+                </div>
+             </div>
+          )}
+
+          {/* --- 5. AVAILABLE RESIDENCES --- */}
+          <div id="available-units" className="scroll-mt-48 relative max-w-6xl mx-auto">
+              
+              <motion.div 
+                 initial={{ opacity: 0, y: 30 }}
+                 whileInView={{ opacity: 1, y: 0 }}
+                 viewport={{ once: true, margin: "-100px" }}
+                 transition={{ duration: 1, ease: "easeOut" }}
+                 className="flex flex-col items-center text-center mb-24"
+              >
+                  <span className="text-[#D4AF37] mb-8">
+                     <Building2 size={40} strokeWidth={1} />
+                  </span>
+                  <h2 className="text-4xl md:text-6xl font-playfair mb-6 text-[#0A2342]">Available Residences</h2>
+                  <p className="text-[#0A2342]/60 max-w-xl mx-auto font-light leading-relaxed text-lg">
+                     Explore the individual units currently available within the highly anticipated {title} development.
+                  </p>
+              </motion.div>
 
               {connectedProperties.length > 0 ? (
-                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                      {connectedProperties.map((rawProp: any) => {
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 gap-8 md:gap-12">
+                      {connectedProperties.map((rawProp: any, index: number) => {
                           const propData = rawProp.attributes || rawProp;
-                          // Standardize ID and Slug for the Card component
                           propData.id = rawProp.id;
-                          return <PropertyCard key={propData.id} p={propData} />;
+                          return (
+                             <motion.div
+                               key={propData.id}
+                               initial={{ opacity: 0, y: 40 }}
+                               whileInView={{ opacity: 1, y: 0 }}
+                               viewport={{ once: true, margin: "-50px" }}
+                               transition={{ duration: 0.8, delay: index * 0.1, ease: "easeOut" }}
+                             >
+                                <PropertyCard p={propData} />
+                             </motion.div>
+                          );
                       })}
                   </div>
               ) : (
-                  <div className="bg-white rounded-3xl p-12 text-center border border-gray-100 shadow-sm">
-                      <div className="w-16 h-16 bg-gray-50 rounded-full flex items-center justify-center mx-auto mb-4 text-gray-300">
-                          <Building2 size={24} />
+                  <motion.div 
+                    initial={{ opacity: 0, scale: 0.95 }}
+                    whileInView={{ opacity: 1, scale: 1 }}
+                    viewport={{ once: true }}
+                    transition={{ duration: 1, ease: "easeOut" }}
+                    className="bg-[#0A2342] rounded-[3rem] p-16 md:p-32 text-center shadow-2xl relative overflow-hidden isolate"
+                  >
+                      <div className="absolute inset-0 bg-[url('/assets/hero-poster.jpg')] bg-cover bg-center opacity-10 mix-blend-luminosity grayscale" />
+                      <div className="absolute inset-0 bg-gradient-to-t from-[#0A2342] via-[#0A2342]/80 to-transparent" />
+                      
+                      <div className="relative z-10">
+                          <div className="w-20 h-20 bg-white/5 backdrop-blur-md rounded-full flex items-center justify-center mx-auto mb-10 border border-[#D4AF37]/30 text-[#D4AF37] shadow-[0_0_30px_rgba(212,175,55,0.2)]">
+                              <Building2 size={32} />
+                          </div>
+                          <h3 className="text-3xl md:text-5xl font-playfair text-white mb-6">Pending Release</h3>
+                          <p className="text-white/60 font-light text-lg md:text-xl max-w-2xl mx-auto leading-relaxed">
+                              Specific residences for this signature development are currently being prepared for exclusive release to our VIP inner circle.
+                          </p>
                       </div>
-                      <h3 className="text-xl font-bold text-[#0A2342]">Units Pending Release</h3>
-                      <p className="text-gray-500 mt-2 max-w-md mx-auto">
-                          Specific residences for this project are currently being prepared for release. Register your interest to receive the floorplans first.
-                      </p>
-                  </div>
+                  </motion.div>
               )}
           </div>
-
-          {/* --- 6. CTA BANNER --- */}
-          <div className="mt-32 bg-[#0A2342] rounded-[3rem] p-10 md:p-16 text-center text-white relative overflow-hidden shadow-2xl">
-              <div className="absolute top-0 right-0 w-64 h-64 bg-[#D4AF37]/20 blur-[80px] rounded-full pointer-events-none" />
-              <div className="relative z-10">
-                  <h2 className="text-3xl md:text-4xl font-montserrat font-bold mb-4">Request the Full Brochure</h2>
-                  <p className="text-white/70 max-w-xl mx-auto mb-10">
-                      Receive complete floorplans, pricing matrices, and technical specifications for {title} directly to your inbox.
-                  </p>
-                  <a href={`mailto:info@tmsestates.com?subject=Inquiry regarding ${title}`} className="inline-flex items-center gap-3 bg-[#D4AF37] text-[#0A2342] px-10 py-4 rounded-full font-bold uppercase text-xs tracking-widest hover:bg-white transition-all shadow-[0_0_30px_rgba(212,175,55,0.3)] hover:scale-105">
-                     <Mail size={16} /> Contact Sales Team
-                  </a>
-              </div>
-          </div>
-
       </div>
 
       {/* --- LIGHTBOX OVERLAY --- */}
       <AnimatePresence>
         {selectedImage && (
           <motion.div 
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="fixed inset-0 z-50 flex items-center justify-center bg-black/95 p-4 md:p-12 cursor-zoom-out"
+            initial={{ opacity: 0, backdropFilter: "blur(0px)" }}
+            animate={{ opacity: 1, backdropFilter: "blur(20px)" }}
+            exit={{ opacity: 0, backdropFilter: "blur(0px)" }}
+            transition={{ duration: 0.6, ease: [0.25, 1, 0.5, 1] }}
+            className="fixed inset-0 z-50 flex items-center justify-center bg-[#0A2342]/80 p-4 md:p-12 cursor-zoom-out"
             onClick={() => setSelectedImage(null)}
           >
-             <button title="Close overlay" className="absolute top-6 right-6 md:top-10 md:right-10 text-white/50 hover:text-white z-[60] bg-black/50 p-4 rounded-full transition-colors backdrop-blur-sm">
-                <X size={24} />
+             <button title="Close overlay" className="absolute top-6 right-6 md:top-10 md:right-10 text-white/50 hover:text-[#D4AF37] z-[60] bg-white/5 hover:bg-white/10 border border-white/10 p-4 rounded-full transition-all flex items-center gap-2 group">
+                <span className="text-[10px] uppercase font-bold tracking-[0.2em] hidden md:block opacity-0 group-hover:opacity-100 transition-opacity -mr-2">Close</span>
+                <X size={20} />
              </button>
              <motion.div 
                 layoutId={`gallery-${selectedImage}`}
-                className="relative w-full h-full max-w-7xl max-h-[85vh] flex items-center justify-center pointer-events-none"
+                transition={{ duration: 0.8, ease: [0.25, 1, 0.5, 1] }}
+                className="relative w-full h-full max-w-screen-2xl max-h-[90vh] flex items-center justify-center pointer-events-none"
              >
-                <Image src={selectedImage} alt="Expanded preview" fill sizes="100vw" className="object-contain" priority />
+                <Image src={selectedImage} alt="Expanded preview" fill sizes="100vw" className="object-contain drop-shadow-[0_20px_50px_rgba(0,0,0,0.5)]" priority />
              </motion.div>
           </motion.div>
         )}
