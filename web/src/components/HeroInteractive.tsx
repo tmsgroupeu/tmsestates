@@ -45,7 +45,7 @@ export default function HeroInteractive() {
         >
           <motion.h1
             variants={itemVariants}
-            className="font-montserrat font-bold tracking-tight text-white text-5xl sm:text-6xl md:text-7xl xl:text-8xl drop-shadow-[0_10px_20px_rgba(0,0,0,0.5)] leading-[1.1] pb-2"
+            className="font-playfair tracking-tight text-white text-5xl sm:text-6xl md:text-7xl xl:text-8xl drop-shadow-[0_10px_20px_rgba(0,0,0,0.5)] leading-[1.1] pb-2"
           >
             Beyond Ordinary
             <br />

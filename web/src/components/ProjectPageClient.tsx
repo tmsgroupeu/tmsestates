@@ -1,11 +1,11 @@
 /* NEW FILE: src/components/ProjectPageClient.tsx */
 "use client";
 
-import { useRef } from 'react';
-import { motion, useScroll, useTransform } from 'framer-motion';
+import { useState, useRef } from 'react';
+import { motion, useScroll, useTransform, AnimatePresence } from 'framer-motion';
 import Image from "next/image";
 import Link from "next/link";
-import { MapPin, CalendarClock, ChevronLeft, Building2, Download, Mail } from "lucide-react";
+import { MapPin, CalendarClock, ChevronLeft, Building2, Download, Mail, X } from "lucide-react";
 import ReactMarkdown from 'react-markdown';
 import PropertyCard from './PropertyCard';
 
@@ -63,6 +63,9 @@ export default function ProjectPageClient({ project }: { project: any }) {
   const { scrollYProgress } = useScroll({ target: containerRef, offset: ["start start", "end start"] });
   const yHero = useTransform(scrollYProgress, [0, 1], ["0%", "50%"]);
   const opacityHero = useTransform(scrollYProgress, [0, 0.8], [1, 0]);
+
+  // Lightbox State
+  const [selectedImage, setSelectedImage] = useState<string | null>(null);
 
   return (
     <main ref={containerRef} className="min-h-screen bg-[#F9F9F9] font-sans pb-32">
@@ -146,7 +149,13 @@ export default function ProjectPageClient({ project }: { project: any }) {
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 mt-20">
              
              {/* --- 3. THE STORY (Description) --- */}
-             <div className="lg:col-span-7 space-y-12">
+             <motion.div 
+                 initial={{ opacity: 0, y: 30 }}
+                 whileInView={{ opacity: 1, y: 0 }}
+                 viewport={{ once: true, margin: "-100px" }}
+                 transition={{ duration: 0.8, ease: "easeOut" }}
+                 className="lg:col-span-7 space-y-12"
+             >
                  <div>
                      <h2 className="text-2xl font-montserrat font-bold text-[#0A2342] mb-8 flex items-center gap-3">
                          <span className="w-8 h-[2px] bg-[#D4AF37]" /> The Vision
@@ -159,16 +168,21 @@ export default function ProjectPageClient({ project }: { project: any }) {
                         )}
                      </div>
                  </div>
-             </div>
+             </motion.div>
 
-             {/* --- 4. ASYMMETRICAL GALLERY --- */}
+             {/* --- 4. CAROUSEL RIBBON GALLERY --- */}
              <div className="lg:col-span-5 space-y-4">
                  {galleryUrls.length > 0 ? (
-                     <div className="grid grid-cols-2 gap-4">
-                         {galleryUrls.slice(0, 3).map((url, i) => (
-                             <div key={i} className={`relative rounded-3xl overflow-hidden shadow-md bg-gray-200 ${i === 0 ? 'col-span-2 aspect-[4/3]' : 'col-span-1 aspect-square'}`}>
-                                <Image src={url} alt={`Gallery ${i}`} fill className="object-cover hover:scale-105 transition-transform duration-700" />
-                             </div>
+                     <div className="flex gap-4 overflow-x-auto pb-4 snap-x snap-mandatory scrollbar-hide w-full" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
+                         {galleryUrls.map((url, i) => (
+                             <motion.div 
+                                key={url}
+                                layoutId={`gallery-${url}`}
+                                onClick={() => setSelectedImage(url)}
+                                className="relative flex-none w-64 aspect-[4/5] rounded-3xl overflow-hidden shadow-md bg-gray-200 snap-center cursor-pointer will-change-transform"
+                             >
+                                <Image src={url} alt={`Gallery ${i}`} fill sizes="(max-width: 768px) 100vw, 33vw" className="object-cover hover:scale-105 transition-transform duration-700 pointer-events-none" />
+                             </motion.div>
                          ))}
                      </div>
                  ) : (
@@ -176,8 +190,10 @@ export default function ProjectPageClient({ project }: { project: any }) {
                          Gallery images coming soon.
                      </div>
                  )}
-                 {galleryUrls.length > 3 && (
-                     <p className="text-right text-xs text-gray-400 font-medium pt-2">+ {galleryUrls.length - 3} more images available on request.</p>
+                 {galleryUrls.length > 1 && (
+                     <p className="text-right text-[10px] uppercase font-bold tracking-widest text-gray-400 pt-2 flex items-center justify-end gap-2">
+                        ← Swipe to explore
+                     </p>
                  )}
              </div>
 
@@ -227,6 +243,30 @@ export default function ProjectPageClient({ project }: { project: any }) {
           </div>
 
       </div>
+
+      {/* --- LIGHTBOX OVERLAY --- */}
+      <AnimatePresence>
+        {selectedImage && (
+          <motion.div 
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-50 flex items-center justify-center bg-black/95 p-4 md:p-12 cursor-zoom-out"
+            onClick={() => setSelectedImage(null)}
+          >
+             <button title="Close overlay" className="absolute top-6 right-6 md:top-10 md:right-10 text-white/50 hover:text-white z-[60] bg-black/50 p-4 rounded-full transition-colors backdrop-blur-sm">
+                <X size={24} />
+             </button>
+             <motion.div 
+                layoutId={`gallery-${selectedImage}`}
+                className="relative w-full h-full max-w-7xl max-h-[85vh] flex items-center justify-center pointer-events-none"
+             >
+                <Image src={selectedImage} alt="Expanded preview" fill sizes="100vw" className="object-contain" priority />
+             </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
     </main>
   );
 }

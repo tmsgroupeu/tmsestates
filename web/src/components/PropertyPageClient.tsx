@@ -1,10 +1,11 @@
 /* FULL REPLACEMENT: src/components/PropertyPageClient.tsx */
 "use client";
 
-import { motion, Variants } from 'framer-motion';
+import { useState } from 'react';
+import { motion, Variants, AnimatePresence } from 'framer-motion';
 import Image from "next/image";
 import Link from "next/link";
-import { Bath, BedDouble, Ruler, MapPin, Crown, Calendar, Phone, Mail, House } from "lucide-react";
+import { Bath, BedDouble, Ruler, MapPin, Crown, Calendar, Phone, Mail, House, X } from "lucide-react";
 
 // --- Type Definitions ---
 type StrapiMedia = { url: string; alternativeText?: string };
@@ -71,6 +72,7 @@ const StatCard = ({ icon: Icon, label, value }: { icon: React.ComponentType<{ cl
 };
 
 export default function PropertyPageClient({ property }: { property: Property }) {
+  const [selectedImage, setSelectedImage] = useState<string | null>(null);
   if (!property) {
     return <div className="min-h-screen flex items-center justify-center text-gray-500">Property not found.</div>;
   }
@@ -82,8 +84,8 @@ export default function PropertyPageClient({ property }: { property: Property })
 
   return (
     <motion.main
-      className="min-h-screen bg-[#F9F9F9]"
-      initial="hidden" animate="visible" variants={{ visible: { transition: { staggerChildren: 0.1 } } }}
+      className="min-h-screen bg-[#F9F9F9] overflow-x-hidden"
+      initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.1 }} variants={{ visible: { transition: { staggerChildren: 0.1 } } }}
     >
       {/* Hero */}
       {heroImage && (
@@ -158,24 +160,29 @@ export default function PropertyPageClient({ property }: { property: Property })
             {galleryImages.length > 0 && (
               <motion.section variants={sectionVariants}>
                 <h2 className="text-2xl font-bold font-montserrat text-[#0A2342] mb-6">Gallery</h2>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="flex gap-4 overflow-x-auto pb-4 snap-x snap-mandatory scrollbar-hide w-full" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
                   {galleryImages.map((img, i) => (
-                    <div 
-                        key={i} 
-                        className={`relative overflow-hidden rounded-2xl bg-gray-200 aspect-[4/3] group ${
-                            i === 0 || i % 3 === 0 ? 'md:col-span-2 aspect-[16/9]' : ''
-                        }`}
+                    <motion.div 
+                        key={img.url}
+                        layoutId={`property-gallery-${img.url}`}
+                        onClick={() => setSelectedImage(img.url)}
+                        className="relative flex-none w-64 md:w-80 aspect-[4/3] overflow-hidden rounded-2xl bg-gray-200 snap-center cursor-pointer will-change-transform"
                     >
                       <Image 
                         src={img.url} 
                         alt={img.alt} 
                         fill 
-                        className="object-cover transition-transform duration-700 group-hover:scale-105"
-                        sizes="(min-width: 1024px) 60vw, 100vw"
+                        className="object-cover transition-transform duration-700 hover:scale-105 pointer-events-none"
+                        sizes="(max-width: 768px) 100vw, 33vw"
                       />
-                    </div>
+                    </motion.div>
                   ))}
                 </div>
+                {galleryImages.length > 1 && (
+                     <p className="text-right text-[10px] uppercase font-bold tracking-widest text-gray-400 pt-2 flex items-center justify-end gap-2">
+                        ← Swipe to explore
+                     </p>
+                 )}
               </motion.section>
             )}
           </div>
@@ -220,6 +227,30 @@ export default function PropertyPageClient({ property }: { property: Property })
 
         </div>
       </div>
+
+      {/* --- LIGHTBOX OVERLAY --- */}
+      <AnimatePresence>
+        {selectedImage && (
+          <motion.div 
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-[100] flex items-center justify-center bg-black/95 p-4 md:p-12 cursor-zoom-out"
+            onClick={() => setSelectedImage(null)}
+          >
+             <button title="Close overlay" className="absolute top-6 right-6 md:top-10 md:right-10 text-white/50 hover:text-white z-[110] bg-black/50 p-4 rounded-full transition-colors backdrop-blur-sm">
+                <X size={24} />
+             </button>
+             <motion.div 
+                layoutId={`property-gallery-${selectedImage}`}
+                className="relative w-full h-full max-w-7xl max-h-[85vh] flex items-center justify-center pointer-events-none"
+             >
+                <Image src={selectedImage} alt="Expanded preview" fill sizes="100vw" className="object-contain" priority />
+             </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
     </motion.main>
   );
 }

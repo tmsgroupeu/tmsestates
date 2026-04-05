@@ -22,6 +22,10 @@ body {
   font-family: var(--font-inter);
 }
 
+.font-playfair {
+  font-family: var(--font-playfair), serif;
+}
+
 /* --- TEXTURES --- */
 .bg-noise {
   position: fixed;
