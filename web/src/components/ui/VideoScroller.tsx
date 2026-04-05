@@ -44,25 +44,35 @@ export default function VideoScroller() {
     video.defaultMuted = true;
     video.muted = true;
 
-    // --- DESKTOP LOGIC ---
-    if (!isMobile) {
-      video.pause();
-      
-      const updateVideo = (latest: number) => {
-        if (video.duration && !isNaN(video.duration)) {
-          const targetTime = video.duration * latest;
-          if (Number.isFinite(targetTime)) {
-            video.currentTime = targetTime;
-          }
-        }
-      };
-
-      const unsubscribe = smoothProgress.on("change", updateVideo);
-      return () => unsubscribe();
-    }
-    
     // --- MOBILE LOGIC ---
-    // On mobile, let the video play naturally loop in background
+    if (isMobile) {
+      if (video.paused) {
+        video.play().catch(e => console.error("Mobile autoplay block:", e));
+      }
+      return;
+    }
+
+    // --- DESKTOP LOGIC ---
+    video.pause();
+    
+    let rafId: number;
+    const updateVideo = (latest: number) => {
+      if (video.duration && !isNaN(video.duration)) {
+        const targetTime = video.duration * latest;
+        if (Number.isFinite(targetTime) && Math.abs(video.currentTime - targetTime) > 0.05) {
+          if (rafId) cancelAnimationFrame(rafId);
+          rafId = requestAnimationFrame(() => {
+             video.currentTime = targetTime;
+          });
+        }
+      }
+    };
+
+    const unsubscribe = smoothProgress.on("change", updateVideo);
+    return () => {
+       unsubscribe();
+       if (rafId) cancelAnimationFrame(rafId);
+    };
     
   }, [smoothProgress, isMobile]);
 

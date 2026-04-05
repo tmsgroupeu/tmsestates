@@ -7,6 +7,17 @@ export default function ScrollyVideo() {
   const containerRef = useRef<HTMLDivElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
   const [duration, setDuration] = useState(0);
+  const [isMobile, setIsMobile] = useState(false);
+
+  // Detect Mobile
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.matchMedia("(max-width: 1024px)").matches);
+    };
+    checkMobile();
+    window.addEventListener("resize", checkMobile);
+    return () => window.removeEventListener("resize", checkMobile);
+  }, []);
 
   const { scrollYProgress } = useScroll();
 
@@ -30,16 +41,33 @@ export default function ScrollyVideo() {
     }
   }, []);
 
+  useEffect(() => {
+    const video = videoRef.current;
+    if (!video) return;
+    
+    // Mobile fallback to autoplaying loop to avoid CPU drop
+    if (isMobile) {
+      if (video.paused) {
+        video.play().catch(e => console.error(e));
+      }
+    } else {
+      video.pause();
+    }
+  }, [isMobile]);
+
   // ✅ PERFORMANCE LOOP: Only update frame when scroll value actually changes
   useMotionValueEvent(smoothProgress, "change", (latest) => {
+    if (isMobile) return; // Disallow scrubbing on mobile completely
+
     if (videoRef.current && duration) {
       // Clamp value between 0 and duration
       const target = Math.max(0, Math.min(latest * duration, duration));
       
       // Check if the difference is significant enough to warrant a frame update
-      // to save CPU cycles
       if (Math.abs(videoRef.current.currentTime - target) > 0.05) {
-         videoRef.current.currentTime = target;
+         requestAnimationFrame(() => {
+             if (videoRef.current) videoRef.current.currentTime = target;
+         });
       }
     }
   });
