@@ -98,12 +98,13 @@ export default function ProjectPageClient({ project }: { project: any }) {
                   initial={{ opacity: 0, y: 30 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 1, delay: 0.5, ease: "easeOut" }}
+                  className="max-w-5xl"
                 >
-                  <Link href="/properties" className="inline-flex items-center gap-2 text-[10px] sm:text-xs font-bold uppercase tracking-[0.3em] text-white/50 hover:text-[#D4AF37] transition-colors mb-8">
+                  <Link href="/properties" className="inline-flex items-center gap-2 text-[10px] sm:text-xs font-bold uppercase tracking-[0.3em] text-white/50 hover:text-[#D4AF37] transition-colors mb-6">
                      <ChevronLeft size={16} /> The Portfolio
                   </Link>
                   
-                  <h1 className="text-5xl md:text-7xl lg:text-9xl font-montserrat font-extrabold text-white drop-shadow-2xl leading-[1.05] tracking-tight mb-6 w-full max-w-5xl">
+                  <h1 className="text-4xl md:text-5xl lg:text-7xl font-playfair font-bold text-white drop-shadow-2xl leading-[1.15] mb-6 w-full">
                       {title}
                   </h1>
                 </motion.div>
@@ -175,55 +176,47 @@ export default function ProjectPageClient({ project }: { project: any }) {
              </motion.div>
           </div>
 
-          {/* --- 4. ASYMMETRICAL GALLERY --- */}
+          {/* --- 4. INFINITE SCROLLING GALLERY --- */}
           {galleryUrls.length > 0 && (
-             <div className="mb-48 md:mb-80 w-full overflow-hidden">
-                <div className="flex items-center gap-4 mb-16 max-w-6xl mx-auto">
-                   <div className="w-8 h-[1px] bg-[#0A2342]/20" />
-                   <p className="text-[10px] sm:text-xs font-bold uppercase tracking-[0.3em] text-[#0A2342]/40">Visual Portfolio</p>
+             <div className="mb-32 md:mb-60 w-full overflow-hidden">
+                <div className="flex items-center gap-4 mb-16 max-w-6xl mx-auto px-6">
+                   <div className="w-12 h-[2px] bg-[#D4AF37]" />
+                   <h2 className="text-2xl md:text-4xl font-montserrat font-bold text-[#0A2342] bg-clip-text">Gallery Overview</h2>
                 </div>
                 
-                <div className="grid grid-cols-1 md:grid-cols-12 gap-8 md:gap-16">
-                   {galleryUrls.map((url, i) => {
-                      const isFirst = i % 4 === 0;
-                      const isSecond = i % 4 === 1;
-                      const isThird = i % 4 === 2;
-                      const isFourth = i % 4 === 3;
+                <div className="relative w-full flex overflow-hidden group">
+                   <motion.div 
+                      animate={{ x: ["0%", "-50%"] }}
+                      transition={{ ease: "linear", duration: 60, repeat: Infinity }}
+                      className="flex gap-6 md:gap-10 items-center w-max pr-6 md:pr-10"
+                   >
+                      {[...galleryUrls, ...galleryUrls, ...galleryUrls, ...galleryUrls, ...galleryUrls, ...galleryUrls, ...galleryUrls, ...galleryUrls].map((url, i) => {
+                          const isFull = i % 3 === 0;
+                          const isPortrait = i % 3 === 1;
+                          const isSquare = i % 3 === 2;
 
-                      let gridClass = "md:col-span-12 w-full aspect-[16/9]";
-                      if (isFirst) gridClass = "md:col-span-10 md:col-start-2 w-full aspect-[21/9]";
-                      else if (isSecond) gridClass = "md:col-span-5 md:col-start-1 w-full aspect-[4/5] md:mt-32";
-                      else if (isThird) gridClass = "md:col-span-5 md:col-start-7 w-full aspect-square";
-                      else if (isFourth) gridClass = "md:col-span-8 md:col-start-3 w-full aspect-[16/9] md:mt-24";
+                          let aspectClass = "w-[80vw] md:w-[50vw] lg:w-[40vw] aspect-[16/9]";
+                          if (isPortrait) aspectClass = "w-[60vw] md:w-[35vw] lg:w-[25vw] aspect-[4/5]";
+                          else if (isSquare) aspectClass = "w-[60vw] md:w-[40vw] lg:w-[30vw] aspect-square";
 
-                      return (
-                         <motion.div
-                           key={url}
-                           layoutId={`gallery-${url}`}
-                           initial={{ opacity: 0, scale: 0.95, filter: "blur(10px)" }}
-                           whileInView={{ opacity: 1, scale: 1, filter: "blur(0px)" }}
-                           viewport={{ once: true, margin: "-10%" }}
-                           transition={{ duration: 1.2, ease: [0.25, 1, 0.5, 1] }}
-                           className={`relative ${gridClass} cursor-zoom-in group rounded-[2rem] md:rounded-[4rem] overflow-hidden shadow-2xl z-10 isolate bg-[#0A2342]/5`}
-                           onClick={() => setSelectedImage(url)}
-                         >
-                            <div className="absolute inset-0 bg-[#0A2342]/10 z-10 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-                            <motion.div
-                               whileHover={{ scale: 1.05 }}
-                               transition={{ duration: 1.5, ease: [0.25, 1, 0.5, 1] }}
-                               className="w-full h-full"
-                            >
-                               <Image 
-                                  src={url} 
-                                  alt={`Project Gallery ${i}`} 
-                                  fill 
-                                  sizes="(max-width: 768px) 100vw, 80vw" 
-                                  className="object-cover" 
-                               />
-                            </motion.div>
-                         </motion.div>
-                      );
-                   })}
+                          return (
+                             <div 
+                               key={`${url}-${i}`}
+                               className={`relative ${aspectClass} rounded-2xl md:rounded-3xl overflow-hidden shadow-[0_10px_30px_rgba(0,0,0,0.1)] flex-shrink-0 cursor-zoom-in isolate group/item hover:!opacity-100 group-hover:opacity-60 transition-opacity duration-300`}
+                               onClick={() => setSelectedImage(url)}
+                             >
+                                <div className="absolute inset-0 bg-[#0A2342]/5 z-10 pointer-events-none group-hover/item:bg-transparent transition-colors duration-500" />
+                                <Image 
+                                   src={url}
+                                   alt={`Gallery item ${i}`}
+                                   fill
+                                   sizes="(max-width: 768px) 80vw, 40vw"
+                                   className="object-cover transition-transform duration-[1500ms] group-hover/item:scale-105"
+                                />
+                             </div>
+                          );
+                      })}
+                   </motion.div>
                 </div>
              </div>
           )}
@@ -306,8 +299,10 @@ export default function ProjectPageClient({ project }: { project: any }) {
                 <X size={20} />
              </button>
              <motion.div 
-                layoutId={`gallery-${selectedImage}`}
-                transition={{ duration: 0.8, ease: [0.25, 1, 0.5, 1] }}
+                initial={{ opacity: 0, scale: 0.95 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0, scale: 0.95 }}
+                transition={{ duration: 0.4, ease: "easeOut" }}
                 className="relative w-full h-full max-w-screen-2xl max-h-[90vh] flex items-center justify-center pointer-events-none"
              >
                 <Image src={selectedImage} alt="Expanded preview" fill sizes="100vw" className="object-contain drop-shadow-[0_20px_50px_rgba(0,0,0,0.5)]" priority />
