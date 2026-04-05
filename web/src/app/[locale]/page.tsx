@@ -6,7 +6,7 @@ import WhyChooseUs from "@/components/sections/WhyChooseUs";
 import OurProjects from "@/components/OurProjects"; // ✅ Swapped Component
 import MarketInsights from "@/components/sections/MarketInsights";
 import LimassolAdvantage from "@/components/LimassolAdvantage";
-import TestimonialsGlass from "@/components/Testimonials";
+import PrivateCollection from "@/components/PrivateCollection";
 import InsightsAndWhy from "@/components/sections/InsightsAndWhy";
 import CTAContact from "@/components/CTAContact";
 
@@ -62,7 +62,7 @@ export default function Home() {
         {/* ✅ FIX: Changed ID to "invest" to match Header navigation */}
         <div id="invest" className="w-full max-w-7xl px-6 space-y-40 mb-40 scroll-mt-32">
            <LimassolAdvantage />
-           <TestimonialsGlass />
+           <PrivateCollection />
         </div>
 
         {/* FOOTER AREA
