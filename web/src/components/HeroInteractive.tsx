@@ -67,9 +67,9 @@ export default function HeroInteractive() {
             className="mt-10 md:mt-12 flex w-full justify-center"
           >
             <Link
-              href="/#projects"
-              className="group relative overflow-hidden rounded-full bg-white px-10 py-5 text-sm font-bold uppercase tracking-widest text-[#0A2342] transition-all duration-300 hover:scale-105 hover:shadow-[0_0_40px_rgba(255,255,255,0.4)] text-center shadow-xl"
-            >
+  href="#projects"
+  className="group relative overflow-hidden rounded-full bg-white px-10 py-5 text-sm font-bold uppercase tracking-widest text-[#0A2342] transition-all duration-300 hover:scale-105 hover:shadow-[0_0_40px_rgba(255,255,255,0.4)] text-center shadow-xl"
+>
               <span className="relative z-10 flex items-center justify-center gap-3">
                 Explore Our Projects
                 <ArrowRight className="h-5 w-5 transition-transform group-hover:translate-x-1" />
