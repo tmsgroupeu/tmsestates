@@ -47,10 +47,11 @@ export default function HeroInteractive() {
             variants={itemVariants}
             className="font-montserrat font-bold tracking-tight text-white text-5xl sm:text-6xl md:text-7xl xl:text-8xl drop-shadow-[0_10px_20px_rgba(0,0,0,0.5)] leading-[1.1] pb-2"
           >
-            Beyond Ordinary
+            Strategic Development.
             <br />
+            Enduring{" "}
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#FBF5E8] via-[#D4AF37] to-[#AA8C2C]">
-              Estates
+              Value.
             </span>
           </motion.h1>
 
@@ -58,8 +59,8 @@ export default function HeroInteractive() {
             variants={itemVariants}
             className="mt-6 md:mt-8 max-w-2xl mx-auto text-lg md:text-xl font-light text-white/90 leading-relaxed drop-shadow-md"
           >
-            Discover a curated portfolio of prestigious residences and high-yield investments 
-            in the Mediterranean&apos;s most dynamic metropolis.
+            Creating contemporary residential and mixed-use developments 
+            designed for long-term value across Cyprus
           </motion.p>
 
           <motion.div
@@ -68,7 +69,7 @@ export default function HeroInteractive() {
           >
             <Link
   href="#projects"
-  className="group relative overflow-hidden rounded-full bg-white px-10 py-5 text-sm font-bold uppercase tracking-widest text-[#0A2342] transition-all duration-300 hover:scale-105 hover:shadow-[0_0_40px_rgba(255,255,255,0.4)] text-center shadow-xl"
+  className="group relative overflow-hidden rounded-full bg-[#EADDCC] px-10 py-5 text-sm font-bold uppercase tracking-widest text-[#111111] transition-all duration-300 hover:scale-105 hover:shadow-[0_0_40px_rgba(212,175,55,0.4)] text-center shadow-xl"
 >
               <span className="relative z-10 flex items-center justify-center gap-3">
                 Explore Our Projects
