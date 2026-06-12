@@ -14,7 +14,7 @@ export default function Footer() {
   };
 
   return (
-    <footer id="page-footer" className="bg-[#0A2342] text-white/70 relative z-20">
+    <footer id="page-footer" className="bg-[#111111] text-white/70 relative z-20">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-12">
             
             {/* Top Row: Logo & Socials */}
@@ -49,7 +49,7 @@ export default function Footer() {
 
                     {/* ✅ NEW AI ASSISTANT BUTTON IN FOOTER */}
                     <button onClick={openAIChat} className="footer-bubble group">
-                        <div className="icon-circle bg-[#D4AF37] text-[#0A2342] group-hover:bg-white">
+                        <div className="icon-circle bg-[#D4AF37] text-[#111111] group-hover:bg-white">
                             <Bot size={20} />
                         </div>
                         <span className="text-[#D4AF37] group-hover:text-white transition-colors">AI Assistant</span>
@@ -79,7 +79,7 @@ export default function Footer() {
               transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
            }
            .group:hover .icon-circle {
-              background: #D4AF37; color: #0A2342; transform: scale(1.1);
+              background: #D4AF37; color: #111111; transform: scale(1.1);
            }
         `}</style>
     </footer>

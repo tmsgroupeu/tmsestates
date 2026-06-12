@@ -15,22 +15,22 @@ export default function Home() {
       <div className="relative z-10 w-full flex flex-col items-center">
         
         {/* HERO */}
-        <div className="h-screen w-full flex items-center justify-center mb-10">
+        <div className="h-screen w-full flex items-center justify-center">
           <HeroInteractive />
         </div>
 
         {/* WHO WE ARE */}
-        <div className="w-full mb-20">
+        <div className="w-full">
            <WhoWeAre />
         </div>
 
         {/* PROJECTS */}
-        <div id="projects" className="w-full max-w-7xl px-6 mt-20 mb-40 scroll-mt-32">
+        <div id="projects" className="w-full scroll-mt-32">
            <OurProjects />
         </div>
 
         {/* DOOR OPENING GAP */}
-        <div className="w-full py-40 md:py-60 flex flex-col items-center justify-center text-center">
+        <div className="w-full py-32 md:py-40 flex flex-col items-center justify-center text-center border-b border-white/10 bg-black/20">
            <div className="mb-12">
               <h2 className="text-4xl md:text-6xl font-montserrat font-bold text-white drop-shadow-2xl">
                  Welcome Home.
@@ -42,12 +42,12 @@ export default function Home() {
         </div>
 
         {/* LISTINGS CAROUSEL */}
-        <div id="portfolio" className="w-full mb-40 scroll-mt-32">
+        <div id="portfolio" className="w-full bg-black/40 backdrop-blur-md border-b border-white/10 py-20 scroll-mt-32">
            <MarketInsights />
         </div>
         
         {/* CONTACT FORM */}
-        <div id="contact" className="w-full max-w-7xl px-6 mb-40 scroll-mt-32">
+        <div id="contact" className="w-full scroll-mt-32">
            <ContactSection />
         </div>
 

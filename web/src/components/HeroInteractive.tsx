@@ -59,8 +59,7 @@ export default function HeroInteractive() {
             variants={itemVariants}
             className="mt-6 md:mt-8 max-w-2xl mx-auto text-lg md:text-xl font-light text-white/90 leading-relaxed drop-shadow-md"
           >
-            Creating contemporary residential and mixed-use developments 
-            designed for long-term value across Cyprus
+            TMS Estates is a Cyprus-based real estate development company creating contemporary residential and mixed-use properties in carefully selected locations.
           </motion.p>
 
           <motion.div

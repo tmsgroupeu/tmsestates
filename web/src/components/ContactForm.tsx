@@ -62,7 +62,7 @@ export default function ContactForm({ projects }: { projects: { id: string | num
         type="submit" 
         className="w-full bg-[#D4AF37] hover:bg-[#B8860B] text-white font-bold uppercase tracking-widest p-4 rounded-md transition-colors mt-4"
       >
-        Submit Inquiry
+        Contact Us
       </button>
       
       {status && (

@@ -75,26 +75,33 @@ export default async function OurProjects() {
   });
 
   return (
-    <section className="relative z-10 mx-auto max-w-[1400px] px-4 md:px-6 w-full">
-      
-      {/* --- HEADER --- */}
-      <div className="mb-8 md:mb-10 text-center md:text-left max-w-7xl mx-auto">
-        <div className="inline-flex items-center gap-2 rounded-full border border-[#D4AF37]/30 bg-[#D4AF37]/10 px-3 py-1 text-[9px] font-bold uppercase tracking-[0.2em] text-[#D4AF37] mb-4 backdrop-blur-md">
-          <Building2 className="h-3 w-3" />
-          Signature Developments
+    <section className="relative z-10 w-full bg-black/40 backdrop-blur-md border-t border-b border-white/10 py-20">
+      <div className="mx-auto max-w-[1400px] px-4 md:px-6 w-full">
+        
+        {/* --- HEADER --- */}
+        <div className="mb-12 text-center max-w-3xl mx-auto">
+          <h2 className="text-3xl md:text-5xl font-bold font-montserrat text-white drop-shadow-xl mb-6">
+            Signature Developments
+          </h2>
+          <p className="text-white/80 text-lg font-light leading-relaxed">
+            Discover a portfolio of residential developments across Cyprus, each carefully planned to meet the needs of today's buyers while supporting future growth and investment potential.
+          </p>
         </div>
-        <div className="flex items-center justify-between">
-            <h2 className="text-3xl md:text-4xl font-bold font-montserrat text-white drop-shadow-xl">
-              Our Projects
-            </h2>
-            <div className="hidden md:block w-32 h-[1px] bg-gradient-to-r from-[#D4AF37] to-transparent" />
+
+        {/* --- INTERACTIVE CAROUSEL --- */}
+        <OurProjectsClient projects={cleanProjects} />
+
+        {/* --- CTA --- */}
+        <div className="mt-16 flex justify-center">
+            <a href="/properties" className="group inline-flex items-center gap-3 text-white font-bold uppercase tracking-widest text-sm bg-white/5 hover:bg-[#D4AF37] border border-white/20 hover:border-[#D4AF37] transition-all px-8 py-4 rounded-full">
+               View All Projects
+               <svg className="h-4 w-4 transition-transform group-hover:translate-x-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" />
+               </svg>
+            </a>
         </div>
+
       </div>
-
-      {/* --- INTERACTIVE CAROUSEL --- */}
-      {/* This renders the animated client component we built previously */}
-      <OurProjectsClient projects={cleanProjects} />
-
     </section>
   );
 }
