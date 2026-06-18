@@ -1,87 +1,83 @@
-/* FULL REPLACEMENT: src/components/sections/WhyChooseUs.tsx */
 "use client";
 
-import { ShieldCheck, Handshake, Sparkles, MapPinned, ArrowRight } from "lucide-react";
+import { Building2, Hammer, LayoutTemplate, TrendingUp, ArrowRight } from "lucide-react";
 import { motion } from "framer-motion";
 import { Link } from "@/i18n/routing";
 
 const points = [
   {
-    icon: ShieldCheck,
-    title: "Trusted Advisory",
-    desc: "Rigorous due diligence and transparent guidance.",
+    icon: Building2,
+    title: "Prime Locations",
+    desc: "Carefully selected locations with strong long-term growth potential.",
   },
   {
-    icon: Handshake,
-    title: "Exclusive Network",
-    desc: "Access to private & off-market listings.",
+    icon: Hammer,
+    title: "Quality Construction",
+    desc: "Built to high standards with attention to detail at every stage.",
   },
   {
-    icon: Sparkles,
-    title: "Curated Portfolio",
-    desc: "Design-forward properties with enduring value.",
+    icon: LayoutTemplate,
+    title: "Thoughtful Design",
+    desc: "Contemporary spaces designed for functionality, comfort and modern living.",
   },
   {
-    icon: MapPinned,
-    title: "Island-Wide",
-    desc: "Expertise in Limassol, Larnaca & Paphos.",
+    icon: TrendingUp,
+    title: "Long-Term Value",
+    desc: "Developments created to retain their appeal and relevance for years to come.",
   },
 ];
 
 export default function WhyChooseUs() {
   return (
-    <section className="relative z-10 w-full max-w-7xl mx-auto px-6">
-      
-      <motion.div
-        initial={{ opacity: 0, y: 30 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true }}
-        transition={{ duration: 0.8 }}
-      >
-        {/* 1. COMPACT GLASS DASHBOARD */}
-        {/* A single unified glass container for all 4 points. Space efficient. */}
-        <div className="apple-glass rounded-3xl p-8 md:p-10 border border-white/10 shadow-2xl backdrop-blur-xl">
-           
-           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-8 md:gap-4 divide-y sm:divide-y-0 sm:divide-x divide-white/10">
-              
-              {points.map((p, i) => (
-                <div key={i} className="flex flex-col items-center text-center px-4 pt-4 sm:pt-0">
-                    
-                    {/* Icon Circle */}
-                    <div className="mb-4 inline-flex items-center justify-center rounded-full bg-white/5 p-3 text-[#D4AF37] ring-1 ring-white/10 shadow-inner group-hover:scale-110 transition-transform duration-300">
-                       <p.icon className="size-6" strokeWidth={1.5} />
-                    </div>
+    <section className="relative z-10 w-full">
+      <div className="relative z-10 grid grid-cols-1 lg:grid-cols-[0.95fr_1.35fr] gap-10 lg:gap-16 items-stretch">
+        <motion.div
+          initial={{ opacity: 0, y: 28 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: "-120px" }}
+          transition={{ duration: 0.75 }}
+          className="flex flex-col justify-between p-3 md:p-5"
+        >
+          <div>
+            <p className="lux-eyebrow mb-6">Developing Properties with Purpose</p>
+            <h2 className="font-montserrat text-4xl md:text-6xl font-bold leading-[1.02] tracking-[-0.04em] text-[var(--ivory)]">
+              Developing Properties <span className="text-[var(--gold)]">with Purpose</span>
+            </h2>
+            <p className="lux-copy mt-7 max-w-xl">
+              Every project is guided by careful evaluation, ensuring the right location, market demand and long-term potential.
+            </p>
+          </div>
 
-                    {/* Text */}
-                    <h3 className="text-sm font-bold font-montserrat text-white mb-2">
-                       {p.title}
-                    </h3>
-                    <p className="text-xs text-white/60 leading-relaxed max-w-[200px]">
-                       {p.desc}
-                    </p>
+          <Link href="/about" className="lux-btn group mt-10 w-fit">
+            About TMS Estates
+            <ArrowRight className="ml-3 h-4 w-4 transition-transform group-hover:translate-x-1" />
+          </Link>
+        </motion.div>
 
-                </div>
-              ))}
-
-           </div>
-
-        </div>
-
-        {/* 2. CENTERED FLOATING CTA */}
-        <div className="mt-10 flex justify-center">
-            <Link 
-                href="/about"
-                className="group relative overflow-hidden rounded-full bg-white px-8 py-3.5 text-xs font-bold uppercase tracking-[0.2em] text-[#0A2342] shadow-[0_0_20px_rgba(255,255,255,0.2)] transition-all hover:scale-105 hover:shadow-[0_0_30px_rgba(212,175,55,0.4)]"
+        <div className="grid grid-cols-1 sm:grid-cols-2 border border-[rgba(245,240,232,0.10)] bg-[rgba(5,7,11,0.24)] rounded-[1.5rem] overflow-hidden">
+          {points.map((p, i) => (
+            <motion.div
+              key={p.title}
+              initial={{ opacity: 0, y: 24 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, margin: "-120px" }}
+              transition={{ duration: 0.65, delay: i * 0.08 }}
+              className="group relative p-7 md:p-9 min-h-[240px] border-b sm:border-r border-[rgba(245,240,232,0.10)] last:border-b-0 sm:[&:nth-child(2n)]:border-r-0 sm:[&:nth-child(n+3)]:border-b-0 hover:bg-[rgba(194,161,57,0.08)] transition-colors duration-500"
             >
-                <span className="relative z-10 flex items-center gap-3">
-                   Who We Are
-                   <ArrowRight size={14} className="transition-transform group-hover:translate-x-1" />
-                </span>
-            </Link>
+              <div className="mb-8 inline-flex h-12 w-12 items-center justify-center rounded-full bg-[rgba(245,240,232,0.08)] text-[var(--gold)] ring-1 ring-[rgba(245,240,232,0.10)] group-hover:scale-110 transition-transform duration-500">
+                <p.icon className="size-5" strokeWidth={1.5} />
+              </div>
+              <p className="mb-3 text-[10px] font-bold uppercase tracking-[0.24em] text-[var(--stone)]">0{i + 1}</p>
+              <h3 className="font-montserrat text-xl font-bold text-[var(--ivory)] mb-4 uppercase tracking-[-0.02em]">
+                {p.title}
+              </h3>
+              <p className="text-sm leading-relaxed text-[rgba(245,240,232,0.68)]">
+                {p.desc}
+              </p>
+            </motion.div>
+          ))}
         </div>
-
-      </motion.div>
-
+      </div>
     </section>
   );
 }

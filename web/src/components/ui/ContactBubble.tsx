@@ -12,7 +12,7 @@ import Link from 'next/link';
 const channels = [
 
   { href: 'https://wa.me/99875500', icon: MessageCircle, label: 'WhatsApp' },
-  { href: 'https://t.me/YOUR_TELEGRAM_USERNAME', icon: Send, label: 'Telegram' },
+  { href: 'mailto:info@tmsestates.com', icon: Send, label: 'Email Us' },
   { href: 'mailto:info@tmsestates.com', icon: Mail, label: 'Email' },
 ];
 
@@ -64,13 +64,13 @@ export default function ContactBubble({ footerId }: { footerId: string }) {
                     href={channel.href}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="flex items-center gap-3 bg-white pl-4 pr-5 py-2 rounded-full shadow-lg group hover:bg-muted transition-colors"
+                    className="flex items-center gap-3 bg-[var(--ivory)] pl-4 pr-5 py-2 rounded-full shadow-lg group hover:bg-muted transition-colors"
                     variants={{ visible: { opacity: 1, x: 0 }, hidden: { opacity: 0, x: 20 } }}
                     whileHover={{ scale: 1.05 }}
                     aria-label={`Contact via ${channel.label}`}
                   >
-                    <span className="text-sm font-semibold text-navy">{channel.label}</span>
-                    <channel.icon className="w-5 h-5 text-navy" />
+                    <span className="text-sm font-semibold text-[var(--brand-black)]">{channel.label}</span>
+                    <channel.icon className="w-5 h-5 text-[var(--brand-black)]" />
                   </motion.a>
                 ))}
               </motion.div>
@@ -80,7 +80,7 @@ export default function ContactBubble({ footerId }: { footerId: string }) {
           {/* Main Toggle Button */}
           <motion.button
             onClick={() => setIsOpen(!isOpen)}
-            className="w-16 h-16 bg-gold text-navy rounded-full shadow-2xl flex items-center justify-center focus:outline-none focus:ring-2 focus:ring-gold focus:ring-offset-2"
+            className="w-16 h-16 bg-[var(--gold)] text-[var(--brand-black)] rounded-full shadow-2xl flex items-center justify-center focus:outline-none focus:ring-2 focus:ring-gold focus:ring-offset-2"
             whileHover={{ scale: 1.1 }}
             whileTap={{ scale: 0.95 }}
             aria-expanded={isOpen}

@@ -10,6 +10,7 @@ module.exports = {
       fontFamily: {
         sans: ['var(--font-inter)'],
         display: ['var(--font-montserrat)'],
+        montserrat: ['var(--font-montserrat)'],
       },
       colors: {
         navy: 'var(--navy)',
