@@ -34,7 +34,7 @@ export default function Header({ locale }: { locale: string }) {
       borderBottom: '1px solid rgba(255,255,255,0)'
     },
     scrolled: {
-      backgroundColor: 'rgba(10, 35, 66, 0.95)', 
+      backgroundColor: 'rgba(17, 17, 17, 0.95)', 
       height: '4.5rem', 
       backdropFilter: 'blur(16px)',
       borderBottom: '1px solid rgba(255,255,255,0.05)'
@@ -126,7 +126,7 @@ export default function Header({ locale }: { locale: string }) {
             <motion.div
                 initial={{ x: "100%" }} animate={{ x: 0 }} exit={{ x: "100%" }}
                 transition={{ type: "spring", stiffness: 300, damping: 30 }}
-                className="fixed inset-y-0 right-0 z-[200] w-full md:w-[450px] h-full bg-[#0A2342] border-l border-white/10 shadow-2xl flex flex-col p-8 md:p-12"
+                className="fixed inset-y-0 right-0 z-[200] w-full md:w-[450px] h-full bg-[#111111] border-l border-white/10 shadow-2xl flex flex-col p-8 md:p-12"
             >
                 <div className="flex justify-between items-center mb-16">
                     <div className="w-32">

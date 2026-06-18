@@ -2,13 +2,10 @@
 
 import VideoScroller from "@/components/ui/VideoScroller";
 import HeroInteractive from "@/components/HeroInteractive";
-import WhyChooseUs from "@/components/sections/WhyChooseUs";
-import OurProjects from "@/components/OurProjects"; // ✅ Swapped Component
+import WhoWeAre from "@/components/sections/WhoWeAre";
+import OurProjects from "@/components/OurProjects";
 import MarketInsights from "@/components/sections/MarketInsights";
-import LimassolAdvantage from "@/components/LimassolAdvantage";
-import TestimonialsGlass from "@/components/Testimonials";
-import InsightsAndWhy from "@/components/sections/InsightsAndWhy";
-import CTAContact from "@/components/CTAContact";
+import ContactSection from "@/components/sections/ContactSection";
 
 export default function Home() {
   return (
@@ -18,23 +15,22 @@ export default function Home() {
       <div className="relative z-10 w-full flex flex-col items-center">
         
         {/* HERO */}
-        <div className="h-screen w-full flex items-center justify-center mb-20">
+        <div className="h-screen w-full flex items-center justify-center">
           <HeroInteractive />
         </div>
 
-        {/* WHY US & PROJECTS */}
-        <div className="w-full max-w-7xl px-6 flex flex-col gap-32 mb-40">
-           <div>
-              <WhyChooseUs />
-           </div>
-           {/* ✅ FIX: Added id="projects" for the Header Navbar anchor */}
-           <div id="projects" className="scroll-mt-32">
-              <OurProjects />
-           </div>
+        {/* WHO WE ARE */}
+        <div className="w-full">
+           <WhoWeAre />
+        </div>
+
+        {/* PROJECTS */}
+        <div id="projects" className="w-full scroll-mt-32">
+           <OurProjects />
         </div>
 
         {/* DOOR OPENING GAP */}
-        <div className="w-full py-40 md:py-60 flex flex-col items-center justify-center text-center">
+        <div className="w-full py-32 md:py-40 flex flex-col items-center justify-center text-center border-b border-white/10 bg-black/20">
            <div className="mb-12">
               <h2 className="text-4xl md:text-6xl font-montserrat font-bold text-white drop-shadow-2xl">
                  Welcome Home.
@@ -46,29 +42,14 @@ export default function Home() {
         </div>
 
         {/* LISTINGS CAROUSEL */}
-        {/* ✅ FIX: Changed ID to "portfolio" to match Header navigation */}
-        <div id="portfolio" className="w-full mb-60 scroll-mt-32">
+        <div id="portfolio" className="w-full bg-black/40 backdrop-blur-md border-b border-white/10 py-20 scroll-mt-32">
            <MarketInsights />
         </div>
-
-        {/* INSIGHTS */}
-        <div id="insights" className="w-full px-6 mb-60 flex justify-center items-center min-h-[50vh] scroll-mt-32">
-           <div className="w-full max-w-6xl apple-glass rounded-3xl p-8 md:p-12 shadow-2xl backdrop-blur-xl">
-              <InsightsAndWhy />
-           </div>
-        </div>
         
-        {/* INVEST */}
-        {/* ✅ FIX: Changed ID to "invest" to match Header navigation */}
-        <div id="invest" className="w-full max-w-7xl px-6 space-y-40 mb-40 scroll-mt-32">
-           <LimassolAdvantage />
-           <TestimonialsGlass />
+        {/* CONTACT FORM */}
+        <div id="contact" className="w-full scroll-mt-32">
+           <ContactSection />
         </div>
-
-        {/* FOOTER AREA
-        <div className="relative z-20 bg-[#0A2342] pt-24 pb-12 rounded-t-[3rem] shadow-[0_-20px_60px_rgba(0,0,0,0.4)] w-full">
-           <CTAContact />
-        </div> */}
 
       </div>
     </main>
