@@ -23,6 +23,12 @@
     "CompletionStatus": {
       "type": "string"
     },
+    "Location": {
+  "type": "string"
+},
+"Scale": {
+  "type": "string"
+},
     "coverImage": {
       "type": "media",
       "multiple": true,
