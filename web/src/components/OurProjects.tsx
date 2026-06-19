@@ -42,8 +42,8 @@ const extractText = (value: any): string => {
 const summarize = (text: string, fallback: string): string => {
   const clean = (text || fallback).replace(/\s+/g, " ").trim();
   const words = clean.split(" ").filter(Boolean);
-  if (words.length <= 24) return clean;
-  return `${words.slice(0, 24).join(" ")}…`;
+  if (words.length <= 26) return clean;
+  return `${words.slice(0, 26).join(" ")}…`;
 };
 
 export default async function OurProjects() {
@@ -78,10 +78,10 @@ export default async function OurProjects() {
   });
 
   return (
-    <section className="relative w-full overflow-hidden bg-[#05070B]/66 py-16 backdrop-blur-[1px] md:py-20 lg:flex lg:min-h-screen lg:items-center">
-      <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-transparent via-[#05070B]/10 to-[#05070B]/24" />
+    <section className="relative w-full overflow-hidden bg-[#05070B]/58 py-16 backdrop-blur-[1px] md:py-20 lg:flex lg:min-h-screen lg:items-center">
+      <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-[#05070B]/8 via-transparent to-[#05070B]/22" />
       <div className="home-container relative">
-        <div className="mb-9 grid gap-7 pb-3 lg:grid-cols-[0.85fr_1.15fr] lg:items-end">
+        <div className="mb-9 grid gap-7 pb-3 lg:grid-cols-[0.9fr_1.1fr] lg:items-end">
           <div>
             <div className="inline-flex items-center gap-3 text-[#C2A139]">
               <Building2 className="h-4 w-4" strokeWidth={1.7} />
@@ -93,12 +93,12 @@ export default async function OurProjects() {
           </div>
 
           <div className="max-w-2xl lg:justify-self-end">
-            <p className="text-base leading-8 text-[#F5F0E8]/74 md:text-lg md:leading-9">
+            <p className="text-base leading-8 text-[#F5F0E8]/78 md:text-lg md:leading-9">
               Discover a portfolio of residential developments across Cyprus, thoughtfully designed for modern living and long-term value.
             </p>
             <Link
               href="/projects"
-              className="group mt-7 inline-flex w-fit items-center gap-3 rounded-full border border-white/16 bg-[#F5F0E8] px-6 py-4 text-[11px] font-bold uppercase tracking-[0.22em] text-[#0D1B2E] transition-all hover:border-[#C2A139] hover:bg-[#C2A139] hover:text-[#05070B]"
+              className="group mt-7 inline-flex w-fit items-center gap-3 rounded-full border border-white/16 bg-[#F5F0E8] px-6 py-4 text-[11px] font-bold uppercase tracking-[0.22em] text-[#0D1B2E] shadow-[0_18px_55px_rgba(0,0,0,0.25)] transition-all hover:border-[#C2A139] hover:bg-[#C2A139] hover:text-[#05070B]"
             >
               View All Projects
               <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />

@@ -13,34 +13,34 @@ export default function HeroInteractive() {
     offset: ["start start", "end start"],
   });
 
-  const y = useTransform(scrollYProgress, [0, 1], [0, -70]);
+  const y = useTransform(scrollYProgress, [0, 1], [0, -56]);
   const opacity = useTransform(scrollYProgress, [0, 0.78], [1, 0]);
 
   return (
     <section
       ref={sectionRef}
-      className="relative flex min-h-[100svh] w-full items-center overflow-hidden px-5 pt-24 md:px-8 lg:px-10"
+      className="relative flex min-h-[100svh] w-full items-center justify-center overflow-hidden px-5 pt-24 md:px-8 lg:px-10"
     >
       <motion.div
         style={{ y, opacity }}
-        className="home-container relative mx-auto grid min-h-[72svh] w-full items-center"
+        className="home-container relative mx-auto flex min-h-[72svh] w-full items-center justify-center"
       >
-        <div className="max-w-4xl">
+        <div className="mx-auto max-w-5xl text-center">
           <motion.h1
-            initial={{ opacity: 0, y: 28 }}
+            initial={{ opacity: 0, y: 26 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.9, ease: [0.16, 1, 0.3, 1] }}
-            className="font-montserrat text-[clamp(3.15rem,8vw,8.6rem)] font-bold leading-[0.92] tracking-[-0.07em] text-[#F5F0E8] drop-shadow-[0_18px_50px_rgba(0,0,0,0.48)]"
+            className="font-montserrat text-[clamp(2.75rem,6.6vw,6.85rem)] font-bold leading-[0.96] tracking-[-0.06em] text-[#F5F0E8] drop-shadow-[0_18px_48px_rgba(0,0,0,0.48)]"
           >
             Building Value.
             <span className="block text-[#C2A139]">Creating Places.</span>
           </motion.h1>
 
           <motion.p
-            initial={{ opacity: 0, y: 22 }}
+            initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.18, duration: 0.85, ease: [0.16, 1, 0.3, 1] }}
-            className="mt-7 max-w-2xl text-base leading-8 text-[#F5F0E8]/88 md:mt-9 md:text-xl md:leading-9"
+            className="mx-auto mt-7 max-w-3xl text-balance text-base leading-8 text-[#F5F0E8]/88 md:mt-8 md:text-lg md:leading-9"
           >
             TMS Estates is a Cyprus-based real estate developer creating contemporary residential and mixed-use developments in carefully selected locations.
           </motion.p>
@@ -49,7 +49,7 @@ export default function HeroInteractive() {
             initial={{ opacity: 0, y: 18 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.34, duration: 0.75, ease: [0.16, 1, 0.3, 1] }}
-            className="mt-10 flex flex-wrap items-center gap-4"
+            className="mt-9 flex flex-wrap items-center justify-center gap-4"
           >
             <Link
               href="/#projects"
