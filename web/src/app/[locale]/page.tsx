@@ -4,6 +4,7 @@ import WhyChooseUs from "@/components/sections/WhyChooseUs";
 import OurProjects from "@/components/OurProjects";
 import MarketInsights from "@/components/sections/MarketInsights";
 import LimassolAdvantage from "@/components/LimassolAdvantage";
+import TestimonialsGlass from "@/components/Testimonials";
 
 export default function Home() {
   return (
@@ -25,6 +26,10 @@ export default function Home() {
 
         <div id="invest" className="scroll-mt-28">
           <LimassolAdvantage />
+        </div>
+
+        <div id="testimonials" className="scroll-mt-28">
+          <TestimonialsGlass />
         </div>
       </div>
     </main>
