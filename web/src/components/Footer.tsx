@@ -1,87 +1,89 @@
-/* FULL REPLACEMENT: src/components/Footer.tsx */
 "use client";
 
 import Image from "next/image";
-import { Mail, MessageCircle, Send, Bot } from 'lucide-react'; // Added Bot icon
-import { Link } from "@/i18n/routing"; 
+import { Bot, Mail, MessageCircle, ArrowUpRight } from "lucide-react";
+import { Link } from "@/i18n/routing";
 
 export default function Footer() {
-  
-  // Function to trigger the AI Widget from the footer
   const openAIChat = (e: React.MouseEvent) => {
     e.preventDefault();
     window.dispatchEvent(new CustomEvent("open-ai-chat"));
   };
 
   return (
-    <footer id="page-footer" className="bg-[var(--brand-black)] text-[rgba(245,240,232,0.68)] relative z-20">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-12">
-            
-            {/* Top Row: Logo & Socials */}
-            <div className="flex flex-col md:flex-row justify-between items-center gap-8 border-b border-[rgba(245,240,232,0.10)] pb-8">
-                
-                <Link href="/" className="shrink-0">
-                    <Image 
-                        src="/tms-logo-white.svg" 
-                        alt="TMS Estates Logo" 
-                        width={180} 
-                        height={45} 
-                        className="w-40 md:w-48 h-auto object-contain" 
-                    />
-                </Link>
+    <footer id="page-footer" className="relative z-20 border-t border-white/10 bg-[#05070B] text-[#F5F0E8]">
+      <div className="home-container py-14 md:py-20">
+        <div className="grid gap-10 border-b border-white/10 pb-12 lg:grid-cols-[1.1fr_1fr] lg:items-end">
+          <div>
+            <Link href="/" className="inline-flex">
+              <Image
+                src="/tms-logo-white.svg"
+                alt="TMS Estates Logo"
+                width={190}
+                height={48}
+                className="h-auto w-40 md:w-48"
+                unoptimized
+              />
+            </Link>
+            <p className="mt-7 max-w-xl text-sm leading-7 text-[#F5F0E8]/58 md:text-base md:leading-8">
+              TMS Estates creates contemporary residential and mixed-use developments in carefully selected locations across Cyprus.
+            </p>
+          </div>
 
-                <div className="flex justify-center items-center gap-4 flex-wrap">
-                    {/* Standard Contacts */}
-                    <a href="https://wa.me/99875500" target="_blank" rel="noreferrer" className="footer-bubble group">
-                        <div className="icon-circle"><MessageCircle size={20} /></div>
-                        <span>WhatsApp</span>
-                    </a>
-                    
-                    <a href="mailto:info@tmsestates.com" className="footer-bubble group">
-                        <div className="icon-circle"><Mail size={20} /></div>
-                        <span>Email</span>
-                    </a>
-
-                    <a href="mailto:info@tmsestates.com" target="_blank" rel="noreferrer" className="footer-bubble group">
-                        <div className="icon-circle"><Send size={20} /></div>
-                        <span>Email Us</span>
-                    </a>
-
-                    {/* ✅ NEW AI ASSISTANT BUTTON IN FOOTER */}
-                    <button onClick={openAIChat} className="footer-bubble group">
-                        <div className="icon-circle bg-[var(--gold)] text-[var(--brand-black)] group-hover:bg-white">
-                            <Bot size={20} />
-                        </div>
-                        <span className="text-[var(--gold)] group-hover:text-white transition-colors">AI Assistant</span>
-                    </button>
-                </div>
-            </div>
-
-            {/* Bottom Row */}
-            <div className="flex flex-col sm:flex-row justify-between items-center gap-4 text-sm text-center pt-8">
-                <p>&copy; {new Date().getFullYear()} TMS ESTATES. All rights reserved.</p>
-                <div className="flex gap-6">
-                    <Link href="/privacy-policy" className="hover:text-[var(--gold)] transition-colors">Privacy Policy</Link>
-                    <Link href="/terms-of-use" className="hover:text-[var(--gold)] transition-colors">Terms of Use</Link>
-                </div>
-            </div>
+          <div className="grid gap-3 sm:grid-cols-3">
+            <a href="mailto:info@tmsestates.com" className="footer-action group">
+              <Mail className="h-5 w-5" />
+              <span>Email</span>
+              <ArrowUpRight className="ml-auto h-4 w-4 opacity-40 transition group-hover:opacity-100" />
+            </a>
+            <a href="https://wa.me/99875500" target="_blank" rel="noreferrer" className="footer-action group">
+              <MessageCircle className="h-5 w-5" />
+              <span>WhatsApp</span>
+              <ArrowUpRight className="ml-auto h-4 w-4 opacity-40 transition group-hover:opacity-100" />
+            </a>
+            <button onClick={openAIChat} className="footer-action group text-left">
+              <Bot className="h-5 w-5" />
+              <span>AI Assistant</span>
+              <ArrowUpRight className="ml-auto h-4 w-4 opacity-40 transition group-hover:opacity-100" />
+            </button>
+          </div>
         </div>
 
-        {/* Local Styles for Footer Bubbles */}
-        <style jsx>{`
-           .footer-bubble {
-              display: flex; flex-direction: column; align-items: center; gap: 0.5rem;
-              font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em;
-              cursor: pointer;
-           }
-           .icon-circle {
-              background: rgba(255,255,255,0.1); padding: 0.75rem; border-radius: 9999px;
-              transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-           }
-           .group:hover .icon-circle {
-              background: #C2A139; color: #05070B; transform: scale(1.1);
-           }
-        `}</style>
+        <div className="flex flex-col gap-5 pt-8 text-sm text-[#F5F0E8]/45 sm:flex-row sm:items-center sm:justify-between">
+          <p>&copy; {new Date().getFullYear()} TMS ESTATES. All rights reserved.</p>
+          <div className="flex flex-wrap gap-6">
+            <Link href="/privacy-policy" className="transition hover:text-[#C2A139]">
+              Privacy Policy
+            </Link>
+            <Link href="/terms-of-use" className="transition hover:text-[#C2A139]">
+              Terms of Use
+            </Link>
+          </div>
+        </div>
+      </div>
+
+      <style jsx>{`
+        .footer-action {
+          display: flex;
+          align-items: center;
+          gap: 0.85rem;
+          min-height: 4.2rem;
+          border: 1px solid rgba(245, 240, 232, 0.1);
+          background: rgba(13, 27, 46, 0.28);
+          padding: 1rem 1.1rem;
+          color: rgba(245, 240, 232, 0.78);
+          font-size: 0.72rem;
+          font-weight: 800;
+          letter-spacing: 0.18em;
+          text-transform: uppercase;
+          transition: all 0.25s ease;
+        }
+        .footer-action:hover {
+          border-color: rgba(194, 161, 57, 0.42);
+          color: #c2a139;
+          background: rgba(194, 161, 57, 0.075);
+        }
+      `}</style>
     </footer>
   );
 }

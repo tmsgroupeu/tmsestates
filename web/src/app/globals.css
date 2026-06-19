@@ -5,145 +5,159 @@
 :root {
   --font-inter: 'Inter', sans-serif;
   --font-montserrat: 'Montserrat', sans-serif;
-  
+
   --navy: #0D1B2E;
   --gold: #C2A139;
   --ivory: #F5F0E8;
   --stone: #C4B49A;
-  --black-premium: #05070B;
-  --ink: #111318;
-  --paper: #F5F0E8;
+  --black: #05070B;
 
-  /* Global defaults */
-  --background: var(--navy);
-  --foreground: white;
+  --background: var(--black);
+  --foreground: var(--ivory);
+}
+
+html {
+  scroll-behavior: smooth;
 }
 
 body {
-  background-color: var(--black-premium);
+  background-color: var(--background);
   color: var(--foreground);
   font-family: var(--font-inter);
+  text-rendering: geometricPrecision;
 }
 
-/* --- TEXTURES --- */
-.bg-noise {
-  position: fixed;
-  top: 0; left: 0; width: 100%; height: 100%;
-  pointer-events: none; z-index: 50;
-  opacity: 0.04;
-  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+::selection {
+  background: rgba(194, 161, 57, 0.32);
+  color: var(--ivory);
 }
 
-/* --- GLASS EFFECTS --- */
-.apple-glass {
-  background: rgba(10, 25, 45, 0.4); /* Dark Navy Tint */
-  backdrop-filter: saturate(180%) blur(24px);
-  -webkit-backdrop-filter: saturate(180%) blur(24px);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  box-shadow: 
-    0 4px 30px rgba(0, 0, 0, 0.2),
-    inset 0 0 0 1px rgba(255, 255, 255, 0.05);
+/* --- Shared Homepage System --- */
+.home-container {
+  width: min(100% - 2rem, 1440px);
+  margin-inline: auto;
 }
 
-/* --- UTILITIES --- */
-.no-scrollbar::-webkit-scrollbar { display: none; }
-.no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
-
-/* Prose fixes */
-.prose p, .prose li, .prose a {
-  overflow-wrap: break-word;
-  word-wrap: break-word;
-  word-break: break-word;
+@media (min-width: 768px) {
+  .home-container {
+    width: min(100% - 4rem, 1440px);
+  }
 }
 
-/* Swiper Nav Overrides */
-.swiper-button-next, .swiper-button-prev {
-  background-color: white !important;
-  width: 44px !important; height: 44px !important;
-  border-radius: 9999px;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-}
-.swiper-button-next::after, .swiper-button-prev::after {
-  font-size: 16px !important; font-weight: bold; color: var(--navy);
+.section-eyebrow {
+  font-size: 0.67rem;
+  line-height: 1;
+  font-weight: 800;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: var(--gold);
 }
 
-@keyframes shine {
-  0% { transform: translateX(-150%) skewX(-12deg); }
-  100% { transform: translateX(150%) skewX(-12deg); }
-}
-.animate-shine {
-  animation: shine 1.5s ease-in-out infinite;
-}
-
-/* Custom Shine Animation for Property Cards */
-@keyframes shine {
-    from {
-        transform: translateX(-150%) skewX(-12deg);
-    }
-    to {
-        transform: translateX(150%) skewX(-12deg);
-    }
-}
-.group:hover .group-hover\:animate-shine {
-    animation: shine 1.5s;
-}
-
-
-/* TMS Estates premium scrollytelling layout */
-.tms-shell {
-  width: 100%;
-  max-width: 1480px;
-  margin-left: auto;
-  margin-right: auto;
-  padding-left: clamp(1.25rem, 3vw, 4rem);
-  padding-right: clamp(1.25rem, 3vw, 4rem);
-}
-
-.tms-section {
-  position: relative;
-  width: 100%;
-  padding-top: clamp(5rem, 8vw, 9rem);
-  padding-bottom: clamp(5rem, 8vw, 9rem);
-}
-
-.tms-section::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  background:
-    linear-gradient(90deg, rgba(245,240,232,0.075) 1px, transparent 1px),
-    linear-gradient(180deg, rgba(245,240,232,0.055) 1px, transparent 1px);
-  background-size: 25% 100%, 100% 50%;
-  mask-image: linear-gradient(to bottom, transparent, black 18%, black 82%, transparent);
-}
-
-.tms-section::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  background: linear-gradient(180deg, rgba(5,7,11,0.18), rgba(5,7,11,0.48));
-  z-index: -1;
+.section-heading {
+  font-family: var(--font-montserrat);
+  font-weight: 700;
+  letter-spacing: -0.06em;
+  line-height: 0.98;
+  color: var(--ivory);
+  font-size: clamp(2.35rem, 5vw, 5.45rem);
 }
 
 .text-balance {
   text-wrap: balance;
 }
 
-.tms-property-swiper .swiper-button-next,
+/* --- TEXTURES --- */
+.bg-noise {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 50;
+  opacity: 0.035;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+}
+
+/* Kept for components that still use the original utility elsewhere. */
+.apple-glass {
+  background: rgba(13, 27, 46, 0.46);
+  backdrop-filter: saturate(180%) blur(22px);
+  -webkit-backdrop-filter: saturate(180%) blur(22px);
+  border: 1px solid rgba(245, 240, 232, 0.09);
+  box-shadow:
+    0 26px 90px rgba(0, 0, 0, 0.28),
+    inset 0 0 0 1px rgba(245, 240, 232, 0.04);
+}
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.prose p,
+.prose li,
+.prose a {
+  overflow-wrap: break-word;
+  word-wrap: break-word;
+  word-break: break-word;
+}
+
+/* Swiper Nav Overrides */
+.swiper-button-next,
+.swiper-button-prev {
+  width: 46px !important;
+  height: 46px !important;
+  border-radius: 9999px;
+  background: rgba(245, 240, 232, 0.92) !important;
+  border: 1px solid rgba(245, 240, 232, 0.22);
+  box-shadow: 0 18px 45px rgba(0, 0, 0, 0.28);
+  backdrop-filter: blur(14px);
+  transition: all 0.25s ease;
+}
+
+.swiper-button-next:hover,
+.swiper-button-prev:hover {
+  background: var(--gold) !important;
+  transform: scale(1.04);
+}
+
+.swiper-button-next::after,
+.swiper-button-prev::after {
+  font-size: 15px !important;
+  font-weight: 900;
+  color: var(--navy);
+}
+
 .tms-property-swiper .swiper-button-prev {
-  background: rgba(245,240,232,0.92) !important;
-  border: 1px solid rgba(194,161,57,0.35);
+  left: 18px !important;
 }
 
-.tms-property-swiper .swiper-button-next::after,
-.tms-property-swiper .swiper-button-prev::after {
-  color: var(--black-premium) !important;
+.tms-property-swiper .swiper-button-next {
+  right: 18px !important;
 }
 
-/* Slightly tighter homepage rhythm for the discreet brand-introduction stripe */
-.tms-section-compact {
-  padding-top: clamp(3.75rem, 6vw, 6.5rem);
-  padding-bottom: clamp(3.75rem, 6vw, 6.5rem);
+@media (max-width: 767px) {
+  .swiper-button-next,
+  .swiper-button-prev {
+    display: none !important;
+  }
+}
+
+@keyframes shine {
+  from {
+    transform: translateX(-150%) skewX(-12deg);
+  }
+  to {
+    transform: translateX(150%) skewX(-12deg);
+  }
+}
+
+.animate-shine,
+.group:hover .group-hover\:animate-shine {
+  animation: shine 1.5s ease-in-out;
 }

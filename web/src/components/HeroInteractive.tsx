@@ -6,78 +6,63 @@ import { ArrowRight } from "lucide-react";
 import { Link } from "@/i18n/routing";
 
 export default function HeroInteractive() {
-  const containerRef = useRef<HTMLDivElement>(null);
+  const sectionRef = useRef<HTMLElement>(null);
 
   const { scrollYProgress } = useScroll({
-    target: containerRef,
+    target: sectionRef,
     offset: ["start start", "end start"],
   });
 
-  const yText = useTransform(scrollYProgress, [0, 1], ["0%", "-24%"]);
-  const opacityText = useTransform(scrollYProgress, [0, 0.62], [1, 0]);
-  const opacityIndicator = useTransform(scrollYProgress, [0, 0.15], [1, 0]);
+  const y = useTransform(scrollYProgress, [0, 1], [0, -80]);
+  const opacity = useTransform(scrollYProgress, [0, 0.72], [1, 0]);
 
   return (
     <section
-      ref={containerRef}
-      className="relative h-screen w-full flex flex-col items-center justify-center pt-24 z-20 overflow-hidden px-4"
+      ref={sectionRef}
+      className="relative flex min-h-screen w-full items-center overflow-hidden px-5 pt-24 md:px-8 lg:px-10"
     >
       <motion.div
-        style={{ y: yText, opacity: opacityText }}
-        className="relative z-20 lux-container"
+        style={{ y, opacity }}
+        className="home-container relative mx-auto grid min-h-[72vh] w-full items-center"
       >
-        <motion.div
-          initial={{ opacity: 0, y: 36 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.9, ease: [0.25, 1, 0.5, 1] }}
-          className="mx-auto max-w-[1180px] border border-[rgba(245,240,232,0.13)] bg-[rgba(5,7,11,0.42)] backdrop-blur-xl shadow-[0_40px_120px_rgba(0,0,0,0.42)] rounded-[2rem] md:rounded-[2.75rem] overflow-hidden"
-        >
-          <div className="grid grid-cols-1 lg:grid-cols-[1.1fr_0.9fr]">
-            <div className="relative p-8 sm:p-10 md:p-14 lg:p-16 border-b lg:border-b-0 lg:border-r border-[rgba(245,240,232,0.10)]">
-              <div className="lux-eyebrow mb-7">Cyprus Real Estate Development</div>
-              <h1 className="lux-heading max-w-4xl">
-                Building Value.<br />
-                <span className="text-[var(--gold)]">Creating Places.</span>
-              </h1>
-              <p className="lux-copy mt-7 max-w-2xl">
-                TMS Estates is a Cyprus-based real estate developer creating contemporary residential and mixed-use developments in carefully selected locations.
-              </p>
-              <Link href="/#projects" className="lux-btn group mt-10">
-                Explore Our Projects
-                <ArrowRight className="ml-3 h-4 w-4 transition-transform group-hover:translate-x-1" />
-              </Link>
-            </div>
+        <div className="max-w-4xl">
+          <motion.h1
+            initial={{ opacity: 0, y: 28 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.9, ease: [0.16, 1, 0.3, 1] }}
+            className="font-montserrat text-[clamp(3.3rem,8vw,8.8rem)] font-bold leading-[0.92] tracking-[-0.07em] text-[#F5F0E8] drop-shadow-[0_18px_50px_rgba(0,0,0,0.45)]"
+          >
+            Building Value.
+            <span className="block text-[#C2A139]">Creating Places.</span>
+          </motion.h1>
 
-            <div className="relative min-h-[260px] lg:min-h-full p-8 md:p-12 flex flex-col justify-end bg-gradient-to-br from-[rgba(194,161,57,0.16)] to-transparent">
-              <div className="absolute inset-0 opacity-60 pointer-events-none" style={{
-                backgroundImage: "linear-gradient(to right, rgba(245,240,232,.08) 1px, transparent 1px), linear-gradient(to bottom, rgba(245,240,232,.08) 1px, transparent 1px)",
-                backgroundSize: "33.333% 50%"
-              }} />
-              <div className="relative">
-                <p className="text-[10px] uppercase tracking-[0.34em] text-[var(--stone)] font-bold mb-4">Strategic Development</p>
-                <p className="font-montserrat text-2xl md:text-3xl leading-tight text-[var(--ivory)]">
-                  Contemporary spaces shaped for long-term value across Cyprus.
-                </p>
-              </div>
-            </div>
-          </div>
-        </motion.div>
-      </motion.div>
+          <motion.p
+            initial={{ opacity: 0, y: 22 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.18, duration: 0.85, ease: [0.16, 1, 0.3, 1] }}
+            className="mt-7 max-w-2xl text-base leading-8 text-[#F5F0E8]/88 md:mt-9 md:text-xl md:leading-9"
+          >
+            TMS Estates is a Cyprus-based real estate developer creating contemporary residential and mixed-use developments in carefully selected locations.
+          </motion.p>
 
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 1.4, duration: 0.8 }}
-        style={{ opacity: opacityIndicator }}
-        className="absolute bottom-8 left-1/2 -translate-x-1/2 z-20 pointer-events-none"
-      >
-        <div className="flex flex-col items-center gap-3">
-          <span className="text-[9px] font-bold uppercase tracking-[0.25em] text-[var(--ivory)]/70">
-            Scroll to explore
-          </span>
-          <div className="h-10 w-[1px] bg-gradient-to-b from-[var(--gold)] to-transparent" />
+          <motion.div
+            initial={{ opacity: 0, y: 18 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.34, duration: 0.75, ease: [0.16, 1, 0.3, 1] }}
+            className="mt-10 flex flex-wrap items-center gap-4"
+          >
+            <Link
+              href="/#projects"
+              className="group inline-flex items-center gap-3 rounded-full border border-[#F5F0E8]/25 bg-[#F5F0E8] px-7 py-4 text-[11px] font-bold uppercase tracking-[0.24em] text-[#0D1B2E] shadow-[0_18px_55px_rgba(0,0,0,0.28)] transition-all duration-300 hover:border-[#C2A139] hover:bg-[#C2A139] hover:text-[#05070B] hover:shadow-[0_24px_70px_rgba(194,161,57,0.25)] md:px-9"
+            >
+              Explore Our Projects
+              <ArrowRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" />
+            </Link>
+          </motion.div>
         </div>
       </motion.div>
+
+      <div className="pointer-events-none absolute inset-x-0 bottom-0 h-36 bg-gradient-to-b from-transparent to-[#05070B]/55" />
     </section>
   );
 }

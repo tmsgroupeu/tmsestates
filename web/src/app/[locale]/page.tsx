@@ -7,15 +7,25 @@ import LimassolAdvantage from "@/components/LimassolAdvantage";
 
 export default function Home() {
   return (
-    <main className="relative min-h-screen bg-black-premium text-ivory">
+    <main className="relative min-h-screen overflow-hidden bg-[#05070B] text-[#F5F0E8]">
       <VideoScroller />
 
       <div className="relative z-10 w-full">
         <HeroInteractive />
+
         <WhyChooseUs />
-        <OurProjects />
-        <MarketInsights />
-        <LimassolAdvantage />
+
+        <div id="projects" className="scroll-mt-28">
+          <OurProjects />
+        </div>
+
+        <div id="portfolio" className="scroll-mt-28">
+          <MarketInsights />
+        </div>
+
+        <div id="invest" className="scroll-mt-28">
+          <LimassolAdvantage />
+        </div>
       </div>
     </main>
   );

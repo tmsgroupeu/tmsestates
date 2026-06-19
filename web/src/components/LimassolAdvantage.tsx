@@ -1,60 +1,57 @@
-/* FULL REPLACEMENT: src/components/LimassolAdvantage.tsx */
 "use client";
 
-import Link from "next/link";
 import { ArrowRight, CheckCircle2 } from "lucide-react";
+import { Link } from "@/i18n/routing";
 
 const points = [
   "Attractive Tax & Financial Benefits",
   "Fast-Track Permanent Residency",
-  "#1 EU Destination for Lifestyle & Investment"
+  "#1 EU Destination for Lifestyle & Investment",
 ];
 
 export default function LimassolAdvantage() {
   return (
-    <section className="relative w-full">
-      <div className="apple-glass rounded-3xl p-10 md:p-16 flex flex-col md:flex-row items-center justify-between gap-12 overflow-hidden relative">
-        
-        {/* Background Decor */}
-        <div className="absolute -top-20 -right-20 w-64 h-64 bg-[#D4AF37]/20 rounded-full blur-[80px] pointer-events-none" />
-
-        {/* Left Content */}
-        <div className="flex-1 space-y-6">
-           <h2 className="text-3xl md:text-4xl font-montserrat font-bold text-white">
-              Why Invest in Cyprus?
-           </h2>
-           <p className="text-white/80 leading-relaxed max-w-xl">
+    <section className="relative w-full bg-[#05070B]/88 py-20 md:py-28">
+      <div className="home-container">
+        <div className="grid overflow-hidden border border-white/10 lg:grid-cols-[1fr_1.1fr]">
+          <div className="border-b border-white/10 bg-[#0D1B2E]/36 p-7 md:p-10 lg:border-b-0 lg:border-r lg:p-12">
+            <p className="section-eyebrow">Investment Perspective</p>
+            <h2 className="section-heading mt-4">
+              Why Invest <span className="text-[#C2A139]">in Cyprus?</span>
+            </h2>
+            <p className="mt-6 max-w-xl text-base leading-8 text-[#F5F0E8]/72 md:text-lg md:leading-9">
               A strategic gateway connecting continents, Cyprus offers a stable legal framework, exceptional quality of life, and one of the most attractive tax regimes in Europe.
-           </p>
-           
-           {/* CTA Button */}
-           <div className="pt-4">
-              <Link 
-                href="/invest"
-                className="inline-flex items-center gap-3 bg-white text-[#0A2342] px-8 py-4 rounded-full font-bold uppercase text-sm tracking-widest hover:bg-[#D4AF37] hover:text-white transition-all shadow-lg hover:shadow-2xl hover:-translate-y-1"
+            </p>
+            <Link
+              href="/invest"
+              className="mt-9 inline-flex items-center gap-3 rounded-full bg-[#F5F0E8] px-6 py-4 text-[11px] font-bold uppercase tracking-[0.22em] text-[#0D1B2E] transition-colors hover:bg-[#C2A139] hover:text-[#05070B]"
+            >
+              Full Investment Guide
+              <ArrowRight className="h-4 w-4" />
+            </Link>
+          </div>
+
+          <div className="grid md:grid-cols-3 lg:grid-cols-1">
+            {points.map((point, index) => (
+              <div
+                key={point}
+                className="group flex min-h-[150px] items-start gap-5 border-b border-white/10 p-7 last:border-b-0 md:border-b-0 md:border-r md:last:border-r-0 lg:border-b lg:border-r-0 lg:last:border-b-0 md:p-8 lg:p-10"
               >
-                Full Investment Guide
-                <ArrowRight size={16} />
-              </Link>
-           </div>
+                <span className="mt-1 grid h-10 w-10 shrink-0 place-items-center rounded-full border border-[#C2A139]/30 bg-[#C2A139]/10 text-[#C2A139] transition-all group-hover:bg-[#C2A139] group-hover:text-[#05070B]">
+                  <CheckCircle2 className="h-5 w-5" />
+                </span>
+                <div>
+                  <span className="text-[10px] font-bold uppercase tracking-[0.24em] text-[#F5F0E8]/35">
+                    {String(index + 1).padStart(2, "0")}
+                  </span>
+                  <p className="mt-3 max-w-sm font-montserrat text-xl font-semibold leading-snug tracking-[-0.035em] text-[#F5F0E8]">
+                    {point}
+                  </p>
+                </div>
+              </div>
+            ))}
+          </div>
         </div>
-
-        {/* Right Content - The Blue Frame */}
-        <div className="w-full md:w-auto min-w-[320px]">
-           <div className="bg-[#0A2342]/80 backdrop-blur-md border border-white/10 p-8 rounded-2xl shadow-xl">
-              <ul className="space-y-6">
-                 {points.map((point, i) => (
-                    <li key={i} className="flex items-start gap-4">
-                       <CheckCircle2 className="shrink-0 text-[#D4AF37] mt-1" size={20} />
-                       <span className="text-white font-medium text-lg leading-tight">
-                          {point}
-                       </span>
-                    </li>
-                 ))}
-              </ul>
-           </div>
-        </div>
-
       </div>
     </section>
   );
