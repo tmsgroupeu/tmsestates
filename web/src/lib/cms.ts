@@ -44,7 +44,12 @@ export type Project = {
   description?: string;
   completionDate?: string;
   completionStatus?: string; // Fallback
+  status?: string;
   location?: string;
+  scale?: string;
+  overview?: string;
+  projectOverview?: string;
+  highlights?: string | string[];
   coverImage?: StrapiMedia | any;
   coverimage?: StrapiMedia | any;
   gallery?: StrapiMedia[] | any;
@@ -64,8 +69,10 @@ export type Property = {
   prop_status?: 'for-sale' | 'for-rent' | 'sold' | 'rented';
   propertyType?: 'villa' | 'apartment' | 'penthouse' | 'townhouse' | 'commercial' | 'plot';
   marketing_label?: string; 
+  marketing_tags?: string;
   vip?: boolean;
   images?: StrapiMedia[];
+  project?: Project | any;
 };
 
 export type Article = {
@@ -97,12 +104,18 @@ export async function fetchProjectBySlug(slug: string): Promise<any | null> {
 }
 
 export async function fetchProperties(params: Record<string, string> = {}): Promise<{ data: any[]; meta?: any }> {
-  const result = await baseFetch("/properties", { populate: "*", ...params });
+  const hasCustomPopulate = Object.keys(params).some((key) => key === "populate" || key.startsWith("populate["));
+  const result = await baseFetch("/properties", { ...(hasCustomPopulate ? {} : { populate: "*" }), ...params });
   return { data: result.data ||[], meta: result.meta };
 }
 
 export async function fetchPropertyBySlug(slug: string): Promise<any | null> {
-  const { data } = await fetchProperties({ "filters[slug][$eq]": slug, "pagination[pageSize]": "1" });
+  const { data } = await fetchProperties({
+    "filters[slug][$eq]": slug,
+    "populate[0]": "images",
+    "populate[1]": "project.coverImage",
+    "pagination[pageSize]": "1",
+  });
   return data?.[0] || null;
 }
 
