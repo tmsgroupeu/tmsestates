@@ -59,31 +59,38 @@ export default async function OurProjects() {
   });
 
   return (
-    <section className="relative z-10 w-full">
-      <div className="relative z-10">
-        <div className="mb-10 md:mb-12 grid grid-cols-1 lg:grid-cols-[0.9fr_1.1fr] gap-8 lg:gap-16 items-end p-3 md:p-5">
-          <div>
-            <div className="inline-flex items-center gap-2 rounded-full border border-[rgba(194,161,57,0.32)] bg-[rgba(194,161,57,0.08)] px-4 py-2 text-[9px] font-bold uppercase tracking-[0.28em] text-[var(--gold)] mb-5 backdrop-blur-md">
-              <Building2 className="h-3.5 w-3.5" />
-              Our Projects
+    <section id="projects" className="tms-section relative z-10 w-full scroll-mt-28">
+      <div className="tms-shell">
+        <div className="border-y border-white/12 py-14 md:py-20">
+          <div className="mb-10 grid gap-8 lg:grid-cols-12 lg:items-end md:mb-14">
+            <div className="lg:col-span-7">
+              <div className="mb-5 inline-flex items-center gap-2 border border-gold/25 bg-black-premium/18 px-4 py-2 backdrop-blur-sm">
+                <Building2 className="h-3.5 w-3.5 text-gold" />
+                <span className="text-[10px] font-bold uppercase tracking-[0.3em] text-gold">
+                  Our Projects
+                </span>
+              </div>
+              <h2 className="font-display text-[clamp(2.4rem,5vw,5.6rem)] font-semibold leading-[0.95] tracking-[-0.06em] text-ivory text-balance">
+                Signature <span className="text-gold">Developments</span>
+              </h2>
             </div>
-            <h2 className="font-montserrat text-4xl md:text-6xl font-bold leading-[1.02] tracking-[-0.04em] text-[var(--ivory)]">
-              Signature <span className="text-[var(--gold)]">Developments</span>
-            </h2>
+
+            <div className="lg:col-span-5 lg:border-l lg:border-white/10 lg:pl-10">
+              <p className="max-w-2xl text-base leading-relaxed text-ivory/72 md:text-lg">
+                Discover a portfolio of residential developments across Cyprus, thoughtfully designed for modern living and long-term value.
+              </p>
+              <Link
+                href="/projects"
+                className="group mt-7 inline-flex items-center gap-3 border-b border-gold/60 pb-2 text-[11px] font-bold uppercase tracking-[0.24em] text-ivory transition duration-300 hover:border-gold hover:text-gold"
+              >
+                View All Projects
+                <ArrowRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" />
+              </Link>
+            </div>
           </div>
 
-          <div className="lg:border-l lg:border-[rgba(245,240,232,0.10)] lg:pl-10">
-            <p className="lux-copy max-w-2xl">
-              Discover a portfolio of residential developments across Cyprus, thoughtfully designed for modern living and long-term value.
-            </p>
-            <Link href="/projects" className="lux-btn group mt-7">
-              View All Projects
-              <ArrowRight className="ml-3 h-4 w-4 transition-transform group-hover:translate-x-1" />
-            </Link>
-          </div>
+          <OurProjectsClient projects={cleanProjects} />
         </div>
-
-        <OurProjectsClient projects={cleanProjects} />
       </div>
     </section>
   );
