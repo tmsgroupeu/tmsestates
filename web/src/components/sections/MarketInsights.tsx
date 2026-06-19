@@ -80,19 +80,19 @@ export default function MarketInsights() {
   if (!carouselProperties.length) return null;
 
   return (
-    <section className="relative flex min-h-[94svh] w-full flex-col justify-center overflow-hidden py-14 md:py-16 lg:py-20">
+    <section className="relative flex min-h-[88svh] w-full flex-col justify-center overflow-hidden py-12 md:py-14 lg:py-16">
       {/* This section intentionally uses a darker veil so the moving background does not compete with property images. */}
-      <div className="absolute inset-0 -z-10 bg-[#05070B]/66 backdrop-blur-[2px]" />
-      <div className="absolute inset-0 -z-10 bg-gradient-to-b from-[#05070B]/20 via-transparent to-[#05070B]/32" />
+      <div className="absolute inset-0 -z-10 bg-[#05070B]/88 backdrop-blur-[4px]" />
+      <div className="absolute inset-0 -z-10 bg-gradient-to-b from-[#05070B]/52 via-[#05070B]/24 to-[#05070B]/62" />
 
       <div className="home-container relative z-10">
-        <div className="grid gap-7 pb-7 md:pb-8 lg:grid-cols-[0.9fr_1.1fr] lg:items-end">
-          <h2 className="max-w-3xl font-montserrat text-[clamp(2rem,3.35vw,3.95rem)] font-bold leading-[1.02] tracking-[-0.055em] text-[#F5F0E8] text-balance">
-            Looking for Your Next Property Opportunity?
+        <div className="grid gap-7 border-y border-white/10 bg-[#0B1728]/78 px-5 py-7 shadow-[0_22px_80px_rgba(0,0,0,0.28)] backdrop-blur-md md:px-8 md:py-8 lg:grid-cols-[0.92fr_1.08fr] lg:items-center">
+          <h2 className="max-w-[760px] font-montserrat text-[clamp(1.7rem,2.25vw,2.65rem)] font-bold leading-[1.05] tracking-[-0.052em] text-[#F5F0E8] text-balance">
+            <span className="block">Looking for Your Next</span><span className="block">Property Opportunity?</span>
           </h2>
 
           <div className="max-w-2xl lg:justify-self-end">
-            <p className="text-base leading-8 text-[#F5F0E8]/84 md:text-[1.04rem] md:leading-9">
+            <p className="text-[0.98rem] leading-8 text-[#F5F0E8]/84 md:text-[1.02rem] md:leading-9">
               Whether you are searching for a new home, an investment
               opportunity or information about our developments, our team would
               be pleased to assist.
@@ -108,7 +108,7 @@ export default function MarketInsights() {
         </div>
       </div>
 
-      <div className="relative z-10 mt-2 w-screen overflow-hidden border-y border-white/10 bg-[#05070B]/34 py-6 backdrop-blur-[2px] md:mt-4 md:py-8">
+      <div className="relative z-10 mt-0 w-screen overflow-hidden border-y border-white/10 bg-[#05070B]/82 py-6 shadow-[inset_0_1px_0_rgba(245,240,232,0.05)] backdrop-blur-[4px] md:py-8">
         <Swiper
           modules={[Autoplay, Navigation]}
           loop={carouselProperties.length > 6}
@@ -146,9 +146,9 @@ export default function MarketInsights() {
                   className="object-cover transition duration-[1200ms] ease-out group-hover:scale-105"
                 />
 
-                <div className="absolute inset-0 bg-gradient-to-t from-[#05070B]/94 via-[#05070B]/52 to-[#05070B]/18" />
-                <div className="absolute inset-x-0 top-0 h-32 bg-gradient-to-b from-[#05070B]/58 to-transparent" />
-                <div className="absolute inset-x-0 bottom-0 h-[62%] bg-gradient-to-t from-[#05070B]/98 via-[#05070B]/84 to-transparent" />
+                <div className="absolute inset-0 bg-gradient-to-t from-[#05070B]/97 via-[#05070B]/70 to-[#05070B]/30" />
+                <div className="absolute inset-x-0 top-0 h-32 bg-gradient-to-b from-[#05070B]/74 to-transparent" />
+                <div className="absolute inset-x-0 bottom-0 h-[62%] bg-gradient-to-t from-[#05070B]/99 via-[#05070B]/90 to-transparent" />
 
                 <div className="absolute inset-x-0 top-0 flex items-start justify-between p-5 md:p-6">
                   <span className="max-w-[70%] truncate border border-[#C2A139]/50 bg-[#05070B]/72 px-3.5 py-2 text-[9px] font-bold uppercase tracking-[0.22em] text-[#C2A139] shadow-[0_10px_35px_rgba(0,0,0,0.34)] backdrop-blur-md">

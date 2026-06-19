@@ -30,7 +30,7 @@ const pillars = [
 export default function WhyChooseUs() {
   return (
     <section className="relative -mt-8 w-full overflow-hidden pb-12 pt-[4.25rem] md:-mt-12 md:pb-16 md:pt-[5.25rem] lg:flex lg:min-h-[86svh] lg:items-center lg:pb-20 lg:pt-24">
-      <div className="absolute inset-0 -z-10 bg-[#05070B]/18 backdrop-blur-[1px]" />
+      <div className="absolute inset-0 -z-10 bg-[#05070B]/24 backdrop-blur-[1px]" />
 
       <div className="home-container relative">
         <motion.div
@@ -73,9 +73,9 @@ export default function WhyChooseUs() {
           {pillars.map((item) => (
             <article
               key={item.title}
-              className="group relative min-h-[172px] overflow-hidden border border-white/14 bg-[#0D1B2E]/48 p-6 shadow-[0_20px_70px_rgba(0,0,0,0.24)] backdrop-blur-[3px] transition-all duration-300 hover:-translate-y-1 hover:border-[#C2A139]/42 hover:bg-[#0D1B2E]/58 hover:shadow-[0_28px_90px_rgba(0,0,0,0.34)] md:p-7"
+              className="group relative min-h-[172px] overflow-hidden border border-white/16 bg-[#0B1728] p-6 shadow-[0_24px_80px_rgba(0,0,0,0.42)] backdrop-blur-[8px] transition-all duration-300 hover:-translate-y-1 hover:border-[#C2A139]/50 hover:bg-[#10213A] hover:shadow-[0_30px_95px_rgba(0,0,0,0.42)] md:p-7"
             >
-              <div className="absolute inset-0 bg-gradient-to-br from-[#F5F0E8]/[0.055] via-transparent to-[#05070B]/26" />
+              <div className="absolute inset-0 bg-gradient-to-br from-[#F5F0E8]/[0.06] via-[#0D1B2E]/28 to-[#05070B]/52" />
               <div className="absolute left-0 top-0 h-[2px] w-full bg-gradient-to-r from-[#C2A139] via-[#C2A139]/30 to-transparent opacity-60 transition-opacity group-hover:opacity-100" />
               <div className="relative z-10">
                 <span className="text-[11px] font-semibold uppercase tracking-[0.28em] text-[#C2A139]/90">
