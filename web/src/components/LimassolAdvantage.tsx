@@ -11,10 +11,10 @@ const points = [
 
 export default function LimassolAdvantage() {
   return (
-    <section className="relative w-full bg-[#05070B]/88 py-20 md:py-28">
+    <section className="relative w-full bg-[#05070B]/86 py-16 md:py-20 lg:flex lg:min-h-[86svh] lg:items-center">
       <div className="home-container">
         <div className="grid overflow-hidden border border-white/10 lg:grid-cols-[1fr_1.1fr]">
-          <div className="border-b border-white/10 bg-[#0D1B2E]/36 p-7 md:p-10 lg:border-b-0 lg:border-r lg:p-12">
+          <div className="border-b border-white/10 bg-[#0D1B2E]/36 p-7 md:p-10 lg:border-b-0 lg:border-r lg:p-10">
             <p className="section-eyebrow">Investment Perspective</p>
             <h2 className="section-heading mt-4">
               Why Invest <span className="text-[#C2A139]">in Cyprus?</span>
@@ -35,7 +35,7 @@ export default function LimassolAdvantage() {
             {points.map((point, index) => (
               <div
                 key={point}
-                className="group flex min-h-[150px] items-start gap-5 border-b border-white/10 p-7 last:border-b-0 md:border-b-0 md:border-r md:last:border-r-0 lg:border-b lg:border-r-0 lg:last:border-b-0 md:p-8 lg:p-10"
+                className="group flex min-h-[150px] items-start gap-5 border-b border-white/10 p-7 last:border-b-0 md:border-b-0 md:border-r md:last:border-r-0 lg:border-b lg:border-r-0 lg:last:border-b-0 md:p-8 lg:p-8"
               >
                 <span className="mt-1 grid h-10 w-10 shrink-0 place-items-center rounded-full border border-[#C2A139]/30 bg-[#C2A139]/10 text-[#C2A139] transition-all group-hover:bg-[#C2A139] group-hover:text-[#05070B]">
                   <CheckCircle2 className="h-5 w-5" />

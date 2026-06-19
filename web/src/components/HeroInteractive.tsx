@@ -13,24 +13,24 @@ export default function HeroInteractive() {
     offset: ["start start", "end start"],
   });
 
-  const y = useTransform(scrollYProgress, [0, 1], [0, -80]);
-  const opacity = useTransform(scrollYProgress, [0, 0.72], [1, 0]);
+  const y = useTransform(scrollYProgress, [0, 1], [0, -70]);
+  const opacity = useTransform(scrollYProgress, [0, 0.78], [1, 0]);
 
   return (
     <section
       ref={sectionRef}
-      className="relative flex min-h-screen w-full items-center overflow-hidden px-5 pt-24 md:px-8 lg:px-10"
+      className="relative flex min-h-[100svh] w-full items-center overflow-hidden px-5 pt-24 md:px-8 lg:px-10"
     >
       <motion.div
         style={{ y, opacity }}
-        className="home-container relative mx-auto grid min-h-[72vh] w-full items-center"
+        className="home-container relative mx-auto grid min-h-[72svh] w-full items-center"
       >
         <div className="max-w-4xl">
           <motion.h1
             initial={{ opacity: 0, y: 28 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.9, ease: [0.16, 1, 0.3, 1] }}
-            className="font-montserrat text-[clamp(3.3rem,8vw,8.8rem)] font-bold leading-[0.92] tracking-[-0.07em] text-[#F5F0E8] drop-shadow-[0_18px_50px_rgba(0,0,0,0.45)]"
+            className="font-montserrat text-[clamp(3.15rem,8vw,8.6rem)] font-bold leading-[0.92] tracking-[-0.07em] text-[#F5F0E8] drop-shadow-[0_18px_50px_rgba(0,0,0,0.48)]"
           >
             Building Value.
             <span className="block text-[#C2A139]">Creating Places.</span>
@@ -61,8 +61,6 @@ export default function HeroInteractive() {
           </motion.div>
         </div>
       </motion.div>
-
-      <div className="pointer-events-none absolute inset-x-0 bottom-0 h-36 bg-gradient-to-b from-transparent to-[#05070B]/55" />
     </section>
   );
 }

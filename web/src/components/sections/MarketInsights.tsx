@@ -45,7 +45,7 @@ export default function MarketInsights() {
   if (!properties.length) return null;
 
   return (
-    <section className="relative w-full border-y border-white/10 bg-[#0D1B2E]/72 py-20 backdrop-blur-sm md:py-28">
+    <section className="relative w-full border-y border-white/10 bg-[#0D1B2E]/68 py-16 backdrop-blur-sm md:py-20 lg:flex lg:min-h-screen lg:items-center">
       <div className="home-container">
         <div className="mb-10 grid gap-8 lg:grid-cols-[0.95fr_1.05fr] lg:items-end">
           <div>
@@ -93,13 +93,13 @@ export default function MarketInsights() {
             1100: { slidesPerView: 3.05, spaceBetween: 24 },
             1480: { slidesPerView: 4.05, spaceBetween: 24 },
           }}
-          className="tms-property-swiper !pb-16 !pt-3"
+          className="tms-property-swiper !pb-12 !pt-3"
         >
           {properties.map((property, index) => (
             <SwiperSlide key={`${property.id}-${index}`} className="h-auto">
               <Link
                 href={`/properties/${property.slug}`}
-                className="group relative block h-[470px] overflow-hidden border border-white/10 bg-[#05070B] md:h-[520px]"
+                className="group relative block h-[420px] overflow-hidden border border-white/10 bg-[#05070B] md:h-[480px] lg:h-[clamp(430px,52svh,540px)]"
               >
                 <Image
                   src={imageFor(property)}

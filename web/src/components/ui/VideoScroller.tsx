@@ -76,8 +76,8 @@ export default function VideoScroller() {
       />
 
       <div className="bg-noise z-10 pointer-events-none" />
-      <div className="pointer-events-none absolute inset-0 z-[1] bg-gradient-to-b from-black/40 via-black/20 to-black/82" />
-      <div className="pointer-events-none absolute inset-0 z-[2] bg-[radial-gradient(circle_at_20%_50%,rgba(0,0,0,0.08),transparent_35%),radial-gradient(circle_at_85%_35%,rgba(13,27,46,0.20),transparent_38%)]" />
+      <div className="pointer-events-none absolute inset-0 z-[1] bg-gradient-to-b from-black/40 via-black/22 to-black/64" />
+      <div className="pointer-events-none absolute inset-0 z-[2] bg-[radial-gradient(circle_at_20%_50%,rgba(0,0,0,0.10),transparent_35%),radial-gradient(circle_at_85%_35%,rgba(13,27,46,0.16),transparent_38%)]" />
     </div>
   );
 }

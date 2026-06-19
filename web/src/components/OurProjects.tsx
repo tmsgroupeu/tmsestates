@@ -39,6 +39,13 @@ const extractText = (value: any): string => {
   return "";
 };
 
+const summarize = (text: string, fallback: string): string => {
+  const clean = (text || fallback).replace(/\s+/g, " ").trim();
+  const words = clean.split(" ").filter(Boolean);
+  if (words.length <= 28) return clean;
+  return `${words.slice(0, 28).join(" ")}…`;
+};
+
 export default async function OurProjects() {
   const { data: rawProjects } = await fetchProjects();
 
@@ -50,9 +57,10 @@ export default async function OurProjects() {
     const title = p.Title || p.title || "Signature Project";
     const location = p.location || p.Location || p.city || p.City || "Cyprus";
     const completion = p.CompletionStatus || p.completionStatus || p.completionDate || "";
-    const description =
-      extractText(p.Description || p.description) ||
-      "Discover a carefully selected development designed for contemporary living and long-term value.";
+    const description = summarize(
+      extractText(p.Description || p.description),
+      "A carefully selected development designed for contemporary living and long-term value."
+    );
     const slug = p.slug || p.Slug || "#";
     const image =
       getSafeUrl(p.coverimage || p.coverImage || p.CoverImage || p.image || p.Image) ||
@@ -70,27 +78,32 @@ export default async function OurProjects() {
   });
 
   return (
-    <section className="relative w-full border-y border-white/10 bg-[#05070B]/82 py-20 backdrop-blur-sm md:py-28">
-      <div className="home-container">
-        <div className="mb-12 grid gap-8 lg:grid-cols-[1fr_auto] lg:items-end">
-          <div className="max-w-3xl">
+    <section className="relative w-full overflow-hidden border-y border-white/10 bg-[#05070B]/74 py-16 backdrop-blur-[1px] md:py-20 lg:flex lg:min-h-screen lg:items-center">
+      <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(90deg,rgba(245,240,232,0.055)_1px,transparent_1px),linear-gradient(180deg,rgba(245,240,232,0.045)_1px,transparent_1px)] bg-[size:25%_50%] opacity-35" />
+      <div className="home-container relative">
+        <div className="mb-9 grid gap-7 border-b border-white/10 pb-8 lg:grid-cols-[0.85fr_1.15fr] lg:items-end">
+          <div>
             <div className="inline-flex items-center gap-3 text-[#C2A139]">
               <Building2 className="h-4 w-4" strokeWidth={1.7} />
               <p className="section-eyebrow">Our Projects</p>
             </div>
-            <h2 className="section-heading mt-4">Signature Developments</h2>
-            <p className="mt-5 max-w-2xl text-base leading-8 text-[#F5F0E8]/70 md:text-lg md:leading-9">
-              Discover a portfolio of residential developments across Cyprus, thoughtfully designed for modern living and long-term value.
-            </p>
+            <h2 className="section-heading mt-4 max-w-2xl">
+              Signature <span className="text-[#C2A139]">Developments</span>
+            </h2>
           </div>
 
-          <Link
-            href="/projects"
-            className="group inline-flex w-fit items-center gap-3 rounded-full border border-white/14 px-6 py-4 text-[11px] font-bold uppercase tracking-[0.22em] text-[#F5F0E8] transition-all hover:border-[#C2A139] hover:text-[#C2A139]"
-          >
-            View All Projects
-            <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
-          </Link>
+          <div className="max-w-2xl lg:justify-self-end">
+            <p className="text-base leading-8 text-[#F5F0E8]/72 md:text-lg md:leading-9">
+              Discover a portfolio of residential developments across Cyprus, thoughtfully designed for modern living and long-term value.
+            </p>
+            <Link
+              href="/projects"
+              className="group mt-7 inline-flex w-fit items-center gap-3 rounded-full border border-white/16 bg-[#F5F0E8] px-6 py-4 text-[11px] font-bold uppercase tracking-[0.22em] text-[#0D1B2E] transition-all hover:border-[#C2A139] hover:bg-[#C2A139] hover:text-[#05070B]"
+            >
+              View All Projects
+              <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
+            </Link>
+          </div>
         </div>
 
         <OurProjectsClient projects={projects} />
