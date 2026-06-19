@@ -77,7 +77,7 @@ export default function MarketInsights() {
 
       <div className="home-container relative z-10">
         <div className="grid gap-8 pb-8 md:pb-10 lg:grid-cols-[0.95fr_1.05fr] lg:items-end">
-          <h2 className="max-w-3xl font-montserrat text-[clamp(2.35rem,5.2vw,6.35rem)] font-bold leading-[0.96] tracking-[-0.065em] text-[#F5F0E8] text-balance">
+          <h2 className="max-w-3xl font-montserrat text-[clamp(2.15rem,4.5vw,5.15rem)] font-bold leading-[1.0] tracking-[-0.055em] text-[#F5F0E8] text-balance">
             Looking for Your Next Property Opportunity?
           </h2>
 

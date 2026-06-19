@@ -29,8 +29,8 @@ const pillars = [
 
 export default function WhyChooseUs() {
   return (
-    <section className="relative -mt-12 w-full overflow-hidden pb-12 pt-20 md:-mt-16 md:pb-16 md:pt-24 lg:-mt-18 lg:flex lg:min-h-[88svh] lg:items-center lg:pb-20 lg:pt-28">
-      <div className="absolute inset-0 -z-10 bg-[#05070B]/14 backdrop-blur-[1px]" />
+    <section className="relative -mt-8 w-full overflow-hidden pb-12 pt-[4.5rem] md:-mt-12 md:pb-16 md:pt-[5.5rem] lg:flex lg:min-h-[86svh] lg:items-center lg:pb-20 lg:pt-24">
+      <div className="absolute inset-0 -z-10 bg-[#05070B]/12 backdrop-blur-[1px]" />
 
       <div className="home-container relative">
         <motion.div
@@ -41,6 +41,7 @@ export default function WhyChooseUs() {
           className="grid gap-8 pb-9 md:pb-11 lg:grid-cols-[0.96fr_1.04fr] lg:items-end"
         >
           <div>
+            <p className="section-eyebrow mb-4">TMS Estates</p>
             <h2 className="section-heading max-w-2xl">
               Developing Properties <span className="text-[#C2A139]">with Purpose</span>
             </h2>
@@ -52,7 +53,7 @@ export default function WhyChooseUs() {
             </p>
             <Link
               href="/about"
-              className="group mt-7 inline-flex items-center gap-3 rounded-full border border-[#C2A139]/35 bg-[#0D1B2E]/44 px-6 py-4 text-[11px] font-bold uppercase tracking-[0.22em] text-[#F5F0E8] shadow-[0_18px_55px_rgba(0,0,0,0.24)] backdrop-blur-md transition-all duration-300 hover:-translate-y-0.5 hover:border-[#C2A139] hover:bg-[#C2A139] hover:text-[#05070B] hover:shadow-[0_22px_70px_rgba(194,161,57,0.18)]"
+              className="group mt-7 inline-flex items-center gap-3 rounded-full border border-[#C2A139]/45 bg-[#F5F0E8] px-6 py-4 text-[11px] font-bold uppercase tracking-[0.22em] text-[#0D1B2E] shadow-[0_20px_60px_rgba(0,0,0,0.28)] transition-all duration-300 hover:-translate-y-0.5 hover:border-[#C2A139] hover:bg-[#C2A139] hover:text-[#05070B] hover:shadow-[0_24px_75px_rgba(194,161,57,0.2)]"
             >
               About TMS Estates
               <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
@@ -70,19 +71,21 @@ export default function WhyChooseUs() {
           {pillars.map((item) => (
             <article
               key={item.title}
-              className="group relative min-h-[176px] overflow-hidden border border-white/10 bg-[#0D1B2E]/32 p-6 shadow-[0_22px_75px_rgba(0,0,0,0.26)] backdrop-blur-[2px] transition-all duration-300 hover:-translate-y-1 hover:border-[#C2A139]/40 hover:bg-[#0D1B2E]/52 hover:shadow-[0_32px_100px_rgba(0,0,0,0.38)] md:p-7"
+              className="group relative min-h-[176px] overflow-hidden border border-white/12 bg-gradient-to-br from-[#0D1B2E]/68 via-[#0D1B2E]/48 to-[#05070B]/50 p-6 shadow-[0_22px_75px_rgba(0,0,0,0.28)] backdrop-blur-[4px] transition-all duration-300 hover:-translate-y-1 hover:border-[#C2A139]/42 hover:from-[#0D1B2E]/78 hover:via-[#0D1B2E]/58 hover:to-[#05070B]/62 hover:shadow-[0_32px_100px_rgba(0,0,0,0.38)] md:p-7"
             >
-              <div className="absolute left-0 top-0 h-[2px] w-full bg-gradient-to-r from-[#C2A139] via-[#C2A139]/32 to-transparent opacity-55 transition-opacity group-hover:opacity-100" />
-              <div className="absolute right-0 top-0 h-24 w-24 translate-x-1/2 -translate-y-1/2 rounded-full bg-[#C2A139]/14 blur-3xl opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
-              <span className="text-[11px] font-semibold uppercase tracking-[0.28em] text-[#C2A139]/85">
-                {item.label}
-              </span>
-              <h3 className="mt-8 font-montserrat text-xl font-semibold tracking-[-0.03em] text-[#F5F0E8]">
-                {item.title}
-              </h3>
-              <p className="mt-4 text-sm leading-7 text-[#F5F0E8]/70">
-                {item.text}
-              </p>
+              <div className="absolute left-0 top-0 h-[2px] w-full bg-gradient-to-r from-[#C2A139] via-[#C2A139]/34 to-transparent opacity-60 transition-opacity group-hover:opacity-100" />
+              <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(194,161,57,0.10),transparent_35%)] opacity-70" />
+              <div className="relative z-10">
+                <span className="text-[11px] font-semibold uppercase tracking-[0.28em] text-[#C2A139]/90">
+                  {item.label}
+                </span>
+                <h3 className="mt-8 font-montserrat text-xl font-semibold tracking-[-0.03em] text-[#F5F0E8]">
+                  {item.title}
+                </h3>
+                <p className="mt-4 text-sm leading-7 text-[#F5F0E8]/74">
+                  {item.text}
+                </p>
+              </div>
             </article>
           ))}
         </motion.div>
