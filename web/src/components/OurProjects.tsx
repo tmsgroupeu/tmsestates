@@ -32,7 +32,9 @@ const extractText = (value: any): string => {
   if (typeof value === "string") return value;
   if (Array.isArray(value)) {
     return value
-      .map((block: any) => block.children?.map((child: any) => child.text).join(" "))
+      .map((block: any) =>
+        block.children?.map((child: any) => child.text).join(" "),
+      )
       .join(" ")
       .trim();
   }
@@ -56,15 +58,17 @@ export default async function OurProjects() {
 
     const title = p.Title || p.title || "Signature Project";
     const location = p.location || p.Location || p.city || p.City || "Cyprus";
-    const completion = p.CompletionStatus || p.completionStatus || p.completionDate || "";
+    const completion =
+      p.CompletionStatus || p.completionStatus || p.completionDate || "";
     const description = summarize(
       extractText(p.Description || p.description),
-      "A carefully selected development designed for contemporary living and long-term value."
+      "A carefully selected development designed for contemporary living and long-term value.",
     );
     const slug = p.slug || p.Slug || "#";
     const image =
-      getSafeUrl(p.coverimage || p.coverImage || p.CoverImage || p.image || p.Image) ||
-      "/assets/hero-poster.jpg";
+      getSafeUrl(
+        p.coverimage || p.coverImage || p.CoverImage || p.image || p.Image,
+      ) || "/assets/hero-poster.jpg";
 
     return {
       id: projectItem.id || title,
@@ -78,10 +82,10 @@ export default async function OurProjects() {
   });
 
   return (
-    <section className="relative w-full overflow-hidden bg-[#05070B]/58 py-16 backdrop-blur-[1px] md:py-20 lg:flex lg:min-h-screen lg:items-center">
+    <section className="relative w-full overflow-hidden bg-[#05070B]/62 py-14 backdrop-blur-[1px] md:py-18 lg:flex lg:min-h-screen lg:items-center">
       <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-[#05070B]/8 via-transparent to-[#05070B]/22" />
       <div className="home-container relative">
-        <div className="mb-9 grid gap-7 pb-3 lg:grid-cols-[0.9fr_1.1fr] lg:items-end">
+        <div className="mb-8 grid gap-7 pb-3 lg:grid-cols-[0.9fr_1.1fr] lg:items-end">
           <div>
             <div className="inline-flex items-center gap-3 text-[#C2A139]">
               <Building2 className="h-4 w-4" strokeWidth={1.7} />
@@ -93,8 +97,9 @@ export default async function OurProjects() {
           </div>
 
           <div className="max-w-2xl lg:justify-self-end">
-            <p className="text-base leading-8 text-[#F5F0E8]/78 md:text-lg md:leading-9">
-              Discover a portfolio of residential developments across Cyprus, thoughtfully designed for modern living and long-term value.
+            <p className="text-base leading-8 text-[#F5F0E8]/80 md:text-[1.04rem] md:leading-9">
+              Discover a portfolio of residential developments across Cyprus,
+              thoughtfully designed for modern living and long-term value.
             </p>
             <Link
               href="/projects"

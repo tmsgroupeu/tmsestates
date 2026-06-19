@@ -13,7 +13,7 @@ export default function HeroInteractive() {
     offset: ["start start", "end start"],
   });
 
-  const y = useTransform(scrollYProgress, [0, 1], [0, -56]);
+  const y = useTransform(scrollYProgress, [0, 1], [0, -44]);
   const opacity = useTransform(scrollYProgress, [0, 0.78], [1, 0]);
 
   return (
@@ -25,30 +25,40 @@ export default function HeroInteractive() {
         style={{ y, opacity }}
         className="home-container relative mx-auto flex min-h-[72svh] w-full items-center justify-center"
       >
-        <div className="mx-auto max-w-5xl text-center">
+        <div className="mx-auto max-w-[920px] text-center">
           <motion.h1
-            initial={{ opacity: 0, y: 26 }}
+            initial={{ opacity: 0, y: 24 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.9, ease: [0.16, 1, 0.3, 1] }}
-            className="font-montserrat text-[clamp(2.75rem,6.6vw,6.85rem)] font-bold leading-[0.96] tracking-[-0.06em] text-[#F5F0E8] drop-shadow-[0_18px_48px_rgba(0,0,0,0.48)]"
+            className="font-montserrat text-[clamp(2.45rem,5.15vw,5.55rem)] font-bold leading-[0.98] tracking-[-0.055em] text-[#F5F0E8] drop-shadow-[0_18px_48px_rgba(0,0,0,0.52)]"
           >
             Building Value.
             <span className="block text-[#C2A139]">Creating Places.</span>
           </motion.h1>
 
           <motion.p
-            initial={{ opacity: 0, y: 20 }}
+            initial={{ opacity: 0, y: 18 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.18, duration: 0.85, ease: [0.16, 1, 0.3, 1] }}
-            className="mx-auto mt-7 max-w-3xl text-balance text-base leading-8 text-[#F5F0E8]/88 md:mt-8 md:text-lg md:leading-9"
+            transition={{
+              delay: 0.18,
+              duration: 0.85,
+              ease: [0.16, 1, 0.3, 1],
+            }}
+            className="mx-auto mt-7 max-w-2xl text-balance text-[0.98rem] leading-8 text-[#F5F0E8]/88 md:mt-8 md:text-[1.08rem] md:leading-9"
           >
-            TMS Estates is a Cyprus-based real estate developer creating contemporary residential and mixed-use developments in carefully selected locations.
+            TMS Estates is a Cyprus-based real estate developer creating
+            contemporary residential and mixed-use developments in carefully
+            selected locations.
           </motion.p>
 
           <motion.div
             initial={{ opacity: 0, y: 18 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.34, duration: 0.75, ease: [0.16, 1, 0.3, 1] }}
+            transition={{
+              delay: 0.34,
+              duration: 0.75,
+              ease: [0.16, 1, 0.3, 1],
+            }}
             className="mt-9 flex flex-wrap items-center justify-center gap-4"
           >
             <Link
