@@ -3,14 +3,14 @@
 @tailwind utilities;
 
 :root {
-  --font-inter: 'Inter', sans-serif;
-  --font-montserrat: 'Montserrat', sans-serif;
+  --font-inter: "Inter", sans-serif;
+  --font-montserrat: "Montserrat", sans-serif;
 
-  --navy: #0D1B2E;
-  --gold: #C2A139;
-  --ivory: #F5F0E8;
-  --stone: #C4B49A;
-  --black: #05070B;
+  --navy: #0d1b2e;
+  --gold: #c2a139;
+  --ivory: #f5f0e8;
+  --stone: #c4b49a;
+  --black: #05070b;
 
   --background: var(--black);
   --foreground: var(--ivory);
@@ -59,7 +59,7 @@ body {
   letter-spacing: -0.05em;
   line-height: 1.02;
   color: var(--ivory);
-  font-size: clamp(2.1rem, 4.2vw, 4.55rem);
+  font-size: clamp(1.95rem, 3.35vw, 3.75rem);
 }
 
 .text-balance {
@@ -173,6 +173,13 @@ body {
 .line-clamp-3 {
   display: -webkit-box;
   -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.line-clamp-1 {
+  display: -webkit-box;
+  -webkit-line-clamp: 1;
   -webkit-box-orient: vertical;
   overflow: hidden;
 }
