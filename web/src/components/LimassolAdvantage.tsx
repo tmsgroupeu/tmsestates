@@ -13,8 +13,7 @@ export default function LimassolAdvantage() {
   return (
     <section className="relative w-full bg-[#05070B]/62 py-14 md:py-18 lg:flex lg:min-h-[88svh] lg:items-center">
       <div className="home-container">
-        <div className="relative overflow-hidden rounded-[2rem] border border-white/10 bg-gradient-to-br from-[#0D1B2E]/82 via-[#05070B]/70 to-[#0D1B2E]/58 shadow-[0_42px_150px_rgba(0,0,0,0.38)] backdrop-blur-xl md:rounded-[2.75rem]">
-          <div className="absolute inset-0 pointer-events-none bg-[linear-gradient(90deg,rgba(245,240,232,0.07)_1px,transparent_1px),linear-gradient(0deg,rgba(245,240,232,0.055)_1px,transparent_1px)] bg-[size:25%_100%,100%_50%] opacity-45" />
+        <div className="relative overflow-hidden rounded-[2rem] border border-white/[0.09] bg-gradient-to-br from-[#0D1B2E]/82 via-[#05070B]/70 to-[#0D1B2E]/58 shadow-[0_42px_150px_rgba(0,0,0,0.38)] backdrop-blur-xl md:rounded-[2.75rem]">
           <div className="absolute -right-24 -top-24 h-72 w-72 rounded-full bg-[#C2A139]/16 blur-3xl" />
           <div className="absolute -bottom-28 left-12 h-72 w-72 rounded-full bg-[#C4B49A]/10 blur-3xl" />
 

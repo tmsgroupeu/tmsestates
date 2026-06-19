@@ -47,7 +47,7 @@ export default function MarketInsights() {
       });
 
       const items = data || [];
-      setProperties(items.length > 0 && items.length < 7 ? [...items, ...items] : items);
+      setProperties(items);
     }
 
     loadProperties();
@@ -57,7 +57,20 @@ export default function MarketInsights() {
     return [...properties].sort((a: any, b: any) => Number(Boolean(b.vip)) - Number(Boolean(a.vip)));
   }, [properties]);
 
-  if (!sortedProperties.length) return null;
+  const carouselProperties = useMemo(() => {
+    if (!sortedProperties.length) return [];
+
+    const minimumSlides = 16;
+    const repeated: Property[] = [];
+
+    while (repeated.length < minimumSlides) {
+      repeated.push(...sortedProperties);
+    }
+
+    return repeated;
+  }, [sortedProperties]);
+
+  if (!carouselProperties.length) return null;
 
   return (
     <section className="relative flex min-h-[100svh] w-full flex-col justify-center overflow-hidden py-16 md:py-20 lg:py-24">
@@ -87,23 +100,22 @@ export default function MarketInsights() {
       <div className="relative z-10 mt-4 w-screen overflow-hidden md:mt-8">
         <Swiper
           modules={[Autoplay, Navigation]}
-          loop={sortedProperties.length > 3}
+          loop={carouselProperties.length > 6}
+          loopAdditionalSlides={carouselProperties.length}
+          watchOverflow={false}
           navigation
-          slidesPerView={1.12}
-          centeredSlides
-          spaceBetween={16}
-          speed={900}
-          autoplay={{ delay: 3600, disableOnInteraction: false, pauseOnMouseEnter: true }}
+          slidesPerView="auto"
+          spaceBetween={18}
+          speed={850}
+          autoplay={{ delay: 3400, disableOnInteraction: false, pauseOnMouseEnter: true }}
           breakpoints={{
-            640: { slidesPerView: 1.55, spaceBetween: 18, centeredSlides: true },
-            900: { slidesPerView: 2.35, spaceBetween: 20, centeredSlides: true },
-            1280: { slidesPerView: 3.25, spaceBetween: 24, centeredSlides: true },
-            1680: { slidesPerView: 4.05, spaceBetween: 26, centeredSlides: true },
+            768: { spaceBetween: 22 },
+            1280: { spaceBetween: 26 },
           }}
-          className="tms-property-swiper tms-property-rail !overflow-visible px-5 md:px-8 lg:px-10"
+          className="tms-property-swiper tms-property-rail !overflow-visible !px-6 md:!px-10 lg:!px-[clamp(3rem,7vw,8.5rem)]"
         >
-          {sortedProperties.map((property, index) => (
-            <SwiperSlide key={`${property.id}-${index}`} className="h-auto py-2 md:py-3">
+          {carouselProperties.map((property, index) => (
+            <SwiperSlide key={`${property.id}-${index}`} className="!w-[82vw] max-w-[390px] py-2 md:!w-[405px] md:max-w-none md:py-3 xl:!w-[430px]">
               <Link
                 href={`/properties/${property.slug}`}
                 className="group relative block h-[390px] overflow-hidden border border-white/10 bg-[#05070B]/48 backdrop-blur-[1px] transition-all duration-500 hover:-translate-y-1 hover:border-[#C2A139]/40 md:h-[440px] xl:h-[500px]"
@@ -112,7 +124,7 @@ export default function MarketInsights() {
                   src={imageFor(property)}
                   alt={property.title || "TMS Estates property"}
                   fill
-                  sizes="(max-width: 640px) 86vw, (max-width: 900px) 62vw, (max-width: 1280px) 42vw, 28vw"
+                  sizes="(max-width: 768px) 82vw, (max-width: 1280px) 405px, 430px"
                   className="object-cover transition duration-[1200ms] ease-out group-hover:scale-105"
                 />
 
