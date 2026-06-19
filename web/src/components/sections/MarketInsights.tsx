@@ -46,8 +46,7 @@ export default function MarketInsights() {
         "sort[0]": "createdAt:desc",
       });
 
-      const items = data || [];
-      setProperties(items);
+      setProperties(data || []);
     }
 
     loadProperties();
@@ -83,7 +82,7 @@ export default function MarketInsights() {
           </h2>
 
           <div className="max-w-2xl lg:justify-self-end">
-            <p className="text-base leading-8 text-[#F5F0E8]/78 md:text-lg md:leading-9">
+            <p className="text-base leading-8 text-[#F5F0E8]/82 md:text-lg md:leading-9">
               Whether you are searching for a new home, an investment opportunity or information about our developments, our team would be pleased to assist.
             </p>
             <a
@@ -118,7 +117,7 @@ export default function MarketInsights() {
             <SwiperSlide key={`${property.id}-${index}`} className="!w-[82vw] max-w-[390px] py-2 md:!w-[405px] md:max-w-none md:py-3 xl:!w-[430px]">
               <Link
                 href={`/properties/${property.slug}`}
-                className="group relative block h-[390px] overflow-hidden border border-white/10 bg-[#05070B]/48 backdrop-blur-[1px] transition-all duration-500 hover:-translate-y-1 hover:border-[#C2A139]/40 md:h-[440px] xl:h-[500px]"
+                className="group relative block h-[390px] overflow-hidden border border-white/10 bg-[#05070B]/50 shadow-[0_22px_75px_rgba(0,0,0,0.28)] backdrop-blur-[1px] transition-all duration-500 hover:-translate-y-1 hover:border-[#C2A139]/45 hover:shadow-[0_30px_95px_rgba(0,0,0,0.38)] md:h-[440px] xl:h-[500px]"
               >
                 <Image
                   src={imageFor(property)}
@@ -128,41 +127,41 @@ export default function MarketInsights() {
                   className="object-cover transition duration-[1200ms] ease-out group-hover:scale-105"
                 />
 
-                <div className="absolute inset-0 bg-gradient-to-t from-[#05070B]/96 via-[#05070B]/34 to-[#05070B]/4" />
-                <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(245,240,232,0.09)_1px,transparent_1px)] bg-[size:50%_100%] opacity-[0.18]" />
+                <div className="absolute inset-0 bg-gradient-to-t from-[#05070B] via-[#05070B]/40 to-[#05070B]/2" />
+                <div className="absolute inset-x-0 bottom-0 h-[48%] bg-gradient-to-t from-[#05070B]/96 via-[#05070B]/78 to-transparent" />
 
                 <div className="absolute inset-x-0 top-0 flex items-start justify-between p-5 md:p-6">
-                  <span className="border border-[#C2A139]/35 bg-[#05070B]/48 px-3.5 py-2 text-[9px] font-bold uppercase tracking-[0.22em] text-[#C2A139] backdrop-blur-md">
+                  <span className="max-w-[70%] truncate border border-[#C2A139]/45 bg-[#05070B]/62 px-3.5 py-2 text-[9px] font-bold uppercase tracking-[0.22em] text-[#C2A139] shadow-[0_10px_35px_rgba(0,0,0,0.28)] backdrop-blur-md">
                     {badgeFor(property)}
                   </span>
-                  <span className="grid h-11 w-11 place-items-center rounded-full border border-white/14 bg-[#05070B]/34 text-[#F5F0E8] backdrop-blur-md transition-all group-hover:-translate-y-1 group-hover:translate-x-1 group-hover:border-[#C2A139] group-hover:text-[#C2A139]">
+                  <span className="grid h-11 w-11 place-items-center rounded-full border border-white/18 bg-[#05070B]/42 text-[#F5F0E8] backdrop-blur-md transition-all group-hover:-translate-y-1 group-hover:translate-x-1 group-hover:border-[#C2A139] group-hover:bg-[#C2A139] group-hover:text-[#05070B]">
                     <ArrowUpRight className="h-4 w-4" />
                   </span>
                 </div>
 
                 <div className="absolute inset-x-0 bottom-0 p-5 md:p-6">
-                  <div className="mb-3 flex items-center gap-2 text-[10px] font-bold uppercase tracking-[0.18em] text-[#F5F0E8]/65">
+                  <div className="mb-3 inline-flex items-center gap-2 rounded-full border border-white/12 bg-[#05070B]/46 px-3 py-1.5 text-[10px] font-bold uppercase tracking-[0.18em] text-[#F5F0E8]/82 backdrop-blur-md">
                     <MapPin className="h-3.5 w-3.5 text-[#C2A139]" />
                     <span>{property.city || "Cyprus"}</span>
                   </div>
 
-                  <h3 className="line-clamp-2 font-montserrat text-2xl font-semibold leading-tight tracking-[-0.045em] text-[#F5F0E8] md:text-3xl">
+                  <h3 className="line-clamp-2 font-montserrat text-[1.45rem] font-semibold leading-[1.05] tracking-[-0.045em] text-[#F5F0E8] drop-shadow-[0_8px_24px_rgba(0,0,0,0.55)] md:text-[1.75rem] xl:text-[1.95rem]">
                     {property.title}
                   </h3>
 
-                  <p className="mt-3 text-sm font-medium text-[#F5F0E8]/70">
+                  <p className="mt-3 text-sm font-semibold text-[#F5F0E8]/82">
                     {formatPrice(property.price, property.currency)}
                   </p>
 
-                  <div className="mt-5 flex flex-wrap items-center gap-4 border-t border-white/10 pt-4 text-xs text-[#F5F0E8]/66">
+                  <div className="mt-4 flex flex-wrap items-center gap-2 border-t border-white/12 pt-4 text-xs text-[#F5F0E8]/78">
                     {property.bedrooms && (
-                      <span className="inline-flex items-center gap-2">
+                      <span className="inline-flex items-center gap-2 rounded-full bg-white/[0.065] px-3 py-1.5 backdrop-blur-sm">
                         <BedDouble className="h-4 w-4 text-[#C2A139]" />
                         {property.bedrooms} Beds
                       </span>
                     )}
                     {property.area && (
-                      <span className="inline-flex items-center gap-2">
+                      <span className="inline-flex items-center gap-2 rounded-full bg-white/[0.065] px-3 py-1.5 backdrop-blur-sm">
                         <Ruler className="h-4 w-4 text-[#C2A139]" />
                         {property.area} m²
                       </span>

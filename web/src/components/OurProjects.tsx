@@ -42,8 +42,8 @@ const extractText = (value: any): string => {
 const summarize = (text: string, fallback: string): string => {
   const clean = (text || fallback).replace(/\s+/g, " ").trim();
   const words = clean.split(" ").filter(Boolean);
-  if (words.length <= 28) return clean;
-  return `${words.slice(0, 28).join(" ")}…`;
+  if (words.length <= 24) return clean;
+  return `${words.slice(0, 24).join(" ")}…`;
 };
 
 export default async function OurProjects() {
@@ -78,10 +78,10 @@ export default async function OurProjects() {
   });
 
   return (
-    <section className="relative w-full overflow-hidden border-y border-white/10 bg-[#05070B]/74 py-16 backdrop-blur-[1px] md:py-20 lg:flex lg:min-h-screen lg:items-center">
-      <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(90deg,rgba(245,240,232,0.055)_1px,transparent_1px),linear-gradient(180deg,rgba(245,240,232,0.045)_1px,transparent_1px)] bg-[size:25%_50%] opacity-35" />
+    <section className="relative w-full overflow-hidden bg-[#05070B]/66 py-16 backdrop-blur-[1px] md:py-20 lg:flex lg:min-h-screen lg:items-center">
+      <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-transparent via-[#05070B]/10 to-[#05070B]/24" />
       <div className="home-container relative">
-        <div className="mb-9 grid gap-7 border-b border-white/10 pb-8 lg:grid-cols-[0.85fr_1.15fr] lg:items-end">
+        <div className="mb-9 grid gap-7 pb-3 lg:grid-cols-[0.85fr_1.15fr] lg:items-end">
           <div>
             <div className="inline-flex items-center gap-3 text-[#C2A139]">
               <Building2 className="h-4 w-4" strokeWidth={1.7} />
@@ -93,7 +93,7 @@ export default async function OurProjects() {
           </div>
 
           <div className="max-w-2xl lg:justify-self-end">
-            <p className="text-base leading-8 text-[#F5F0E8]/72 md:text-lg md:leading-9">
+            <p className="text-base leading-8 text-[#F5F0E8]/74 md:text-lg md:leading-9">
               Discover a portfolio of residential developments across Cyprus, thoughtfully designed for modern living and long-term value.
             </p>
             <Link

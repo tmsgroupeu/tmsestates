@@ -22,7 +22,7 @@ export default function OurProjectsClient({ projects }: { projects: ProjectData[
   if (!visibleProjects.length) return null;
 
   return (
-    <div className="relative overflow-hidden border border-white/10 bg-[#05070B]/24 shadow-[0_30px_120px_rgba(0,0,0,0.28)] backdrop-blur-[2px]">
+    <div className="relative overflow-hidden bg-[#05070B]/24 shadow-[0_30px_120px_rgba(0,0,0,0.24)] backdrop-blur-[2px]">
       <div className="hidden h-[clamp(430px,55svh,620px)] w-full lg:flex">
         {visibleProjects.map((project, index) => {
           const isActive = index === activeIndex;
@@ -44,8 +44,6 @@ export default function OurProjectsClient({ projects }: { projects: ProjectData[
                 className="object-cover transition duration-[1400ms] ease-out group-hover:scale-[1.04]"
               />
               <div className={`absolute inset-0 transition duration-500 ${isActive ? "bg-gradient-to-t from-[#05070B]/94 via-[#05070B]/36 to-[#05070B]/12" : "bg-[#05070B]/70"}`} />
-              <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(245,240,232,0.08)_1px,transparent_1px)] bg-[size:33.333%_100%] opacity-25" />
-
               <div className="absolute left-6 top-6 z-10 flex items-center gap-3">
                 <span className={`h-2 w-2 rounded-full transition-colors ${isActive ? "bg-[#C2A139]" : "bg-[#F5F0E8]/38"}`} />
                 <span className="text-[10px] font-bold uppercase tracking-[0.24em] text-[#F5F0E8]/72">
