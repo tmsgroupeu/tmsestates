@@ -25,12 +25,12 @@ export default function HeroInteractive() {
         style={{ y, opacity }}
         className="home-container relative mx-auto flex min-h-[72svh] w-full items-center justify-center"
       >
-        <div className="mx-auto max-w-[920px] text-center">
+        <div className="mx-auto max-w-[860px] text-center">
           <motion.h1
             initial={{ opacity: 0, y: 24 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.9, ease: [0.16, 1, 0.3, 1] }}
-            className="font-montserrat text-[clamp(2.45rem,5.15vw,5.55rem)] font-bold leading-[0.98] tracking-[-0.055em] text-[#F5F0E8] drop-shadow-[0_18px_48px_rgba(0,0,0,0.52)]"
+            className="font-montserrat text-[clamp(2rem,3.75vw,4.15rem)] font-bold leading-[0.98] tracking-[-0.055em] text-[#F5F0E8] drop-shadow-[0_18px_48px_rgba(0,0,0,0.52)]"
           >
             Building Value.
             <span className="block text-[#C2A139]">Creating Places.</span>

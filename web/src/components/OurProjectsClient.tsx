@@ -29,7 +29,7 @@ export default function OurProjectsClient({
 
   return (
     <div className="relative overflow-visible">
-      <div className="hidden h-[clamp(420px,52svh,590px)] w-full gap-4 lg:flex">
+      <div className="hidden h-[clamp(410px,50svh,560px)] w-full gap-4 lg:flex">
         {visibleProjects.map((project, index) => {
           const isActive = index === activeIndex;
 
@@ -56,15 +56,15 @@ export default function OurProjectsClient({
 
               {/* Dark editorial overlay: keeps images visible, but guarantees readable project information. */}
               <div
-                className={`absolute inset-0 transition duration-500 ${isActive ? "bg-[#05070B]/18" : "bg-[#05070B]/42"}`}
+                className={`absolute inset-0 transition duration-500 ${isActive ? "bg-[#05070B]/50" : "bg-[#05070B]/70"}`}
               />
-              <div className="absolute inset-x-0 top-0 h-44 bg-gradient-to-b from-[#05070B]/76 via-[#05070B]/38 to-transparent" />
-              <div className="absolute inset-x-0 bottom-0 h-[76%] bg-gradient-to-t from-[#05070B]/98 via-[#05070B]/78 to-transparent" />
-              <div className="absolute inset-y-0 left-0 w-[42%] bg-gradient-to-r from-[#05070B]/72 via-[#05070B]/28 to-transparent" />
+              <div className="absolute inset-x-0 top-0 h-44 bg-gradient-to-b from-[#05070B]/94 via-[#05070B]/66 to-transparent" />
+              <div className="absolute inset-x-0 bottom-0 h-[76%] bg-gradient-to-t from-[#05070B]/100 via-[#05070B]/94 to-transparent" />
+              <div className="absolute inset-y-0 left-0 w-[72%] bg-gradient-to-r from-[#05070B]/92 via-[#05070B]/70 to-transparent" />
               <div className="absolute inset-0 ring-1 ring-inset ring-white/8" />
 
               {!isActive && (
-                <div className="absolute inset-0 bg-[#05070B]/20 transition-opacity group-hover:opacity-0" />
+                <div className="absolute inset-0 bg-[#05070B]/44 transition-opacity group-hover:opacity-0" />
               )}
 
               {isActive && (
@@ -98,23 +98,23 @@ export default function OurProjectsClient({
                   <div className="max-w-[680px]">
                     <div className="mb-5 flex flex-wrap gap-3">
                       {project.location && (
-                        <span className="inline-flex max-w-full items-center gap-2 border border-white/22 bg-[#05070B]/76 px-3 py-2 text-[10px] font-bold uppercase tracking-[0.18em] text-[#F5F0E8] shadow-[0_12px_34px_rgba(0,0,0,0.34)] backdrop-blur-md">
+                        <span className="inline-flex max-w-full items-center gap-2 border border-white/24 bg-[#05070B]/92 px-3 py-2 text-[10px] font-bold uppercase tracking-[0.18em] text-[#F5F0E8] shadow-[0_12px_34px_rgba(0,0,0,0.34)] backdrop-blur-md">
                           <MapPin className="h-3.5 w-3.5 shrink-0 text-[#C2A139]" />
                           <span className="truncate">{project.location}</span>
                         </span>
                       )}
                       {project.completion && (
-                        <span className="inline-flex max-w-full items-center gap-2 border border-[#C2A139]/52 bg-[#05070B]/76 px-3 py-2 text-[10px] font-bold uppercase tracking-[0.18em] text-[#C2A139] shadow-[0_12px_34px_rgba(0,0,0,0.34)] backdrop-blur-md">
+                        <span className="inline-flex max-w-full items-center gap-2 border border-[#C2A139]/58 bg-[#05070B]/92 px-3 py-2 text-[10px] font-bold uppercase tracking-[0.18em] text-[#C2A139] shadow-[0_12px_34px_rgba(0,0,0,0.34)] backdrop-blur-md">
                           <CalendarClock className="h-3.5 w-3.5 shrink-0" />
                           <span className="truncate">{project.completion}</span>
                         </span>
                       )}
                     </div>
 
-                    <h3 className="font-montserrat text-[clamp(1.85rem,3vw,3.25rem)] font-semibold leading-[1.04] tracking-[-0.052em] text-[#F5F0E8] drop-shadow-[0_12px_32px_rgba(0,0,0,0.82)]">
+                    <h3 className="font-montserrat text-[clamp(1.55rem,2.3vw,2.45rem)] font-semibold leading-[1.04] tracking-[-0.052em] text-[#F5F0E8] drop-shadow-[0_12px_32px_rgba(0,0,0,0.82)]">
                       {project.title}
                     </h3>
-                    <p className="mt-4 max-w-xl text-sm leading-7 text-[#F5F0E8]/88 line-clamp-3 xl:text-[0.98rem] xl:leading-8">
+                    <p className="mt-4 max-w-xl text-sm leading-7 text-[#F5F0E8]/90 line-clamp-3 xl:text-[0.94rem] xl:leading-8">
                       {project.description}
                     </p>
 
@@ -125,7 +125,7 @@ export default function OurProjectsClient({
                   </div>
                 ) : (
                   <div className="max-w-[280px]">
-                    <h3 className="font-montserrat text-[1.55rem] font-semibold leading-tight tracking-[-0.05em] text-[#F5F0E8] drop-shadow-[0_10px_28px_rgba(0,0,0,0.82)] xl:text-[1.8rem]">
+                    <h3 className="font-montserrat text-[1.38rem] font-semibold leading-tight tracking-[-0.05em] text-[#F5F0E8] drop-shadow-[0_10px_28px_rgba(0,0,0,0.82)] xl:text-[1.38rem]">
                       {project.title}
                     </h3>
                     <p className="mt-3 text-[10px] font-bold uppercase tracking-[0.18em] text-[#F5F0E8]/84 line-clamp-2 drop-shadow-[0_8px_20px_rgba(0,0,0,0.75)]">
@@ -153,9 +153,9 @@ export default function OurProjectsClient({
               sizes="100vw"
               className="object-cover transition duration-[1200ms] group-hover:scale-105"
             />
-            <div className="absolute inset-0 bg-gradient-to-t from-[#05070B]/96 via-[#05070B]/64 to-[#05070B]/20" />
-            <div className="absolute inset-x-0 top-0 h-28 bg-gradient-to-b from-[#05070B]/68 to-transparent" />
-            <div className="absolute inset-x-0 bottom-0 h-[72%] bg-gradient-to-t from-[#05070B]/98 via-[#05070B]/82 to-transparent" />
+            <div className="absolute inset-0 bg-gradient-to-t from-[#05070B]/99 via-[#05070B]/82 to-[#05070B]/48" />
+            <div className="absolute inset-x-0 top-0 h-28 bg-gradient-to-b from-[#05070B]/82 to-transparent" />
+            <div className="absolute inset-x-0 bottom-0 h-[72%] bg-gradient-to-t from-[#05070B]/100 via-[#05070B]/94 to-transparent" />
             <div className="absolute inset-x-0 bottom-0 p-6">
               <div className="mb-4 flex items-center gap-3 text-[10px] font-bold uppercase tracking-[0.2em] text-[#C2A139]">
                 <span>{String(index + 1).padStart(2, "0")}</span>
