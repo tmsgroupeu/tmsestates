@@ -59,7 +59,7 @@ body {
   letter-spacing: -0.05em;
   line-height: 1.02;
   color: var(--ivory);
-  font-size: clamp(1.95rem, 3.35vw, 3.75rem);
+  font-size: clamp(1.6rem, 2.45vw, 2.75rem);
 }
 
 .text-balance {
