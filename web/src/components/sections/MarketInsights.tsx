@@ -127,8 +127,9 @@ export default function MarketInsights() {
                   className="object-cover transition duration-[1200ms] ease-out group-hover:scale-105"
                 />
 
-                <div className="absolute inset-0 bg-gradient-to-t from-[#05070B] via-[#05070B]/40 to-[#05070B]/2" />
-                <div className="absolute inset-x-0 bottom-0 h-[48%] bg-gradient-to-t from-[#05070B]/96 via-[#05070B]/78 to-transparent" />
+                <div className="absolute inset-0 bg-gradient-to-t from-[#05070B]/90 via-[#05070B]/44 to-[#05070B]/10" />
+                <div className="absolute inset-x-0 top-0 h-32 bg-gradient-to-b from-[#05070B]/42 to-transparent" />
+                <div className="absolute inset-x-0 bottom-0 h-[58%] bg-gradient-to-t from-[#05070B]/97 via-[#05070B]/82 to-transparent" />
 
                 <div className="absolute inset-x-0 top-0 flex items-start justify-between p-5 md:p-6">
                   <span className="max-w-[70%] truncate border border-[#C2A139]/45 bg-[#05070B]/62 px-3.5 py-2 text-[9px] font-bold uppercase tracking-[0.22em] text-[#C2A139] shadow-[0_10px_35px_rgba(0,0,0,0.28)] backdrop-blur-md">

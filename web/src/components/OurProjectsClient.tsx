@@ -43,7 +43,9 @@ export default function OurProjectsClient({ projects }: { projects: ProjectData[
                 sizes={isActive ? "55vw" : "18vw"}
                 className="object-cover transition duration-[1400ms] ease-out group-hover:scale-[1.04]"
               />
-              <div className={`absolute inset-0 transition duration-500 ${isActive ? "bg-gradient-to-t from-[#05070B]/94 via-[#05070B]/36 to-[#05070B]/12" : "bg-[#05070B]/70"}`} />
+              <div className={`absolute inset-0 transition duration-500 ${isActive ? "bg-gradient-to-t from-[#05070B]/88 via-[#05070B]/34 to-[#05070B]/18" : "bg-[#05070B]/72"}`} />
+              <div className="absolute inset-x-0 top-0 h-32 bg-gradient-to-b from-[#05070B]/48 to-transparent" />
+              <div className="absolute inset-x-0 bottom-0 h-[62%] bg-gradient-to-t from-[#05070B]/96 via-[#05070B]/78 to-transparent" />
               <div className="absolute left-6 top-6 z-10 flex items-center gap-3">
                 <span className={`h-2 w-2 rounded-full transition-colors ${isActive ? "bg-[#C2A139]" : "bg-[#F5F0E8]/38"}`} />
                 <span className="text-[10px] font-bold uppercase tracking-[0.24em] text-[#F5F0E8]/72">
@@ -115,7 +117,9 @@ export default function OurProjectsClient({ projects }: { projects: ProjectData[
               sizes="100vw"
               className="object-cover transition duration-[1200ms] group-hover:scale-105"
             />
-            <div className="absolute inset-0 bg-gradient-to-t from-[#05070B]/94 via-[#05070B]/34 to-transparent" />
+            <div className="absolute inset-0 bg-gradient-to-t from-[#05070B]/90 via-[#05070B]/40 to-[#05070B]/16" />
+            <div className="absolute inset-x-0 top-0 h-28 bg-gradient-to-b from-[#05070B]/45 to-transparent" />
+            <div className="absolute inset-x-0 bottom-0 h-[64%] bg-gradient-to-t from-[#05070B]/96 via-[#05070B]/78 to-transparent" />
             <div className="absolute inset-x-0 bottom-0 p-6">
               <div className="mb-4 flex items-center gap-3 text-[10px] font-bold uppercase tracking-[0.2em] text-[#C2A139]">
                 <span>{String(index + 1).padStart(2, "0")}</span>
