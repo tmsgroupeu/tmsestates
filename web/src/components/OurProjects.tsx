@@ -1,5 +1,5 @@
 import { fetchProjects } from "@/lib/cms";
-import { Building2, ArrowRight } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import { Link } from "@/i18n/routing";
 import OurProjectsClient from "./OurProjectsClient";
 
@@ -84,23 +84,22 @@ export default async function OurProjects() {
   return (
     <section className="relative w-full overflow-hidden bg-[#05070B]/62 py-14 backdrop-blur-[1px] md:py-18 lg:flex lg:min-h-screen lg:items-center">
       <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-[#05070B]/8 via-transparent to-[#05070B]/22" />
+
       <div className="home-container relative">
-        <div className="mb-8 grid gap-7 pb-3 lg:grid-cols-[0.9fr_1.1fr] lg:items-end">
+        <div className="mb-8 grid gap-7 pb-3 lg:grid-cols-[minmax(0,0.96fr)_minmax(0,0.9fr)] lg:items-end lg:gap-20">
           <div>
-            <div className="inline-flex items-center gap-3 text-[#C2A139]">
-              <Building2 className="h-4 w-4" strokeWidth={1.7} />
-              <p className="section-eyebrow">Our Projects</p>
-            </div>
-            <h2 className="section-heading mt-4 max-w-2xl">
-              Signature <span className="text-[#C2A139]">Developments</span>
+            <h2 className="max-w-3xl font-montserrat text-[clamp(2.05rem,3vw,3.45rem)] font-bold leading-[1.02] tracking-[-0.055em] text-[#F5F0E8]">
+              <span className="block">Signature</span>
+              <span className="block text-[#C2A139]">Developments</span>
             </h2>
           </div>
 
-          <div className="max-w-2xl lg:justify-self-end">
-            <p className="text-base leading-8 text-[#F5F0E8]/80 md:text-[1.04rem] md:leading-9">
+          <div className="max-w-2xl lg:pb-2">
+            <p className="text-balance text-base leading-8 text-[#F5F0E8]/80 md:text-[1.04rem] md:leading-9">
               Discover a portfolio of residential developments across Cyprus,
               thoughtfully designed for modern living and long-term value.
             </p>
+
             <Link
               href="/projects"
               className="group mt-7 inline-flex w-fit items-center gap-3 rounded-full border border-white/16 bg-[#F5F0E8] px-6 py-4 text-[11px] font-bold uppercase tracking-[0.22em] text-[#0D1B2E] shadow-[0_18px_55px_rgba(0,0,0,0.25)] transition-all hover:border-[#C2A139] hover:bg-[#C2A139] hover:text-[#05070B]"
