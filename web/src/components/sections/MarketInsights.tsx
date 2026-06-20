@@ -19,6 +19,7 @@ import "swiper/css/navigation";
 
 const formatPrice = (price?: number, currency = "EUR") => {
   if (!price) return "Price Upon Request";
+
   return new Intl.NumberFormat("en-IE", {
     style: "currency",
     currency,
@@ -33,6 +34,7 @@ function imageFor(property: Property) {
 
 function badgeFor(property: Property) {
   if ((property as any).vip) return "VIP";
+
   return (
     (property as any).marketing_label ||
     (property as any).marketing_tags ||
@@ -81,34 +83,45 @@ export default function MarketInsights() {
 
   return (
     <section className="relative flex min-h-[88svh] w-full flex-col justify-center overflow-hidden py-12 md:py-14 lg:py-16">
-      {/* This section intentionally uses a darker veil so the moving background does not compete with property images. */}
-      <div className="absolute inset-0 -z-10 bg-[#05070B]/88 backdrop-blur-[4px]" />
-      <div className="absolute inset-0 -z-10 bg-gradient-to-b from-[#05070B]/52 via-[#05070B]/24 to-[#05070B]/62" />
+      <div className="absolute inset-0 -z-10 bg-[#05070B]/54" />
+      <div className="absolute inset-0 -z-10 bg-gradient-to-b from-[#05070B]/12 via-transparent to-[#05070B]/34" />
 
       <div className="home-container relative z-10">
-        <div className="grid gap-7 border-y border-white/10 bg-[#0B1728]/78 px-5 py-7 shadow-[0_22px_80px_rgba(0,0,0,0.28)] backdrop-blur-md md:px-8 md:py-8 lg:grid-cols-[0.92fr_1.08fr] lg:items-center">
-          <h2 className="max-w-[760px] font-montserrat text-[clamp(1.7rem,2.25vw,2.65rem)] font-bold leading-[1.05] tracking-[-0.052em] text-[#F5F0E8] text-balance">
-            <span className="block">Looking for Your Next</span><span className="block">Property Opportunity?</span>
+        <div className="grid gap-7 pb-10 md:pb-12 lg:grid-cols-[minmax(0,0.96fr)_minmax(0,0.9fr)] lg:items-end lg:gap-20">
+          <h2 className="max-w-3xl font-montserrat text-[clamp(2.05rem,3vw,3.45rem)] font-bold leading-[1.02] tracking-[-0.055em] text-[#F5F0E8]">
+            <span className="block">Looking for Your Next</span>
+            <span className="block text-[#C2A139]">
+              Property Opportunity?
+            </span>
           </h2>
 
-          <div className="max-w-2xl lg:justify-self-end">
-            <p className="text-[0.98rem] leading-8 text-[#F5F0E8]/84 md:text-[1.02rem] md:leading-9">
+          <div className="max-w-2xl lg:pb-2">
+            <p className="text-balance text-base leading-8 text-[#F5F0E8]/84 md:text-[1.04rem] md:leading-9">
               Whether you are searching for a new home, an investment
               opportunity or information about our developments, our team would
               be pleased to assist.
             </p>
+
             <a
               href="mailto:info@tmsestates.com"
-              className="mt-6 inline-flex items-center gap-3 rounded-full bg-[#F5F0E8] px-6 py-4 text-[11px] font-bold uppercase tracking-[0.22em] text-[#0D1B2E] shadow-[0_18px_55px_rgba(0,0,0,0.28)] transition-colors hover:bg-[#C2A139] hover:text-[#05070B]"
+              className="group mt-7 inline-flex items-center gap-3 border border-[#C2A139]/48 bg-[#242124]/88 px-6 py-4 text-[11px] font-bold uppercase tracking-[0.22em] text-[#F5F0E8] shadow-[0_18px_55px_rgba(0,0,0,0.28)] transition-all duration-300 hover:-translate-y-0.5 hover:border-[#C2A139] hover:bg-[#C2A139] hover:text-[#242124] hover:shadow-[0_24px_75px_rgba(194,161,57,0.2)]"
             >
               Contact Us
-              <ArrowRight className="h-4 w-4" />
+              <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
             </a>
           </div>
         </div>
       </div>
 
-      <div className="relative z-10 mt-0 w-screen overflow-hidden border-y border-white/10 bg-[#05070B]/82 py-6 shadow-[inset_0_1px_0_rgba(245,240,232,0.05)] backdrop-blur-[4px] md:py-8">
+      <div className="relative z-10 w-screen overflow-hidden border-y border-[#C2A139]/18 bg-[#242124] py-6 shadow-[0_30px_110px_rgba(0,0,0,0.36)] md:py-8">
+        <div className="pointer-events-none absolute inset-0 bg-gradient-to-r from-[#05070B]/18 via-transparent to-[#05070B]/18" />
+        <div className="pointer-events-none absolute inset-x-0 top-0 h-px overflow-hidden bg-[#C2A139]/18">
+          <div className="gold-rail-line h-full w-1/3 bg-gradient-to-r from-transparent via-[#C2A139] to-transparent" />
+        </div>
+        <div className="pointer-events-none absolute inset-x-0 bottom-0 h-px overflow-hidden bg-[#C2A139]/10">
+          <div className="gold-rail-line gold-rail-line-delayed h-full w-1/3 bg-gradient-to-r from-transparent via-[#C2A139]/80 to-transparent" />
+        </div>
+
         <Swiper
           modules={[Autoplay, Navigation]}
           loop={carouselProperties.length > 6}
@@ -136,7 +149,7 @@ export default function MarketInsights() {
             >
               <Link
                 href={`/properties/${property.slug}`}
-                className="group relative block h-[360px] overflow-hidden border border-white/12 bg-[#05070B]/70 shadow-[0_20px_65px_rgba(0,0,0,0.3)] backdrop-blur-[1px] transition-all duration-500 hover:-translate-y-1 hover:border-[#C2A139]/45 hover:shadow-[0_28px_90px_rgba(0,0,0,0.4)] md:h-[405px] xl:h-[455px]"
+                className="group relative block h-[360px] overflow-hidden border border-[#F5F0E8]/14 bg-[#05070B]/70 shadow-[0_20px_65px_rgba(0,0,0,0.3)] transition-all duration-500 hover:-translate-y-1 hover:border-[#C2A139]/50 hover:shadow-[0_28px_90px_rgba(0,0,0,0.42)] md:h-[405px] xl:h-[455px]"
               >
                 <Image
                   src={imageFor(property)}
@@ -154,6 +167,7 @@ export default function MarketInsights() {
                   <span className="max-w-[70%] truncate border border-[#C2A139]/50 bg-[#05070B]/72 px-3.5 py-2 text-[9px] font-bold uppercase tracking-[0.22em] text-[#C2A139] shadow-[0_10px_35px_rgba(0,0,0,0.34)] backdrop-blur-md">
                     {badgeFor(property)}
                   </span>
+
                   <span className="grid h-11 w-11 place-items-center rounded-full border border-white/20 bg-[#05070B]/56 text-[#F5F0E8] shadow-[0_10px_32px_rgba(0,0,0,0.28)] backdrop-blur-md transition-all group-hover:-translate-y-1 group-hover:translate-x-1 group-hover:border-[#C2A139] group-hover:bg-[#C2A139] group-hover:text-[#05070B]">
                     <ArrowUpRight className="h-4 w-4" />
                   </span>
@@ -180,6 +194,7 @@ export default function MarketInsights() {
                         {property.bedrooms} Beds
                       </span>
                     )}
+
                     {property.area && (
                       <span className="inline-flex items-center gap-2 rounded-full bg-white/[0.075] px-3 py-1.5 backdrop-blur-sm">
                         <Ruler className="h-4 w-4 text-[#C2A139]" />
@@ -193,6 +208,28 @@ export default function MarketInsights() {
           ))}
         </Swiper>
       </div>
+
+      <style jsx>{`
+        .gold-rail-line {
+          animation: goldRailSweep 5.8s ease-in-out infinite;
+          opacity: 0.72;
+        }
+
+        .gold-rail-line-delayed {
+          animation-delay: 2.9s;
+          opacity: 0.45;
+        }
+
+        @keyframes goldRailSweep {
+          0% {
+            transform: translateX(-120%);
+          }
+          48%,
+          100% {
+            transform: translateX(320%);
+          }
+        }
+      `}</style>
     </section>
   );
 }
