@@ -9,6 +9,7 @@ import { Autoplay, Navigation } from "swiper/modules";
 import {
   ArrowRight,
   ArrowUpRight,
+  Bath,
   BedDouble,
   MapPin,
   Ruler,
@@ -115,19 +116,17 @@ export default function MarketInsights() {
 
       <div className="property-rail-shell relative z-10 w-screen overflow-hidden bg-[#242124] py-7 md:py-9">
         <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_50%_0%,rgba(194,161,57,0.09),transparent_34%),linear-gradient(90deg,rgba(5,7,11,0.36),transparent_18%,transparent_82%,rgba(5,7,11,0.36))]" />
-        <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-[#F5F0E8]/16" />
-        <div className="pointer-events-none absolute inset-x-0 bottom-0 h-px bg-[#F5F0E8]/10" />
 
-        <div className="pointer-events-none absolute inset-x-0 top-0 h-[2px] overflow-hidden bg-[#C2A139]/22">
+        <div className="pointer-events-none absolute inset-x-0 top-0 h-[2px] overflow-hidden bg-[#C2A139]/12">
           <div className="rail-gold-sweep h-full w-[34vw] bg-gradient-to-r from-transparent via-[#C2A139] to-transparent" />
         </div>
 
-        <div className="pointer-events-none absolute inset-x-0 bottom-0 h-[2px] overflow-hidden bg-[#C2A139]/12">
-          <div className="rail-gold-sweep rail-gold-sweep-delayed h-full w-[28vw] bg-gradient-to-r from-transparent via-[#C2A139]/90 to-transparent" />
+        <div className="pointer-events-none absolute inset-x-0 bottom-0 h-[2px] overflow-hidden bg-[#C2A139]/8">
+          <div className="rail-gold-sweep rail-gold-sweep-delayed h-full w-[28vw] bg-gradient-to-r from-transparent via-[#C2A139]/80 to-transparent" />
         </div>
 
-        <div className="pointer-events-none absolute left-0 top-0 h-16 w-px bg-gradient-to-b from-[#C2A139]/70 to-transparent" />
-        <div className="pointer-events-none absolute right-0 bottom-0 h-16 w-px bg-gradient-to-t from-[#C2A139]/70 to-transparent" />
+        <div className="pointer-events-none absolute left-0 top-0 h-16 w-px bg-gradient-to-b from-[#C2A139]/50 to-transparent" />
+        <div className="pointer-events-none absolute right-0 bottom-0 h-16 w-px bg-gradient-to-t from-[#C2A139]/50 to-transparent" />
 
         <Swiper
           modules={[Autoplay, Navigation]}
@@ -166,44 +165,53 @@ export default function MarketInsights() {
                   className="object-cover transition duration-[1200ms] ease-out group-hover:scale-105"
                 />
 
-                <div className="absolute inset-0 bg-gradient-to-t from-[#05070B]/97 via-[#05070B]/70 to-[#05070B]/30" />
-                <div className="absolute inset-x-0 top-0 h-32 bg-gradient-to-b from-[#05070B]/74 to-transparent" />
-                <div className="absolute inset-x-0 bottom-0 h-[62%] bg-gradient-to-t from-[#05070B]/99 via-[#05070B]/90 to-transparent" />
+                <div className="absolute inset-0 bg-[#05070B]/12" />
+                <div className="absolute inset-0 bg-gradient-to-t from-[#05070B]/98 via-[#05070B]/72 to-[#05070B]/24" />
+                <div className="absolute inset-x-0 top-0 h-36 bg-gradient-to-b from-[#05070B]/70 via-[#05070B]/28 to-transparent" />
+                <div className="absolute inset-x-0 bottom-0 h-[70%] bg-gradient-to-t from-[#05070B]/100 via-[#05070B]/88 to-transparent" />
+                <div className="absolute inset-0 bg-gradient-to-r from-[#05070B]/18 via-transparent to-[#05070B]/10" />
 
                 <div className="absolute inset-x-0 top-0 flex items-start justify-between p-5 md:p-6">
-                  <span className="max-w-[70%] truncate border border-[#C2A139]/50 bg-[#05070B]/72 px-3.5 py-2 text-[9px] font-bold uppercase tracking-[0.22em] text-[#C2A139] shadow-[0_10px_35px_rgba(0,0,0,0.34)] backdrop-blur-md">
+                  <span className="max-w-[70%] truncate border border-[#C2A139]/55 bg-[#05070B]/76 px-3.5 py-2 text-[9px] font-bold uppercase tracking-[0.22em] text-[#C2A139] shadow-[0_10px_35px_rgba(0,0,0,0.38)] backdrop-blur-md">
                     {badgeFor(property)}
                   </span>
 
-                  <span className="grid h-11 w-11 place-items-center rounded-full border border-white/20 bg-[#05070B]/56 text-[#F5F0E8] shadow-[0_10px_32px_rgba(0,0,0,0.28)] backdrop-blur-md transition-all group-hover:-translate-y-1 group-hover:translate-x-1 group-hover:border-[#C2A139] group-hover:bg-[#C2A139] group-hover:text-[#05070B]">
+                  <span className="grid h-11 w-11 place-items-center rounded-full border border-white/20 bg-[#05070B]/58 text-[#F5F0E8] shadow-[0_10px_32px_rgba(0,0,0,0.3)] backdrop-blur-md transition-all group-hover:-translate-y-1 group-hover:translate-x-1 group-hover:border-[#C2A139] group-hover:bg-[#C2A139] group-hover:text-[#05070B]">
                     <ArrowUpRight className="h-4 w-4" />
                   </span>
                 </div>
 
                 <div className="absolute inset-x-0 bottom-0 p-5 md:p-6">
-                  <div className="mb-3 inline-flex items-center gap-2 rounded-full border border-white/14 bg-[#05070B]/58 px-3 py-1.5 text-[10px] font-bold uppercase tracking-[0.18em] text-[#F5F0E8]/86 backdrop-blur-md">
+                  <div className="mb-3 inline-flex items-center gap-2 rounded-full border border-white/18 bg-[#05070B]/62 px-3 py-1.5 text-[10px] font-bold uppercase tracking-[0.18em] text-[#F5F0E8]/90 shadow-[0_8px_26px_rgba(0,0,0,0.28)] backdrop-blur-md">
                     <MapPin className="h-3.5 w-3.5 text-[#C2A139]" />
                     <span>{property.city || "Cyprus"}</span>
                   </div>
 
-                  <h3 className="line-clamp-2 font-montserrat text-[1.35rem] font-semibold leading-[1.08] tracking-[-0.045em] text-[#F5F0E8] drop-shadow-[0_8px_24px_rgba(0,0,0,0.65)] md:text-[1.55rem] xl:text-[1.75rem]">
+                  <h3 className="line-clamp-2 font-montserrat text-[1.35rem] font-semibold leading-[1.08] tracking-[-0.045em] text-[#F5F0E8] drop-shadow-[0_8px_24px_rgba(0,0,0,0.72)] md:text-[1.55rem] xl:text-[1.75rem]">
                     {property.title}
                   </h3>
 
-                  <p className="mt-3 text-sm font-semibold text-[#F5F0E8]/84">
+                  <p className="mt-3 text-sm font-semibold text-[#F5F0E8]/88 drop-shadow-[0_6px_18px_rgba(0,0,0,0.55)]">
                     {formatPrice(property.price, property.currency)}
                   </p>
 
-                  <div className="mt-4 flex flex-wrap items-center gap-2 border-t border-white/12 pt-4 text-xs text-[#F5F0E8]/82">
+                  <div className="mt-4 flex flex-wrap items-center gap-2 border-t border-white/16 pt-4 text-xs text-[#F5F0E8]/86">
                     {property.bedrooms && (
-                      <span className="inline-flex items-center gap-2 rounded-full bg-white/[0.075] px-3 py-1.5 backdrop-blur-sm">
+                      <span className="inline-flex items-center gap-2 rounded-full bg-[#05070B]/42 px-3 py-1.5 backdrop-blur-sm">
                         <BedDouble className="h-4 w-4 text-[#C2A139]" />
                         {property.bedrooms} Beds
                       </span>
                     )}
 
+                    {(property as any).bathrooms && (
+                      <span className="inline-flex items-center gap-2 rounded-full bg-[#05070B]/42 px-3 py-1.5 backdrop-blur-sm">
+                        <Bath className="h-4 w-4 text-[#C2A139]" />
+                        {(property as any).bathrooms} Baths
+                      </span>
+                    )}
+
                     {property.area && (
-                      <span className="inline-flex items-center gap-2 rounded-full bg-white/[0.075] px-3 py-1.5 backdrop-blur-sm">
+                      <span className="inline-flex items-center gap-2 rounded-full bg-[#05070B]/42 px-3 py-1.5 backdrop-blur-sm">
                         <Ruler className="h-4 w-4 text-[#C2A139]" />
                         {property.area} m²
                       </span>
@@ -219,10 +227,10 @@ export default function MarketInsights() {
       <style jsx>{`
         .property-rail-shell {
           box-shadow:
-            0 -18px 55px rgba(5, 7, 11, 0.28),
-            0 34px 110px rgba(5, 7, 11, 0.48),
-            inset 0 1px 0 rgba(245, 240, 232, 0.08),
-            inset 0 -1px 0 rgba(245, 240, 232, 0.08);
+            0 -18px 55px rgba(5, 7, 11, 0.24),
+            0 34px 110px rgba(5, 7, 11, 0.46),
+            inset 0 1px 0 rgba(194, 161, 57, 0.08),
+            inset 0 -1px 0 rgba(194, 161, 57, 0.06);
           transform: perspective(1400px) rotateX(0.45deg);
           transform-origin: center top;
         }
@@ -233,9 +241,9 @@ export default function MarketInsights() {
           inset: 0;
           pointer-events: none;
           background:
-            linear-gradient(180deg, rgba(245, 240, 232, 0.05), transparent 18%),
-            linear-gradient(0deg, rgba(5, 7, 11, 0.3), transparent 24%);
-          opacity: 0.9;
+            linear-gradient(180deg, rgba(245, 240, 232, 0.035), transparent 18%),
+            linear-gradient(0deg, rgba(5, 7, 11, 0.28), transparent 24%);
+          opacity: 0.85;
         }
 
         .rail-gold-sweep {
@@ -246,7 +254,7 @@ export default function MarketInsights() {
 
         .rail-gold-sweep-delayed {
           animation-delay: 2.4s;
-          opacity: 0.58;
+          opacity: 0.54;
         }
 
         @keyframes railGoldSweep {
