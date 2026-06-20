@@ -26,16 +26,20 @@ export default function Header({ locale }: { locale: string }) {
 
   const headerVariants = {
     top: {
-      backgroundColor: "rgba(36, 33, 36, 0.96)",
-      height: "5.2rem",
-      backdropFilter: "blur(14px)",
-      borderBottom: "1px solid rgba(245, 240, 232, 0.08)",
+      backgroundColor: isHomePage
+        ? "rgba(36, 33, 36, 0)"
+        : "rgba(36, 33, 36, 0.98)",
+      height: "6rem",
+      backdropFilter: isHomePage ? "blur(0px)" : "blur(18px)",
+      borderBottom: isHomePage
+        ? "1px solid rgba(245,240,232,0)"
+        : "1px solid rgba(245,240,232,0.10)",
     },
     scrolled: {
       backgroundColor: "rgba(36, 33, 36, 0.98)",
       height: "4.5rem",
       backdropFilter: "blur(18px)",
-      borderBottom: "1px solid rgba(245, 240, 232, 0.10)",
+      borderBottom: "1px solid rgba(245,240,232,0.10)",
     },
   };
 
@@ -64,7 +68,7 @@ export default function Header({ locale }: { locale: string }) {
 
           <div className="flex items-center gap-6 md:gap-8">
             <AnimatePresence>
-              {isScrolled && isHomePage && (
+              {(isScrolled || !isHomePage) && (
                 <motion.div
                   initial={{ opacity: 0, x: 20 }}
                   animate={{ opacity: 1, x: 0 }}
@@ -130,7 +134,11 @@ export default function Header({ locale }: { locale: string }) {
                   />
                 </div>
 
-                <button onClick={toggleMenu} className="text-[#F5F0E8] transition-colors hover:text-[#C2A139]" aria-label="Close menu">
+                <button
+                  onClick={toggleMenu}
+                  className="text-[#F5F0E8] transition-colors hover:text-[#C2A139]"
+                  aria-label="Close menu"
+                >
                   <X size={32} />
                 </button>
               </div>
