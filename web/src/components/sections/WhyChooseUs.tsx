@@ -68,7 +68,7 @@ export default function WhyChooseUs() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: "-80px" }}
           transition={{ delay: 0.08, duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-          className="grid gap-3 md:grid-cols-2 lg:grid-cols-4"
+          className="grid gap-4 md:grid-cols-2 md:gap-5 lg:grid-cols-4 lg:gap-6""
         >
           {pillars.map((item) => (
             <article
