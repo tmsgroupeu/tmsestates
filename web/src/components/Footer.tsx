@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { Bot, Mail, MessageCircle, ArrowUpRight } from "lucide-react";
+import { ArrowUpRight, Bot, Mail, MessageCircle } from "lucide-react";
 import { Link } from "@/i18n/routing";
 
 export default function Footer() {
@@ -11,9 +11,9 @@ export default function Footer() {
   };
 
   return (
-    <footer id="page-footer" className="relative z-20 border-t border-white/10 bg-[#05070B] text-[#F5F0E8]">
+    <footer id="page-footer" className="relative z-20 border-t border-[#F5F0E8]/10 bg-[#242124] text-[#F5F0E8]">
       <div className="home-container py-14 md:py-20">
-        <div className="grid gap-10 border-b border-white/10 pb-12 lg:grid-cols-[1.1fr_1fr] lg:items-end">
+        <div className="grid gap-10 border-b border-[#F5F0E8]/10 pb-12 lg:grid-cols-[1.1fr_1fr] lg:items-end">
           <div>
             <Link href="/" className="inline-flex">
               <Image
@@ -25,6 +25,7 @@ export default function Footer() {
                 unoptimized
               />
             </Link>
+
             <p className="mt-7 max-w-xl text-sm leading-7 text-[#F5F0E8]/58 md:text-base md:leading-8">
               TMS Estates creates contemporary residential and mixed-use developments in carefully selected locations across Cyprus.
             </p>
@@ -36,11 +37,13 @@ export default function Footer() {
               <span>Email</span>
               <ArrowUpRight className="ml-auto h-4 w-4 opacity-40 transition group-hover:opacity-100" />
             </a>
+
             <a href="https://wa.me/99875500" target="_blank" rel="noreferrer" className="footer-action group">
               <MessageCircle className="h-5 w-5" />
               <span>WhatsApp</span>
               <ArrowUpRight className="ml-auto h-4 w-4 opacity-40 transition group-hover:opacity-100" />
             </a>
+
             <button onClick={openAIChat} className="footer-action group text-left">
               <Bot className="h-5 w-5" />
               <span>AI Assistant</span>
@@ -51,6 +54,7 @@ export default function Footer() {
 
         <div className="flex flex-col gap-5 pt-8 text-sm text-[#F5F0E8]/45 sm:flex-row sm:items-center sm:justify-between">
           <p>&copy; {new Date().getFullYear()} TMS ESTATES. All rights reserved.</p>
+
           <div className="flex flex-wrap gap-6">
             <Link href="/privacy-policy" className="transition hover:text-[#C2A139]">
               Privacy Policy
@@ -68,8 +72,8 @@ export default function Footer() {
           align-items: center;
           gap: 0.85rem;
           min-height: 4.2rem;
-          border: 1px solid rgba(245, 240, 232, 0.1);
-          background: rgba(13, 27, 46, 0.28);
+          border: 1px solid rgba(194, 161, 57, 0.16);
+          background: rgba(5, 7, 11, 0.18);
           padding: 1rem 1.1rem;
           color: rgba(245, 240, 232, 0.78);
           font-size: 0.72rem;
@@ -78,10 +82,11 @@ export default function Footer() {
           text-transform: uppercase;
           transition: all 0.25s ease;
         }
+
         .footer-action:hover {
-          border-color: rgba(194, 161, 57, 0.42);
+          border-color: rgba(194, 161, 57, 0.5);
           color: #c2a139;
-          background: rgba(194, 161, 57, 0.075);
+          background: rgba(194, 161, 57, 0.08);
         }
       `}</style>
     </footer>
