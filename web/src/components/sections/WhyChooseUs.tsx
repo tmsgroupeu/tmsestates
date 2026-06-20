@@ -49,7 +49,7 @@ export default function WhyChooseUs() {
 
           <div className="max-w-2xl lg:justify-self-start">
             <p className="text-balance text-base leading-8 text-[#F5F0E8]/84 md:text-[1.04rem] md:leading-9">
-              Every project is guided by careful evaluation, ensuring the right
+              <br></br>Every project is guided by careful evaluation, ensuring the right
               location, market demand and long-term potential.
             </p>
 
