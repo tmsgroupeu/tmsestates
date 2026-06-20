@@ -4,6 +4,7 @@ import WhyChooseUs from "@/components/sections/WhyChooseUs";
 import OurProjects from "@/components/OurProjects";
 import MarketInsights from "@/components/sections/MarketInsights";
 import LimassolAdvantage from "@/components/LimassolAdvantage";
+import PrivateCollection from "@/components/PrivateCollection";
 
 export default function Home() {
   return (
@@ -26,6 +27,8 @@ export default function Home() {
         <div id="invest" className="scroll-mt-28">
           <LimassolAdvantage />
         </div>
+
+        <PrivateCollection />
       </div>
     </main>
   );
