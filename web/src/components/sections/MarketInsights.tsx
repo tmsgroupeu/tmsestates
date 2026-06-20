@@ -83,8 +83,8 @@ export default function MarketInsights() {
 
   return (
     <section className="relative flex min-h-[88svh] w-full flex-col justify-center overflow-hidden py-12 md:py-14 lg:py-16">
-      <div className="absolute inset-0 -z-10 bg-[#05070B]/54" />
-      <div className="absolute inset-0 -z-10 bg-gradient-to-b from-[#05070B]/12 via-transparent to-[#05070B]/34" />
+      <div className="absolute inset-0 -z-10 bg-[#05070B]/46" />
+      <div className="absolute inset-0 -z-10 bg-gradient-to-b from-[#05070B]/10 via-transparent to-[#05070B]/34" />
 
       <div className="home-container relative z-10">
         <div className="grid gap-7 pb-10 md:pb-12 lg:grid-cols-[minmax(0,0.96fr)_minmax(0,0.9fr)] lg:items-end lg:gap-20">
@@ -113,14 +113,21 @@ export default function MarketInsights() {
         </div>
       </div>
 
-      <div className="relative z-10 w-screen overflow-hidden border-y border-[#C2A139]/18 bg-[#242124] py-6 shadow-[0_30px_110px_rgba(0,0,0,0.36)] md:py-8">
-        <div className="pointer-events-none absolute inset-0 bg-gradient-to-r from-[#05070B]/18 via-transparent to-[#05070B]/18" />
-        <div className="pointer-events-none absolute inset-x-0 top-0 h-px overflow-hidden bg-[#C2A139]/18">
-          <div className="gold-rail-line h-full w-1/3 bg-gradient-to-r from-transparent via-[#C2A139] to-transparent" />
+      <div className="property-rail-shell relative z-10 w-screen overflow-hidden bg-[#242124] py-7 md:py-9">
+        <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_50%_0%,rgba(194,161,57,0.09),transparent_34%),linear-gradient(90deg,rgba(5,7,11,0.36),transparent_18%,transparent_82%,rgba(5,7,11,0.36))]" />
+        <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-[#F5F0E8]/16" />
+        <div className="pointer-events-none absolute inset-x-0 bottom-0 h-px bg-[#F5F0E8]/10" />
+
+        <div className="pointer-events-none absolute inset-x-0 top-0 h-[2px] overflow-hidden bg-[#C2A139]/22">
+          <div className="rail-gold-sweep h-full w-[34vw] bg-gradient-to-r from-transparent via-[#C2A139] to-transparent" />
         </div>
-        <div className="pointer-events-none absolute inset-x-0 bottom-0 h-px overflow-hidden bg-[#C2A139]/10">
-          <div className="gold-rail-line gold-rail-line-delayed h-full w-1/3 bg-gradient-to-r from-transparent via-[#C2A139]/80 to-transparent" />
+
+        <div className="pointer-events-none absolute inset-x-0 bottom-0 h-[2px] overflow-hidden bg-[#C2A139]/12">
+          <div className="rail-gold-sweep rail-gold-sweep-delayed h-full w-[28vw] bg-gradient-to-r from-transparent via-[#C2A139]/90 to-transparent" />
         </div>
+
+        <div className="pointer-events-none absolute left-0 top-0 h-16 w-px bg-gradient-to-b from-[#C2A139]/70 to-transparent" />
+        <div className="pointer-events-none absolute right-0 bottom-0 h-16 w-px bg-gradient-to-t from-[#C2A139]/70 to-transparent" />
 
         <Swiper
           modules={[Autoplay, Navigation]}
@@ -140,7 +147,7 @@ export default function MarketInsights() {
             768: { spaceBetween: 22 },
             1280: { spaceBetween: 26 },
           }}
-          className="tms-property-swiper tms-property-rail !overflow-visible !px-6 md:!px-10 lg:!px-[clamp(3rem,7vw,8.5rem)]"
+          className="tms-property-swiper tms-property-rail relative z-10 !overflow-visible !px-6 md:!px-10 lg:!px-[clamp(3rem,7vw,8.5rem)]"
         >
           {carouselProperties.map((property, index) => (
             <SwiperSlide
@@ -210,23 +217,45 @@ export default function MarketInsights() {
       </div>
 
       <style jsx>{`
-        .gold-rail-line {
-          animation: goldRailSweep 5.8s ease-in-out infinite;
-          opacity: 0.72;
+        .property-rail-shell {
+          box-shadow:
+            0 -18px 55px rgba(5, 7, 11, 0.28),
+            0 34px 110px rgba(5, 7, 11, 0.48),
+            inset 0 1px 0 rgba(245, 240, 232, 0.08),
+            inset 0 -1px 0 rgba(245, 240, 232, 0.08);
+          transform: perspective(1400px) rotateX(0.45deg);
+          transform-origin: center top;
         }
 
-        .gold-rail-line-delayed {
-          animation-delay: 2.9s;
-          opacity: 0.45;
+        .property-rail-shell::before {
+          content: "";
+          position: absolute;
+          inset: 0;
+          pointer-events: none;
+          background:
+            linear-gradient(180deg, rgba(245, 240, 232, 0.05), transparent 18%),
+            linear-gradient(0deg, rgba(5, 7, 11, 0.3), transparent 24%);
+          opacity: 0.9;
         }
 
-        @keyframes goldRailSweep {
+        .rail-gold-sweep {
+          animation: railGoldSweep 4.8s cubic-bezier(0.65, 0, 0.35, 1) infinite;
+          opacity: 0.95;
+          filter: drop-shadow(0 0 8px rgba(194, 161, 57, 0.55));
+        }
+
+        .rail-gold-sweep-delayed {
+          animation-delay: 2.4s;
+          opacity: 0.58;
+        }
+
+        @keyframes railGoldSweep {
           0% {
-            transform: translateX(-120%);
+            transform: translateX(-42vw);
           }
-          48%,
+          46%,
           100% {
-            transform: translateX(320%);
+            transform: translateX(118vw);
           }
         }
       `}</style>
