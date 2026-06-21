@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { motion, useScroll, useTransform } from "framer-motion";
 
 const CLOUD_NAME = "dkbpthpxg";
-const VIDEO_PUBLIC_ID = "hero-scroller_xxfvss";
+const VIDEO_PUBLIC_ID = "hero-scroller-scrub_vqrlto";
 const POSTER_PUBLIC_ID = "hero-poster_jo6bco";
 
 function cloudinaryVideo(publicId: string, width: number, quality: "good" | "eco") {
