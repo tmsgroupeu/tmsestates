@@ -83,7 +83,7 @@ export default function MarketInsights() {
   if (!carouselProperties.length) return null;
 
   return (
-    <section className="relative flex min-h-[88svh] w-full flex-col justify-center overflow-hidden py-12 md:py-14 lg:py-16">
+    <section className="relative w-full overflow-hidden pt-12 md:pt-14 lg:pt-16">
       <div className="home-container relative z-10">
         <div className="grid gap-7 px-5 pb-8 pt-5 md:px-8 md:pb-10 lg:grid-cols-[0.92fr_1.08fr] lg:items-center">
           <h2 className="max-w-[760px] font-montserrat text-[clamp(1.75rem,2.4vw,2.8rem)] font-bold leading-[1.04] tracking-[-0.052em] text-[#F5F0E8] text-balance drop-shadow-[0_18px_46px_rgba(0,0,0,0.44)]">
@@ -121,7 +121,7 @@ export default function MarketInsights() {
 
       <div className="property-opportunity-rail relative z-10 w-screen overflow-hidden bg-[#242124] py-7 shadow-[0_34px_110px_rgba(0,0,0,0.46)] md:py-9">
         <div className="pointer-events-none absolute inset-0 z-0 bg-[#242124]" />
-        <div className="pointer-events-none absolute inset-0 z-0 bg-[radial-gradient(circle_at_50%_-28%,rgba(194,161,57,0.13),transparent_38%),linear-gradient(180deg,rgba(245,240,232,0.035),transparent_28%,rgba(5,7,11,0.2))]" />
+        <div className="pointer-events-none absolute inset-0 z-0 bg-[radial-gradient(circle_at_50%_-28%,rgba(194,161,57,0.15),transparent_38%),linear-gradient(180deg,rgba(245,240,232,0.035),transparent_28%,rgba(5,7,11,0.22))]" />
         <div className="property-opportunity-rail-line pointer-events-none absolute left-0 top-0 z-[2] h-[2px] w-full" />
         <div className="property-opportunity-rail-line-bottom pointer-events-none absolute bottom-0 left-0 z-[2] h-px w-full" />
 
@@ -231,34 +231,34 @@ export default function MarketInsights() {
           background: linear-gradient(
             90deg,
             transparent,
-            rgba(194, 161, 57, 0.35),
+            rgba(194, 161, 57, 0.4),
             rgba(194, 161, 57, 1),
-            rgba(245, 240, 232, 0.74),
+            rgba(245, 240, 232, 0.78),
             rgba(194, 161, 57, 1),
-            rgba(194, 161, 57, 0.35),
+            rgba(194, 161, 57, 0.4),
             transparent
           );
           background-size: 260% 100%;
-          box-shadow: 0 0 18px rgba(194, 161, 57, 0.34);
-          animation: propertyRailGoldSweep 5.8s ease-in-out infinite;
+          box-shadow: 0 0 20px rgba(194, 161, 57, 0.36);
+          animation: propertyRailGoldSweep 5.6s ease-in-out infinite;
         }
 
         .property-opportunity-rail-line-bottom {
-          opacity: 0.55;
-          animation-delay: 1.4s;
+          opacity: 0.56;
+          animation-delay: 1.25s;
         }
 
         @keyframes propertyRailGoldSweep {
           0% {
             background-position: 130% 0;
-            opacity: 0.48;
+            opacity: 0.5;
           }
           42% {
             opacity: 1;
           }
           100% {
             background-position: -130% 0;
-            opacity: 0.48;
+            opacity: 0.5;
           }
         }
       `}</style>
