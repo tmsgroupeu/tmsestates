@@ -190,9 +190,10 @@ export default function ProjectPageClient({ project }: { project: any }) {
           className="object-cover"
         />
 
-        <div className="absolute inset-0 bg-[#242124]/46" />
-        <div className="absolute inset-0 bg-gradient-to-r from-[#242124]/92 via-[#242124]/58 to-[#242124]/36" />
-        <div className="absolute inset-0 bg-gradient-to-t from-[#242124]/94 via-[#242124]/28 to-transparent" />
+        <div className="absolute inset-0 bg-[#242124]/24" />
+        <div className="absolute inset-0 bg-gradient-to-r from-[#242124]/86 via-[#242124]/46 to-[#242124]/18" />
+        <div className="absolute inset-0 bg-gradient-to-t from-[#242124]/98 via-[#242124]/42 to-transparent" />
+        <div className="absolute bottom-0 left-0 h-[48%] w-full bg-gradient-to-t from-[#242124] via-[#242124]/74 to-transparent" />
 
         <div className="relative mx-auto w-full max-w-7xl">
           <motion.div
@@ -221,13 +222,22 @@ export default function ProjectPageClient({ project }: { project: any }) {
         </div>
       </section>
 
-      <section className="relative z-10 bg-[#F5F0E8] px-6 md:px-10">
-        <div className="mx-auto -mt-9 grid w-full max-w-6xl gap-px bg-[#242124]/10 shadow-[0_24px_85px_rgba(36,33,36,0.14)] md:grid-cols-3">
-          <ProjectMeta icon={<MapPin />} label="Location" value={location} />
-          {status && <ProjectMeta icon={<CalendarClock />} label="Status" value={status} />}
-          {scale && <ProjectMeta icon={<Ruler />} label="Available Units" value={scale} />}
-        </div>
-      </section>
+      <section className="relative z-20 bg-[#F5F0E8] px-6 md:px-10">
+  <motion.div
+    initial={{ opacity: 0, y: 28, filter: "blur(6px)" }}
+    animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+    transition={{ delay: 0.18, duration: 0.9, ease: [0.16, 1, 0.3, 1] }}
+    className="project-meta-bar relative mx-auto -mt-12 grid w-full max-w-6xl overflow-hidden bg-white shadow-[0_28px_95px_rgba(36,33,36,0.18)] md:grid-cols-3"
+  >
+    <div className="pointer-events-none absolute inset-x-0 top-0 h-[2px] overflow-hidden bg-[#C2A139]/14">
+      <div className="project-meta-gold-line h-full w-1/3 bg-gradient-to-r from-transparent via-[#C2A139] to-transparent" />
+    </div>
+
+    <ProjectMeta icon={<MapPin />} label="Location" value={location} />
+    {status && <ProjectMeta icon={<CalendarClock />} label="Status" value={status} />}
+    {scale && <ProjectMeta icon={<Ruler />} label="Available Units" value={scale} />}
+  </motion.div>
+</section>
 
       <section className="bg-[#F5F0E8] px-6 py-16 md:px-10 md:py-20">
         <div className="mx-auto grid w-full max-w-7xl gap-12 lg:grid-cols-[1fr_0.92fr] lg:items-center lg:gap-20">
@@ -359,6 +369,32 @@ export default function ProjectPageClient({ project }: { project: any }) {
           </div>
         </div>
       </section>
+      
+<style jsx>{`
+  .project-meta-bar {
+    box-shadow:
+      0 28px 95px rgba(36, 33, 36, 0.18),
+      0 -10px 32px rgba(36, 33, 36, 0.1),
+      inset 0 1px 0 rgba(194, 161, 57, 0.08);
+  }
+
+  .project-meta-gold-line {
+    animation: projectMetaGoldSweep 4.8s cubic-bezier(0.65, 0, 0.35, 1) infinite;
+    opacity: 0.9;
+    filter: drop-shadow(0 0 8px rgba(194, 161, 57, 0.45));
+  }
+
+  @keyframes projectMetaGoldSweep {
+    0% {
+      transform: translateX(-115%);
+    }
+    46%,
+    100% {
+      transform: translateX(320%);
+    }
+  }
+`}</style>
+      
     </main>
   );
 }
@@ -373,16 +409,22 @@ function ProjectMeta({
   value: string;
 }) {
   return (
-    <div className="bg-white px-6 py-6 md:px-8">
-      <div className="mb-3 flex h-9 w-9 items-center justify-center border border-[#C2A139]/28 bg-[#C2A139]/8 text-[#C2A139]">
-        <span className="[&>svg]:h-4 [&>svg]:w-4">{icon}</span>
+    <div className="group relative border-b border-[#242124]/8 bg-white px-6 py-6 transition-colors duration-300 last:border-b-0 hover:bg-[#F5F0E8] md:border-b-0 md:border-r md:px-8 md:last:border-r-0">
+      <div className="absolute inset-0 opacity-0 transition-opacity duration-300 group-hover:opacity-100">
+        <div className="absolute inset-x-6 top-0 h-px bg-gradient-to-r from-transparent via-[#C2A139]/70 to-transparent" />
       </div>
 
-      <p className="mb-2 text-[9px] font-bold uppercase tracking-[0.28em] text-[#C2A139]">
-        {label}
-      </p>
+      <div className="relative z-10">
+        <div className="mb-3 flex h-9 w-9 items-center justify-center border border-[#C2A139]/30 bg-[#C2A139]/9 text-[#C2A139] transition-all duration-300 group-hover:bg-[#C2A139] group-hover:text-[#242124]">
+          <span className="[&>svg]:h-4 [&>svg]:w-4">{icon}</span>
+        </div>
 
-      <p className="text-sm font-semibold leading-6 text-[#242124]">{value}</p>
+        <p className="mb-2 text-[9px] font-bold uppercase tracking-[0.28em] text-[#C2A139]">
+          {label}
+        </p>
+
+        <p className="text-sm font-semibold leading-6 text-[#242124]">{value}</p>
+      </div>
     </div>
   );
 }
