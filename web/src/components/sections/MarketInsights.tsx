@@ -85,12 +85,10 @@ export default function MarketInsights() {
   return (
     <section className="relative flex min-h-[88svh] w-full flex-col justify-center overflow-hidden py-12 md:py-14 lg:py-16">
       <div className="home-container relative z-10">
-        <div className="grid gap-7 px-5 pb-8 pt-5 md:px-8 md:pb-9 lg:grid-cols-[0.92fr_1.08fr] lg:items-center">
+        <div className="grid gap-7 px-5 pb-8 pt-5 md:px-8 md:pb-10 lg:grid-cols-[0.92fr_1.08fr] lg:items-center">
           <h2 className="max-w-[760px] font-montserrat text-[clamp(1.75rem,2.4vw,2.8rem)] font-bold leading-[1.04] tracking-[-0.052em] text-[#F5F0E8] text-balance drop-shadow-[0_18px_46px_rgba(0,0,0,0.44)]">
             <span className="block">Looking for Your Next</span>
-            <span className="block text-[#C2A139]">
-              Property Opportunity?
-            </span>
+            <span className="block text-[#C2A139]">Property Opportunity?</span>
           </h2>
 
           <div className="max-w-2xl lg:justify-self-end">
@@ -119,9 +117,10 @@ export default function MarketInsights() {
         </div>
       </div>
 
-      <div className="relative z-10 mt-0 w-screen overflow-hidden bg-[#242124]/96 py-6 shadow-[0_38px_115px_rgba(0,0,0,0.38)] md:py-8">
-        <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-[#C2A139]/42 to-transparent" />
-        <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_50%_-20%,rgba(194,161,57,0.12),transparent_34%)]" />
+      <div className="property-opportunity-rail relative z-10 mt-0 w-screen overflow-hidden bg-[#242124]/94 py-6 shadow-[0_34px_110px_rgba(0,0,0,0.42)] md:py-8">
+        <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_50%_-35%,rgba(194,161,57,0.16),transparent_36%),linear-gradient(180deg,rgba(245,240,232,0.035),transparent_22%,rgba(5,7,11,0.18))]" />
+        <div className="property-opportunity-rail-line pointer-events-none absolute left-0 top-0 h-px w-full" />
+        <div className="property-opportunity-rail-shadow pointer-events-none absolute inset-x-0 -top-8 h-8" />
 
         <Swiper
           modules={[Autoplay, Navigation]}
@@ -160,10 +159,10 @@ export default function MarketInsights() {
                   className="object-cover transition duration-[1200ms] ease-out group-hover:scale-105"
                 />
 
-                <div className="absolute inset-0 bg-[#05070B]/22 transition duration-500 group-hover:bg-[#05070B]/14" />
-                <div className="absolute inset-x-0 top-0 h-36 bg-gradient-to-b from-[#05070B]/66 via-[#05070B]/28 to-transparent" />
-                <div className="absolute inset-x-0 bottom-0 h-[70%] bg-gradient-to-t from-[#05070B]/98 via-[#05070B]/78 to-transparent" />
-                <div className="absolute inset-y-0 left-0 w-[68%] bg-gradient-to-r from-[#05070B]/52 to-transparent" />
+                <div className="absolute inset-0 bg-[#05070B]/20 transition duration-500 group-hover:bg-[#05070B]/12" />
+                <div className="absolute inset-x-0 top-0 h-36 bg-gradient-to-b from-[#05070B]/68 via-[#05070B]/28 to-transparent" />
+                <div className="absolute inset-x-0 bottom-0 h-[72%] bg-gradient-to-t from-[#05070B]/99 via-[#05070B]/82 to-transparent" />
+                <div className="absolute inset-y-0 left-0 w-[68%] bg-gradient-to-r from-[#05070B]/50 to-transparent" />
 
                 <div className="absolute inset-x-0 top-0 flex items-start justify-between p-5 md:p-6">
                   <span className="max-w-[70%] truncate border border-[#C2A139]/50 bg-[#242124]/78 px-3.5 py-2 text-[9px] font-bold uppercase tracking-[0.22em] text-[#C2A139] shadow-[0_10px_35px_rgba(0,0,0,0.34)] backdrop-blur-md">
@@ -217,6 +216,48 @@ export default function MarketInsights() {
           ))}
         </Swiper>
       </div>
+
+      <style jsx>{`
+        .property-opportunity-rail {
+          transform: translateZ(0);
+        }
+
+        .property-opportunity-rail-line {
+          background: linear-gradient(
+            90deg,
+            transparent,
+            rgba(194, 161, 57, 0.2),
+            rgba(194, 161, 57, 0.9),
+            rgba(245, 240, 232, 0.5),
+            rgba(194, 161, 57, 0.2),
+            transparent
+          );
+          background-size: 220% 100%;
+          animation: propertyRailGoldSweep 7s ease-in-out infinite;
+        }
+
+        .property-opportunity-rail-shadow {
+          background: linear-gradient(
+            to bottom,
+            transparent,
+            rgba(36, 33, 36, 0.5)
+          );
+        }
+
+        @keyframes propertyRailGoldSweep {
+          0% {
+            background-position: 120% 0;
+            opacity: 0.38;
+          }
+          45% {
+            opacity: 0.82;
+          }
+          100% {
+            background-position: -120% 0;
+            opacity: 0.38;
+          }
+        }
+      `}</style>
     </section>
   );
 }
