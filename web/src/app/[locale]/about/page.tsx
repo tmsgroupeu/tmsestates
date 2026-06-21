@@ -28,26 +28,26 @@ const values = [
 ];
 
 const fadeUp = {
-  hidden: { opacity: 0, y: 34, filter: "blur(8px)" },
+  hidden: { opacity: 0, y: 28, filter: "blur(6px)" },
   visible: {
     opacity: 1,
     y: 0,
     filter: "blur(0px)",
     transition: {
-      duration: 0.9,
-      ease: "easeOut",
+      duration: 1.05,
+      ease: [0.16, 1, 0.3, 1],
     },
   },
 };
 
 const softFade = {
-  hidden: { opacity: 0, y: 18 },
+  hidden: { opacity: 0, y: 14 },
   visible: {
     opacity: 1,
     y: 0,
     transition: {
-      duration: 0.85,
-      ease: "easeOut",
+      duration: 1,
+      ease: [0.16, 1, 0.3, 1],
     },
   },
 };
@@ -75,10 +75,11 @@ export default function AboutPage() {
           className="absolute inset-0 h-full w-full scale-105 object-cover"
         />
 
-        <div className="absolute inset-0 bg-[#242124]/68" />
-        <div className="absolute inset-0 bg-gradient-to-r from-[#242124]/96 via-[#242124]/72 to-[#242124]/42" />
-        <div className="absolute inset-0 bg-gradient-to-t from-[#242124] via-transparent to-[#242124]/42" />
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_70%_18%,rgba(194,161,57,0.16),transparent_30%)]" />
+        <div className="absolute inset-0 bg-[#242124]/50" />
+<div className="absolute inset-0 bg-gradient-to-r from-[#242124]/98 via-[#242124]/82 to-[#242124]/38" />
+<div className="absolute inset-0 bg-gradient-to-t from-[#242124] via-[#242124]/34 to-[#242124]/50" />
+<div className="absolute inset-0 bg-[radial-gradient(circle_at_68%_20%,rgba(194,161,57,0.14),transparent_30%)]" />
+<div className="absolute bottom-0 left-0 h-[52%] w-full bg-gradient-to-t from-[#242124] via-[#242124]/72 to-transparent" />
 
         <div className="relative mx-auto w-full max-w-7xl">
           <motion.div
