@@ -15,19 +15,18 @@ export default function LimassolAdvantage() {
       <div className="home-container">
         <div className="relative grid overflow-hidden shadow-[0_42px_150px_rgba(0,0,0,0.34)] lg:grid-cols-[1fr_1.12fr]">
           <div className="relative p-5 md:p-7 lg:p-8 xl:p-9">
-            <div className="relative max-w-[720px] overflow-hidden border border-[#F5F0E8]/12 bg-[#242124]/82 px-6 py-8 shadow-[0_28px_95px_rgba(0,0,0,0.34)] backdrop-blur-[8px] md:px-8 md:py-10 lg:px-9 lg:py-11">
-              <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(135deg,rgba(245,240,232,0.06),transparent_40%,rgba(194,161,57,0.08))]" />
-              <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-[#C2A139]/70 to-transparent" />
+            <div className="relative max-w-[720px] overflow-hidden bg-[#242124]/54 px-6 py-8 shadow-[0_24px_85px_rgba(0,0,0,0.26)] backdrop-blur-[3px] md:px-8 md:py-10 lg:px-9 lg:py-11">
+              <div className="pointer-events-none absolute inset-0 bg-gradient-to-br from-[#242124]/28 via-transparent to-[#C2A139]/8" />
 
               <div className="relative z-10">
                 <p className="section-eyebrow">Investment Perspective</p>
 
-                <h2 className="mt-4 font-montserrat text-[clamp(2.1rem,4.55vw,4.85rem)] font-bold leading-[0.98] tracking-[-0.06em] text-[#F5F0E8] text-balance">
+                <h2 className="mt-4 font-montserrat text-[clamp(2.25rem,4.9vw,5.2rem)] font-bold leading-[0.98] tracking-[-0.06em] text-[#F5F0E8] text-balance">
                   Why Invest
                   <span className="block text-[#C2A139]">in Cyprus?</span>
                 </h2>
 
-                <p className="mt-6 max-w-xl text-base leading-8 text-[#F5F0E8]/84 md:text-lg md:leading-9">
+                <p className="mt-6 max-w-xl text-base leading-8 text-[#F5F0E8]/86 md:text-lg md:leading-9">
                   A strategic gateway connecting continents, Cyprus offers a
                   stable legal framework, exceptional quality of life, and one
                   of the most attractive tax regimes in Europe.
@@ -52,9 +51,7 @@ export default function LimassolAdvantage() {
             </div>
           </div>
 
-          <div className="relative border border-[#F5F0E8]/10 bg-[#242124]/92 shadow-[0_34px_110px_rgba(0,0,0,0.36)]">
-            <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_90%_0%,rgba(194,161,57,0.12),transparent_34%)]" />
-
+          <div className="relative border border-[#F5F0E8]/10 bg-[#242124]/94 shadow-[0_34px_110px_rgba(0,0,0,0.36)]">
             <div className="relative grid md:grid-cols-3 lg:grid-cols-1">
               {points.map((point, index) => (
                 <div
@@ -63,12 +60,12 @@ export default function LimassolAdvantage() {
                 >
                   <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-[#C2A139]/42 to-transparent opacity-0 transition-opacity group-hover:opacity-100" />
 
-                  <span className="mt-1 grid h-11 w-11 shrink-0 place-items-center border border-[#C2A139]/35 bg-[#C2A139]/12 text-[#C2A139] shadow-[0_12px_42px_rgba(194,161,57,0.08)] transition-all group-hover:bg-[#C2A139] group-hover:text-[#05070B]">
+                  <span className="mt-1 grid h-11 w-11 shrink-0 place-items-center border border-[#F5F0E8]/70 bg-transparent text-[#C2A139] transition-all group-hover:border-[#C2A139] group-hover:bg-[#C2A139] group-hover:text-[#05070B]">
                     <CheckCircle2 className="h-5 w-5" />
                   </span>
 
                   <div>
-                    <span className="text-[10px] font-bold uppercase tracking-[0.24em] text-[#F5F0E8]/38">
+                    <span className="text-[10px] font-bold uppercase tracking-[0.24em] text-[#F5F0E8]/70">
                       {String(index + 1).padStart(2, "0")}
                     </span>
 
