@@ -2,24 +2,51 @@
 
 import Image from "next/image";
 import { motion } from "framer-motion";
-import { ArrowUpRight, CalendarClock, ChevronLeft, MapPin, Ruler } from "lucide-react";
+import {
+  ArrowRight,
+  ArrowUpRight,
+  Bath,
+  BedDouble,
+  CalendarClock,
+  ChevronLeft,
+  Mail,
+  MapPin,
+  Ruler,
+} from "lucide-react";
 import { Link } from "@/i18n/routing";
-import PropertyCard from "./PropertyCard";
 
-const API_URL = process.env.STRAPI_API_URL || process.env.NEXT_PUBLIC_API_URL || "http://127.0.0.1:1337";
+const API_URL =
+  process.env.CMS_URL ||
+  process.env.STRAPI_URL ||
+  process.env.NEXT_PUBLIC_API_URL ||
+  "https://tmsestates.onrender.com";
 
-type MediaLike = any;
+function firstDefined(...values: any[]) {
+  return values.find(
+    (value) => value !== undefined && value !== null && String(value).trim() !== "",
+  );
+}
 
-function getSafeUrl(data: MediaLike): string | null {
+function getSafeUrl(data: any): string | null {
   if (!data) return null;
-  const item = Array.isArray(data) ? data[0] : data.data ? (Array.isArray(data.data) ? data.data[0] : data.data) : data;
+
+  let item = Array.isArray(data) ? data[0] : data;
+  if (item?.data) item = Array.isArray(item.data) ? item.data[0] : item.data;
   if (!item) return null;
-  const url = item.attributes?.url || item.url || item.formats?.large?.url || item.formats?.medium?.url;
+
+  const attributes = item.attributes || item;
+  const url =
+    attributes?.formats?.large?.url ||
+    attributes?.formats?.medium?.url ||
+    attributes?.formats?.small?.url ||
+    attributes?.url ||
+    item.url;
+
   if (!url) return null;
   return url.startsWith("http") ? url : `${API_URL}${url}`;
 }
 
-function getMediaArray(data: MediaLike): any[] {
+function getMediaArray(data: any): any[] {
   if (!data) return [];
   const items = data.data || data;
   return Array.isArray(items) ? items : [items];
@@ -28,6 +55,7 @@ function getMediaArray(data: MediaLike): any[] {
 function extractText(value: any): string {
   if (!value) return "";
   if (typeof value === "string") return value.trim();
+
   if (Array.isArray(value)) {
     return value
       .map((block) => block.children?.map((child: any) => child.text).join("") || "")
@@ -35,198 +63,422 @@ function extractText(value: any): string {
       .join("\n\n")
       .trim();
   }
+
   return "";
 }
 
-function paragraphs(value: string): string[] {
-  return value
-    .split(/\n{2,}|\r\n{2,}/)
+function splitDescription(text: string) {
+  const clean = text.replace(/\r\n/g, "\n").trim();
+
+  if (clean.includes("\n---\n")) {
+    const [first, ...rest] = clean.split("\n---\n");
+    return {
+      first: first.trim(),
+      second: rest.join("\n---\n").trim(),
+    };
+  }
+
+  const paragraphs = clean
+    .split(/\n{2,}/)
+    .map((item) => item.trim())
+    .filter(Boolean);
+
+  if (paragraphs.length <= 1) {
+    const sentences = clean.match(/[^.!?]+[.!?]+/g) || [clean];
+    const middle = Math.ceil(sentences.length / 2);
+
+    return {
+      first: sentences.slice(0, middle).join(" ").trim(),
+      second: sentences.slice(middle).join(" ").trim(),
+    };
+  }
+
+  const middle = Math.ceil(paragraphs.length / 2);
+
+  return {
+    first: paragraphs.slice(0, middle).join("\n\n"),
+    second: paragraphs.slice(middle).join("\n\n"),
+  };
+}
+
+function paragraphs(text: string) {
+  return text
+    .split(/\n{2,}/)
     .map((item) => item.trim())
     .filter(Boolean);
 }
 
-function highlightsFrom(value: any): string[] {
-  if (!value) return [];
-  if (Array.isArray(value)) return value.map((item) => String(item).trim()).filter(Boolean);
-  return String(value)
-    .split(/\n|•|·|- /)
-    .map((item) => item.trim())
-    .filter((item) => item && !/^highlights$/i.test(item));
-}
+function formatPrice(price?: number, currency = "EUR") {
+  if (!price) return "Price Upon Request";
 
-function firstDefined(...values: any[]) {
-  return values.find((value) => value !== undefined && value !== null && String(value).trim() !== "");
+  return new Intl.NumberFormat("en-IE", {
+    style: "currency",
+    currency,
+    maximumFractionDigits: 0,
+  }).format(price);
 }
 
 const fadeUp = {
-  hidden: { opacity: 0, y: 30 },
-  visible: { opacity: 1, y: 0, transition: { duration: 0.72, ease: [0.16, 1, 0.3, 1] } },
+  hidden: { opacity: 0, y: 28, filter: "blur(6px)" },
+  visible: {
+    opacity: 1,
+    y: 0,
+    filter: "blur(0px)",
+    transition: { duration: 0.95, ease: [0.16, 1, 0.3, 1] },
+  },
+};
+
+const stagger = {
+  hidden: {},
+  visible: {
+    transition: {
+      staggerChildren: 0.12,
+      delayChildren: 0.08,
+    },
+  },
 };
 
 export default function ProjectPageClient({ project }: { project: any }) {
   const p = project?.attributes || project || {};
 
   const title = firstDefined(p.Title, p.title, "Signature Development");
-  const location = firstDefined(p.Location, p.location, p.Destination, p.destination, p.city, "Cyprus");
-  const status = firstDefined(p.Status, p.status, p.CompletionStatus, p.completionStatus, p.completionDate, "");
+  const location = firstDefined(
+    p.Location,
+    p.location,
+    p.Destination,
+    p.destination,
+    p.city,
+    "Cyprus",
+  );
+  const status = firstDefined(
+    p.CompletionStatus,
+    p.completionStatus,
+    p.Status,
+    p.status,
+    "",
+  );
   const scale = firstDefined(p.Scale, p.scale, "");
-  const overview = extractText(firstDefined(p.ProjectOverview, p.projectOverview, p.Overview, p.overview, p.Description, p.description));
-  const overviewParagraphs = paragraphs(overview);
-  const highlights = highlightsFrom(firstDefined(p.Highlights, p.highlights));
 
-  const coverUrl = getSafeUrl(firstDefined(p.coverImage, p.coverimage, p.image)) || "/assets/hero-poster.jpg";
-  const galleryUrls = getMediaArray(firstDefined(p.gallery, p.Gallery)).map((img) => getSafeUrl(img)).filter(Boolean) as string[];
-  const visualOne = galleryUrls[0] || coverUrl;
-  const visualTwo = galleryUrls[1] || galleryUrls[0] || coverUrl;
-  const visualThree = galleryUrls[2] || galleryUrls[1] || coverUrl;
+  const overview = extractText(firstDefined(p.Description, p.description));
+  const { first, second } = splitDescription(overview);
+
+  const coverUrl =
+    getSafeUrl(firstDefined(p.coverImage, p.coverimage, p.CoverImage, p.image)) ||
+    "/assets/hero-poster.jpg";
+
+  const galleryUrls = getMediaArray(firstDefined(p.gallery, p.Gallery))
+    .map((img) => getSafeUrl(img))
+    .filter(Boolean) as string[];
+
+  const firstVisual = galleryUrls[0] || coverUrl;
+  const secondVisual = galleryUrls[1] || galleryUrls[0] || coverUrl;
 
   const connectedPropertiesRaw = p.properties?.data || p.properties || [];
-  const connectedProperties = Array.isArray(connectedPropertiesRaw) ? connectedPropertiesRaw : [];
-
-  const firstHalf = overviewParagraphs.slice(0, Math.max(2, Math.ceil(overviewParagraphs.length / 2)));
-  const secondHalf = overviewParagraphs.slice(firstHalf.length);
+  const connectedProperties = Array.isArray(connectedPropertiesRaw)
+    ? connectedPropertiesRaw
+    : [];
 
   return (
-    <main className="min-h-screen overflow-hidden bg-[#05070B] text-[#F5F0E8]">
-      <section className="relative flex min-h-[92svh] items-end overflow-hidden pt-32">
-        <Image src={coverUrl} alt={title} fill priority className="object-cover" sizes="100vw" />
-        <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(5,7,11,0.94),rgba(5,7,11,0.62)_45%,rgba(5,7,11,0.78)),linear-gradient(to_top,rgba(5,7,11,1),rgba(5,7,11,0.08)_58%)]" />
+    <main className="overflow-hidden bg-[#F5F0E8] text-[#242124]">
+      <section className="relative flex min-h-[56svh] items-end overflow-hidden bg-[#242124] px-6 pb-20 pt-36 md:px-10 md:pt-44 lg:min-h-[64svh]">
+        <Image
+          src={coverUrl}
+          alt={title}
+          fill
+          priority
+          sizes="100vw"
+          className="object-cover"
+        />
 
-        <div className="relative z-10 mx-auto w-full max-w-[1500px] px-6 pb-16 md:px-10 lg:pb-24 xl:px-16">
-          <Link href="/projects" className="mb-8 inline-flex items-center gap-2 text-[10px] font-bold uppercase tracking-[0.28em] text-[#C2A139] transition-colors hover:text-[#F5F0E8]">
-            <ChevronLeft className="h-4 w-4" /> Projects
-          </Link>
+        <div className="absolute inset-0 bg-[#242124]/46" />
+        <div className="absolute inset-0 bg-gradient-to-r from-[#242124]/92 via-[#242124]/58 to-[#242124]/36" />
+        <div className="absolute inset-0 bg-gradient-to-t from-[#242124]/94 via-[#242124]/28 to-transparent" />
 
-          <div className="grid gap-10 lg:grid-cols-[1.2fr_0.8fr] lg:items-end">
-            <motion.div initial="hidden" animate="visible" variants={fadeUp}>
-              <p className="mb-5 text-[11px] font-bold uppercase tracking-[0.42em] text-[#C2A139]">Project</p>
-              <h1 className="max-w-5xl font-montserrat text-[clamp(4rem,9vw,10rem)] font-bold leading-[0.88] tracking-[-0.08em] text-[#F5F0E8]">
-                {title}
-              </h1>
+        <div className="relative mx-auto w-full max-w-7xl">
+          <motion.div
+            initial="hidden"
+            animate="visible"
+            variants={stagger}
+            className="max-w-5xl"
+          >
+            <motion.div variants={fadeUp}>
+              <Link
+                href="/projects"
+                className="mb-7 inline-flex items-center gap-2 text-[10px] font-bold uppercase tracking-[0.28em] text-[#C2A139] transition-colors hover:text-[#F5F0E8]"
+              >
+                <ChevronLeft className="h-4 w-4" />
+                Projects
+              </Link>
+            </motion.div>
+
+            <motion.h1
+              variants={fadeUp}
+              className="font-montserrat text-[clamp(2.75rem,6vw,6.8rem)] font-bold leading-[0.95] tracking-[-0.07em] text-[#F5F0E8]"
+            >
+              {title}
+            </motion.h1>
+          </motion.div>
+        </div>
+      </section>
+
+      <section className="relative z-10 bg-[#F5F0E8] px-6 md:px-10">
+        <div className="mx-auto -mt-9 grid w-full max-w-6xl gap-px bg-[#242124]/10 shadow-[0_24px_85px_rgba(36,33,36,0.14)] md:grid-cols-3">
+          <ProjectMeta icon={<MapPin />} label="Location" value={location} />
+          {status && <ProjectMeta icon={<CalendarClock />} label="Status" value={status} />}
+          {scale && <ProjectMeta icon={<Ruler />} label="Available Units" value={scale} />}
+        </div>
+      </section>
+
+      <section className="bg-[#F5F0E8] px-6 py-16 md:px-10 md:py-20">
+        <div className="mx-auto grid w-full max-w-7xl gap-12 lg:grid-cols-[1fr_0.92fr] lg:items-center lg:gap-20">
+          <motion.div
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, margin: "-90px" }}
+            variants={stagger}
+            className="max-w-2xl"
+          >
+            <motion.p
+              variants={fadeUp}
+              className="mb-5 text-[10px] font-bold uppercase tracking-[0.3em] text-[#C2A139]"
+            >
+              Project Overview
+            </motion.p>
+
+            <div className="space-y-5 text-sm leading-7 text-[#242124]/74 md:text-[0.95rem] md:leading-8">
+              {paragraphs(first).map((item) => (
+                <motion.p key={item} variants={fadeUp}>
+                  {item}
+                </motion.p>
+              ))}
+            </div>
+          </motion.div>
+
+          <EditorialImage src={firstVisual} alt={`${title} interior`} light />
+        </div>
+      </section>
+
+      <section className="bg-[#242124] px-6 py-16 text-[#F5F0E8] md:px-10 md:py-20">
+        <div className="mx-auto grid w-full max-w-7xl gap-12 lg:grid-cols-[0.92fr_1fr] lg:items-center lg:gap-20">
+          <EditorialImage src={secondVisual} alt={`${title} detail`} />
+
+          <motion.div
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, margin: "-90px" }}
+            variants={stagger}
+            className="max-w-2xl"
+          >
+            <motion.p
+              variants={fadeUp}
+              className="mb-5 text-[10px] font-bold uppercase tracking-[0.3em] text-[#C2A139]"
+            >
+              Design & Value
+            </motion.p>
+
+            <div className="space-y-5 text-sm leading-7 text-[#F5F0E8]/76 md:text-[0.95rem] md:leading-8">
+              {paragraphs(second || first).map((item) => (
+                <motion.p key={item} variants={fadeUp}>
+                  {item}
+                </motion.p>
+              ))}
+            </div>
+          </motion.div>
+        </div>
+      </section>
+
+      <section className="bg-[#F5F0E8] px-6 py-16 md:px-10 md:py-20">
+        <div className="mx-auto w-full max-w-7xl">
+          <div className="grid gap-8 lg:grid-cols-[0.8fr_1.2fr] lg:items-end">
+            <motion.div
+              initial="hidden"
+              whileInView="visible"
+              viewport={{ once: true, margin: "-90px" }}
+              variants={stagger}
+            >
+              <motion.p
+                variants={fadeUp}
+                className="mb-4 text-[10px] font-bold uppercase tracking-[0.3em] text-[#C2A139]"
+              >
+                Residences
+              </motion.p>
+
+              <motion.h2
+                variants={fadeUp}
+                className="font-montserrat text-[clamp(2rem,3.6vw,4.2rem)] font-bold leading-[1.02] tracking-[-0.055em] text-[#242124]"
+              >
+                Available Units
+              </motion.h2>
             </motion.div>
 
             <motion.div
               initial="hidden"
-              animate="visible"
-              variants={{ hidden: { opacity: 0, y: 30 }, visible: { opacity: 1, y: 0, transition: { delay: 0.1, duration: 0.72, ease: [0.16, 1, 0.3, 1] } } }}
-              className="grid grid-cols-1 overflow-hidden border border-white/12 bg-[#0D1B2E]/36 backdrop-blur-xl sm:grid-cols-3 lg:grid-cols-1 xl:grid-cols-3"
+              whileInView="visible"
+              viewport={{ once: true, margin: "-90px" }}
+              variants={fadeUp}
+              className="max-w-2xl text-sm leading-7 text-[#242124]/68 md:text-[0.95rem] md:leading-8"
             >
-              <ProjectMeta icon={<MapPin className="h-4 w-4" />} label="Location" value={location} />
-              {status && <ProjectMeta icon={<CalendarClock className="h-4 w-4" />} label="Status" value={status} />}
-              {scale && <ProjectMeta icon={<Ruler className="h-4 w-4" />} label="Scale" value={scale} />}
+              Explore the available residences connected to this development, or contact our team for current availability and project guidance.
             </motion.div>
           </div>
-        </div>
-      </section>
 
-      <section className="relative z-10 bg-[#05070B] py-16 md:py-24 lg:py-28">
-        <div className="mx-auto w-full max-w-[1500px] px-6 md:px-10 xl:px-16">
-          <div className="grid gap-12 lg:grid-cols-[0.95fr_1.05fr] lg:items-center">
-            <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-100px" }} variants={fadeUp} className="order-2 lg:order-1">
-              <p className="mb-5 text-[10px] font-bold uppercase tracking-[0.4em] text-[#C2A139]">Project Overview</p>
-              <div className="space-y-6 text-lg leading-9 text-[#F5F0E8]/78">
-                {firstHalf.map((paragraph) => (
-                  <p key={paragraph}>{paragraph}</p>
-                ))}
-              </div>
-            </motion.div>
-            <EditorialImage src={visualOne} alt={`${title} visual`} className="order-1 lg:order-2" />
-          </div>
-
-          {secondHalf.length > 0 && (
-            <div className="mt-16 grid gap-12 lg:mt-24 lg:grid-cols-[1.05fr_0.95fr] lg:items-center">
-              <EditorialImage src={visualTwo} alt={`${title} visual`} />
-              <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-100px" }} variants={fadeUp}>
-                <div className="space-y-6 text-lg leading-9 text-[#F5F0E8]/78">
-                  {secondHalf.map((paragraph) => (
-                    <p key={paragraph}>{paragraph}</p>
-                  ))}
-                </div>
-              </motion.div>
+          {connectedProperties.length > 0 ? (
+            <div className="mt-10 grid gap-5 md:grid-cols-2 xl:grid-cols-3">
+              {connectedProperties.map((rawProp: any) => {
+                const prop = rawProp.attributes || rawProp;
+                return (
+                  <UnitCard
+                    key={rawProp.id || prop.id || prop.slug}
+                    property={{ ...prop, id: rawProp.id || prop.id }}
+                  />
+                );
+              })}
+            </div>
+          ) : (
+            <div className="mt-10 border border-[#242124]/10 bg-white/46 p-8 text-sm leading-7 text-[#242124]/68">
+              Available units will be updated soon. Contact our team for more information about this development.
             </div>
           )}
 
-          <div className="mt-16 grid gap-6 lg:mt-24 lg:grid-cols-[0.9fr_1.1fr] lg:items-stretch">
-            <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-100px" }} variants={fadeUp} className="relative overflow-hidden border border-white/12 bg-[#0D1B2E]/42 p-7 backdrop-blur-xl md:p-10">
-              <p className="mb-5 text-[10px] font-bold uppercase tracking-[0.4em] text-[#C2A139]">Highlights</p>
-              {highlights.length > 0 ? (
-                <div className="grid gap-3 sm:grid-cols-2">
-                  {highlights.map((item, index) => (
-                    <div key={item} className="flex gap-4 border border-white/10 bg-white/[0.035] p-4">
-                      <span className="text-[10px] font-bold uppercase tracking-[0.24em] text-[#C2A139]">{String(index + 1).padStart(2, "0")}</span>
-                      <p className="text-sm leading-7 text-[#F5F0E8]/78">{item}</p>
-                    </div>
-                  ))}
-                </div>
-              ) : (
-                <div className="grid gap-3 sm:grid-cols-3">
-                  {location && <HighlightCard label="Location" value={location} />}
-                  {status && <HighlightCard label="Status" value={status} />}
-                  {scale && <HighlightCard label="Scale" value={scale} />}
-                </div>
-              )}
-            </motion.div>
-            <EditorialImage src={visualThree} alt={`${title} visual`} compact />
+          <div className="mt-12 flex flex-col gap-3 border-t border-[#242124]/10 pt-8 sm:flex-row">
+            <a
+              href="mailto:info@tmsestates.com"
+              className="group inline-flex items-center justify-center gap-3 bg-[#242124] px-6 py-4 text-[11px] font-bold uppercase tracking-[0.22em] text-[#F5F0E8] transition-all duration-300 hover:bg-[#C2A139] hover:text-[#242124]"
+            >
+              Request Project Details
+              <Mail className="h-4 w-4" />
+            </a>
+
+            <Link
+              href="/projects"
+              className="group inline-flex items-center justify-center gap-3 border border-[#242124]/18 px-6 py-4 text-[11px] font-bold uppercase tracking-[0.22em] text-[#242124] transition-all duration-300 hover:border-[#C2A139] hover:text-[#C2A139]"
+            >
+              View All Projects
+              <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
+            </Link>
           </div>
         </div>
       </section>
-
-      {connectedProperties.length > 0 && (
-        <section className="relative z-10 border-t border-white/10 bg-[#0D1B2E]/40 py-16 backdrop-blur-md md:py-24">
-          <div className="mx-auto w-full max-w-[1500px] px-6 md:px-10 xl:px-16">
-            <div className="mb-10 flex flex-col gap-5 md:flex-row md:items-end md:justify-between">
-              <div>
-                <p className="mb-4 text-[10px] font-bold uppercase tracking-[0.4em] text-[#C2A139]">Residences</p>
-                <h2 className="font-montserrat text-[clamp(2.5rem,5vw,5.5rem)] font-bold leading-[0.95] tracking-[-0.07em] text-[#F5F0E8]">
-                  Available Units
-                </h2>
-              </div>
-            </div>
-            <div className="grid grid-cols-1 gap-6 md:grid-cols-2 xl:grid-cols-3">
-              {connectedProperties.map((rawProp: any) => {
-                const propData = rawProp.attributes || rawProp;
-                propData.id = rawProp.id || propData.id;
-                return <PropertyCard key={propData.id || propData.slug} p={propData} />;
-              })}
-            </div>
-          </div>
-        </section>
-      )}
     </main>
   );
 }
 
-function ProjectMeta({ icon, label, value }: { icon: React.ReactNode; label: string; value: string }) {
+function ProjectMeta({
+  icon,
+  label,
+  value,
+}: {
+  icon: React.ReactNode;
+  label: string;
+  value: string;
+}) {
   return (
-    <div className="border-b border-white/10 p-5 last:border-b-0 sm:border-b-0 sm:border-r sm:last:border-r-0 lg:border-b lg:border-r-0 lg:last:border-b-0 xl:border-b-0 xl:border-r xl:last:border-r-0">
-      <div className="mb-4 flex h-10 w-10 items-center justify-center rounded-full border border-[#C2A139]/30 bg-[#C2A139]/10 text-[#C2A139]">{icon}</div>
-      <p className="mb-2 text-[9px] font-bold uppercase tracking-[0.28em] text-[#C2A139]/80">{label}</p>
-      <p className="text-sm font-semibold leading-6 text-[#F5F0E8]">{value}</p>
+    <div className="bg-white px-6 py-6 md:px-8">
+      <div className="mb-3 flex h-9 w-9 items-center justify-center border border-[#C2A139]/28 bg-[#C2A139]/8 text-[#C2A139]">
+        <span className="[&>svg]:h-4 [&>svg]:w-4">{icon}</span>
+      </div>
+
+      <p className="mb-2 text-[9px] font-bold uppercase tracking-[0.28em] text-[#C2A139]">
+        {label}
+      </p>
+
+      <p className="text-sm font-semibold leading-6 text-[#242124]">{value}</p>
     </div>
   );
 }
 
-function EditorialImage({ src, alt, compact = false, className = "" }: { src: string; alt: string; compact?: boolean; className?: string }) {
+function EditorialImage({
+  src,
+  alt,
+  light = false,
+}: {
+  src: string;
+  alt: string;
+  light?: boolean;
+}) {
   return (
     <motion.div
       initial="hidden"
       whileInView="visible"
-      viewport={{ once: true, margin: "-100px" }}
+      viewport={{ once: true, margin: "-90px" }}
       variants={fadeUp}
-      className={`relative overflow-hidden border border-white/12 bg-[#0D1B2E]/30 shadow-[0_30px_120px_rgba(0,0,0,0.36)] ${compact ? "min-h-[360px]" : "min-h-[420px] lg:min-h-[560px]"} ${className}`}
+      className={`relative min-h-[320px] overflow-hidden shadow-[0_28px_90px_rgba(36,33,36,0.18)] md:min-h-[420px] ${
+        light ? "bg-white" : "bg-[#05070B]"
+      }`}
     >
-      <Image src={src} alt={alt} fill className="object-cover" sizes="(max-width: 1024px) 100vw, 50vw" />
-      <div className="absolute inset-0 bg-gradient-to-t from-[#05070B]/45 via-transparent to-transparent" />
-      <div className="absolute inset-x-0 bottom-0 h-px bg-gradient-to-r from-transparent via-[#C2A139]/55 to-transparent" />
+      <Image
+        src={src}
+        alt={alt}
+        fill
+        sizes="(max-width: 1024px) 100vw, 48vw"
+        className="object-cover"
+      />
+
+      <div className="absolute inset-0 bg-gradient-to-t from-[#242124]/34 via-transparent to-transparent" />
+      <div className="absolute inset-x-0 bottom-0 h-[2px] bg-gradient-to-r from-transparent via-[#C2A139]/70 to-transparent" />
     </motion.div>
   );
 }
 
-function HighlightCard({ label, value }: { label: string; value: string }) {
+function UnitCard({ property }: { property: any }) {
+  const imageData = property.images?.data?.[0] || property.images?.[0];
+  const image =
+    getSafeUrl(imageData) || "/assets/hero-poster.jpg";
+
   return (
-    <div className="border border-white/10 bg-white/[0.035] p-5">
-      <p className="mb-3 text-[9px] font-bold uppercase tracking-[0.28em] text-[#C2A139]">{label}</p>
-      <p className="text-sm font-semibold leading-6 text-[#F5F0E8]">{value}</p>
-    </div>
+    <Link
+      href={`/properties/${property.slug}`}
+      className="group relative min-h-[430px] overflow-hidden bg-[#242124] shadow-[0_24px_80px_rgba(36,33,36,0.22)]"
+    >
+      <Image
+        src={image}
+        alt={property.title || "TMS Estates residence"}
+        fill
+        sizes="(max-width: 768px) 100vw, 33vw"
+        className="object-cover transition duration-[1200ms] group-hover:scale-105"
+      />
+
+      <div className="absolute inset-0 bg-gradient-to-t from-[#05070B]/98 via-[#05070B]/68 to-[#05070B]/22" />
+      <div className="absolute right-5 top-5 grid h-11 w-11 place-items-center rounded-full border border-white/18 bg-[#05070B]/44 text-[#F5F0E8] backdrop-blur-md transition-all group-hover:-translate-y-1 group-hover:translate-x-1 group-hover:border-[#C2A139] group-hover:bg-[#C2A139] group-hover:text-[#242124]">
+        <ArrowUpRight className="h-4 w-4" />
+      </div>
+
+      <div className="absolute inset-x-0 bottom-0 p-6">
+        <p className="mb-3 text-[10px] font-bold uppercase tracking-[0.22em] text-[#C2A139]">
+          {property.marketing_tags || property.propertyType || "Residence"}
+        </p>
+
+        <h3 className="font-montserrat text-2xl font-semibold leading-tight tracking-[-0.045em] text-[#F5F0E8]">
+          {property.title}
+        </h3>
+
+        <p className="mt-3 text-sm font-semibold text-[#F5F0E8]/82">
+          {formatPrice(property.price, property.currency)}
+        </p>
+
+        <div className="mt-5 flex flex-wrap gap-2 border-t border-white/14 pt-4 text-xs text-[#F5F0E8]/82">
+          {property.bedrooms && (
+            <span className="inline-flex items-center gap-2 bg-white/[0.08] px-3 py-1.5">
+              <BedDouble className="h-4 w-4 text-[#C2A139]" />
+              {property.bedrooms} Beds
+            </span>
+          )}
+
+          {property.bathrooms && (
+            <span className="inline-flex items-center gap-2 bg-white/[0.08] px-3 py-1.5">
+              <Bath className="h-4 w-4 text-[#C2A139]" />
+              {property.bathrooms} Baths
+            </span>
+          )}
+
+          {property.area && (
+            <span className="inline-flex items-center gap-2 bg-white/[0.08] px-3 py-1.5">
+              <Ruler className="h-4 w-4 text-[#C2A139]" />
+              {property.area} m²
+            </span>
+          )}
+        </div>
+      </div>
+    </Link>
   );
 }
