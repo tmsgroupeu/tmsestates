@@ -81,7 +81,7 @@ export default function Header({ locale }: { locale: string }) {
                   <Link href="/about" className="text-[10px] font-bold uppercase tracking-[0.15em] text-[#F5F0E8] transition-colors hover:text-[#C2A139]">
                     Who We Are
                   </Link>
-                  <Link href="/#contact" className="text-[10px] font-bold uppercase tracking-[0.15em] text-[#F5F0E8] transition-colors hover:text-[#C2A139]">
+                  <Link href="/contact" className="text-[10px] font-bold uppercase tracking-[0.15em] text-[#F5F0E8] transition-colors hover:text-[#C2A139]">
                     Contact
                   </Link>
                   <div className="h-4 w-px bg-[#F5F0E8]/18" />
