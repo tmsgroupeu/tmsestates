@@ -122,8 +122,8 @@ export default function MarketInsights() {
       <div className="property-opportunity-rail relative z-10 w-screen overflow-hidden bg-[#242124] py-7 shadow-[0_34px_110px_rgba(0,0,0,0.46)] md:py-9">
         <div className="pointer-events-none absolute inset-0 z-0 bg-[#242124]" />
         <div className="pointer-events-none absolute inset-0 z-0 bg-[radial-gradient(circle_at_50%_-28%,rgba(194,161,57,0.13),transparent_38%),linear-gradient(180deg,rgba(245,240,232,0.035),transparent_28%,rgba(5,7,11,0.2))]" />
-        <div className="property-opportunity-rail-line pointer-events-none absolute left-0 top-0 z-[1] h-px w-full" />
-        <div className="pointer-events-none absolute inset-x-0 bottom-0 z-[1] h-px bg-gradient-to-r from-transparent via-[#F5F0E8]/12 to-transparent" />
+        <div className="property-opportunity-rail-line pointer-events-none absolute left-0 top-0 z-[2] h-[2px] w-full" />
+        <div className="property-opportunity-rail-line-bottom pointer-events-none absolute bottom-0 left-0 z-[2] h-px w-full" />
 
         <Swiper
           modules={[Autoplay, Navigation]}
@@ -226,31 +226,39 @@ export default function MarketInsights() {
           transform: translateZ(0);
         }
 
-        .property-opportunity-rail-line {
+        .property-opportunity-rail-line,
+        .property-opportunity-rail-line-bottom {
           background: linear-gradient(
             90deg,
             transparent,
-            rgba(194, 161, 57, 0.2),
-            rgba(194, 161, 57, 0.9),
-            rgba(245, 240, 232, 0.5),
-            rgba(194, 161, 57, 0.2),
+            rgba(194, 161, 57, 0.35),
+            rgba(194, 161, 57, 1),
+            rgba(245, 240, 232, 0.74),
+            rgba(194, 161, 57, 1),
+            rgba(194, 161, 57, 0.35),
             transparent
           );
-          background-size: 220% 100%;
-          animation: propertyRailGoldSweep 7s ease-in-out infinite;
+          background-size: 260% 100%;
+          box-shadow: 0 0 18px rgba(194, 161, 57, 0.34);
+          animation: propertyRailGoldSweep 5.8s ease-in-out infinite;
+        }
+
+        .property-opportunity-rail-line-bottom {
+          opacity: 0.55;
+          animation-delay: 1.4s;
         }
 
         @keyframes propertyRailGoldSweep {
           0% {
-            background-position: 120% 0;
-            opacity: 0.38;
+            background-position: 130% 0;
+            opacity: 0.48;
           }
-          45% {
-            opacity: 0.82;
+          42% {
+            opacity: 1;
           }
           100% {
-            background-position: -120% 0;
-            opacity: 0.38;
+            background-position: -130% 0;
+            opacity: 0.48;
           }
         }
       `}</style>
