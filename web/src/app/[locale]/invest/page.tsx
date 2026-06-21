@@ -1,336 +1,440 @@
-/* FULL REPLACEMENT: src/app/[locale]/invest/page.tsx */
 "use client";
 
 import { useRef } from "react";
 import { motion, useScroll, useTransform } from "framer-motion";
-import { Landmark, Globe, TrendingUp, CheckCircle2, ShieldCheck, Plane, Users, Briefcase, ArrowRight, Percent, FileText } from "lucide-react";
+import {
+  ArrowRight,
+  Briefcase,
+  CheckCircle2,
+  FileText,
+  Globe,
+  Landmark,
+  Percent,
+  Plane,
+  ShieldCheck,
+  TrendingUp,
+  Users,
+} from "lucide-react";
 import { Link } from "@/i18n/routing";
+
+const CLOUD_NAME = "dkbpthpxg";
+const VIDEO_ID = "12626266_1920_1080_25fps_xzeheg";
+const VIDEO_SRC = `https://res.cloudinary.com/${CLOUD_NAME}/video/upload/f_auto,q_auto/${VIDEO_ID}.mp4`;
+
+const fadeUp = {
+  hidden: { opacity: 0, y: 28, filter: "blur(6px)" },
+  visible: {
+    opacity: 1,
+    y: 0,
+    filter: "blur(0px)",
+    transition: { duration: 1, ease: [0.16, 1, 0.3, 1] },
+  },
+};
+
+const stagger = {
+  hidden: {},
+  visible: {
+    transition: {
+      staggerChildren: 0.12,
+      delayChildren: 0.08,
+    },
+  },
+};
+
+const drivers = [
+  {
+    icon: Globe,
+    title: "Strategic Gateway",
+    text: "One of Cyprus’ greatest strengths is its strategic geographical position at the crossroads of Europe, Asia and Africa. This makes the island a natural investment gateway, supported by modern infrastructure and two international airports. Together with a warm Mediterranean climate, beautiful coastlines and a wide range of residential options, Cyprus offers a lifestyle that consistently sustains strong demand for property.",
+  },
+  {
+    icon: ShieldCheck,
+    title: "Safe & Stable",
+    text: "Cyprus is also known for its safe, stable, and welcoming environment. The country benefits from a strong legal framework based on English Common Law principles, low crime rates, and a transparent property ownership system. English is widely spoken, and the multicultural population makes relocation and property ownership straightforward for foreign investors.",
+  },
+  {
+    icon: TrendingUp,
+    title: "Market Growth",
+    text: "From an investment perspective, the Cyprus real estate market continues to grow, driven by tourism, residential demand, and limited supply in prime locations. These factors create attractive opportunities for both capital appreciation and steady rental income, whether through holiday rentals or long-term leasing.",
+  },
+];
+
+const legalItems = [
+  "Secure and clearly defined property ownership",
+  "Transparent land registry procedures",
+  "Reliable contract enforcement",
+  "Business-friendly policies for foreign investors",
+];
+
+const taxBenefits = [
+  "Extensive double taxation treaty network with over 75 countries",
+  "No withholding tax on dividends, interest, or royalty payments abroad",
+  "Capital gains from the sale of securities are tax exempt",
+  "Reduced VAT on First Residence - Buyers acquiring a new property as their primary residence in Cyprus may qualify for a reduced VAT rate of 5%.",
+];
+
+const supportItems = [
+  "Property selection and investment analysis",
+  "Guidance on permanent residency requirements",
+  "Coordination with legal, tax, and compliance professionals",
+  "Assistance with banking setup (Cyprus, Dubai, HK)",
+  "Property management and maintenance",
+  "Ongoing after-sales and investor support",
+];
 
 export default function InvestPage() {
   const containerRef = useRef<HTMLDivElement>(null);
-  
-  // Parallax Scroll Hooks
+
   const { scrollYProgress } = useScroll({
     target: containerRef,
     offset: ["start start", "end end"],
   });
 
-  // CLOUDINARY VIDEO CONFIG
-  const CLOUD_NAME = "dkbpthpxg"; 
-  const VIDEO_ID = "12626266_1920_1080_25fps_xzeheg";
-  const VIDEO_SRC = `https://res.cloudinary.com/${CLOUD_NAME}/video/upload/f_auto,q_auto/${VIDEO_ID}.mp4`;
-
-  // Background Animations
-  const bgBlur = useTransform(scrollYProgress, [0, 0.2], ["0px", "12px"]);
-  const bgOverlay = useTransform(scrollYProgress, [0, 0.5], ["rgba(5, 7, 11, 0.42)", "rgba(5, 7, 11, 0.90)"]);
-
-  // Animation Variants
-  const fadeUp = {
-    hidden: { opacity: 0, y: 40 },
-    visible: { opacity: 1, y: 0, transition: { duration: 0.8, ease: "easeOut" } }
-  };
-
-  const staggerContainer = {
-    hidden: { opacity: 0 },
-    visible: { opacity: 1, transition: { staggerChildren: 0.2 } }
-  };
+  const videoScale = useTransform(scrollYProgress, [0, 0.35], [1.08, 1.16]);
+  const videoOpacity = useTransform(scrollYProgress, [0, 0.35, 1], [0.86, 0.42, 0.26]);
+  const veilOpacity = useTransform(scrollYProgress, [0, 0.45], [0.35, 0.86]);
+  const heroY = useTransform(scrollYProgress, [0, 0.22], [0, -48]);
 
   return (
-    // Min-height ensures enough scrolling space for the content
-    <div ref={containerRef} className="relative bg-[#0D1B2E] text-white selection:bg-[#C2A139] selection:text-white pb-20">
-      
-      {/* 1. FIXED BACKGROUND VIDEO */}
-      <motion.div className="fixed inset-0 w-full h-full z-0 pointer-events-none">
-        <motion.div 
-            style={{ backdropFilter: `blur(${bgBlur})`, backgroundColor: bgOverlay }}
-            className="absolute inset-0 z-10"
-        />
-        <video
-          autoPlay loop muted playsInline
-          className="w-full h-full object-cover scale-110 origin-center"
+    <main ref={containerRef} className="relative overflow-hidden bg-[#242124] text-[#F5F0E8]">
+      <motion.div className="fixed inset-0 z-0 pointer-events-none">
+        <motion.video
+          autoPlay
+          loop
+          muted
+          playsInline
           src={VIDEO_SRC}
+          style={{ scale: videoScale, opacity: videoOpacity }}
+          className="h-full w-full object-cover"
         />
+        <motion.div style={{ opacity: veilOpacity }} className="absolute inset-0 bg-[#242124]" />
+        <div className="absolute inset-0 bg-gradient-to-r from-[#242124]/90 via-[#242124]/54 to-[#242124]/72" />
+        <div className="absolute inset-0 bg-gradient-to-t from-[#242124] via-transparent to-[#242124]/62" />
       </motion.div>
 
-      {/* 2. SCROLLABLE CONTENT */}
-      <div className="relative z-10 flex flex-col items-center w-full">
+      <div className="relative z-10">
+        <section className="relative flex min-h-screen items-end px-6 pb-20 pt-40 md:px-10 lg:pb-28">
+          <div className="mx-auto grid w-full max-w-7xl gap-10 lg:grid-cols-[1fr_0.82fr] lg:items-end lg:gap-20">
+            <motion.div style={{ y: heroY }} initial="hidden" animate="visible" variants={stagger}>
+              <motion.p variants={fadeUp} className="mb-5 text-[10px] font-bold uppercase tracking-[0.3em] text-[#C2A139]">
+                Investment Intelligence
+              </motion.p>
 
-        {/* --- SCENE 1: HERO & INTRO TEXT --- */}
-        <div className="min-h-screen w-full flex flex-col items-center justify-center px-6 pt-40 pb-20">
-            <motion.div 
-               initial="hidden" animate="visible" variants={fadeUp}
-               className="max-w-5xl text-center flex flex-col items-center"
-            >
-               {/* Label */}
-               <span className="inline-block py-1.5 px-4 border border-[#C2A139]/50 rounded-full text-[#C2A139] text-[10px] font-bold uppercase tracking-[0.3em] mb-8 backdrop-blur-md">
-                 Investment Intelligence
-               </span>
-
-               {/* Title */}
-               <h1 className="text-4xl md:text-7xl font-montserrat font-extrabold mb-12 leading-tight drop-shadow-2xl">
-                 Why Invest in <br/>
-                 <span className="text-transparent bg-clip-text bg-gradient-to-r from-white via-[#C2A139] to-white">
-                   Real Estate in Cyprus
-                 </span>
-               </h1>
-               
-               {/* Intro Text Box (Glass) */}
-               <div className="mt-8 text-white/90 max-w-4xl text-left md:text-center leading-relaxed font-light space-y-6 text-lg bg-[#0D1B2E]/60 p-8 md:p-12 rounded-[2rem] backdrop-blur-md border border-white/10 shadow-2xl">
-                 <p>
-                    Cyprus has established itself as one of Europe’s most attractive real estate destinations, offering a powerful combination of lifestyle appeal, investment security, and long-term growth potential. As a member of the European Union and a key hub in the Eastern Mediterranean, the island continues to attract international buyers, investors, and families seeking both financial returns and a high quality of life.
-                 </p>
-                 <p>
-                    In addition, Cyprus offers an appealing Permanent Residency by Investment programme. Non-EU nationals who invest in qualifying real estate with a minimum value of €300,000 may apply for permanent residency for themselves and their family through a fast-track process.
-                 </p>
-               </div>
+              <motion.h1 variants={fadeUp} className="max-w-5xl font-montserrat text-[clamp(2.75rem,6vw,7rem)] font-bold leading-[0.95] tracking-[-0.07em] text-[#F5F0E8]">
+                Why Invest in
+                <span className="block text-[#C2A139]">Real Estate in Cyprus</span>
+              </motion.h1>
             </motion.div>
 
-            {/* Scroll Indicator */}
-            <motion.div 
-               initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 1.5, duration: 1 }}
-               className="mt-16 flex flex-col items-center gap-2 text-[10px] uppercase tracking-widest text-white/50"
-            >
-               <span>Explore Key Drivers</span>
-               <div className="h-12 w-[1px] bg-gradient-to-b from-[#C2A139] to-transparent" />
+            <motion.div initial="hidden" animate="visible" variants={stagger} className="max-w-xl border-l border-[#C2A139]/50 bg-[#242124]/52 px-5 py-5 shadow-[0_26px_85px_rgba(0,0,0,0.28)] backdrop-blur-[3px]">
+              <motion.p variants={fadeUp} className="text-sm leading-7 text-[#F5F0E8]/86 md:text-base md:leading-8">
+                Cyprus has established itself as one of Europe’s most attractive real estate destinations, offering a powerful combination of lifestyle appeal, investment security, and long-term growth potential. As a member of the European Union and a key hub in the Eastern Mediterranean, the island continues to attract international buyers, investors, and families seeking both financial returns and a high quality of life.
+              </motion.p>
+              <motion.p variants={fadeUp} className="mt-5 text-sm leading-7 text-[#F5F0E8]/72 md:text-base md:leading-8">
+                In addition, Cyprus offers an appealing Permanent Residency by Investment programme. Non-EU nationals who invest in qualifying real estate with a minimum value of €300,000 may apply for permanent residency for themselves and their family through a fast-track process.
+              </motion.p>
             </motion.div>
-        </div>
+          </div>
+        </section>
 
-        {/* --- SCENE 2: KEY STRENGTHS (3 Columns) --- */}
-        <div className="w-full max-w-7xl px-6 py-24">
-           <motion.div 
-             initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-100px" }}
-             variants={staggerContainer}
-             className="grid grid-cols-1 md:grid-cols-3 gap-6"
-           >
-              {/* Strategic Position */}
-              <FeatureCard 
-                icon={Globe}
-                title="Strategic Gateway"
-                text="One of Cyprus’ greatest strengths is its strategic geographical position at the crossroads of Europe, Asia and Africa. This makes the island a natural investment gateway, supported by modern infrastructure and two international airports. Together with a warm Mediterranean climate, beautiful coastlines and a wide range of residential options, Cyprus offers a lifestyle that consistently sustains strong demand for property."
-              />
-              {/* Safety */}
-              <FeatureCard 
-                icon={ShieldCheck}
-                title="Safe & Stable"
-                text="Cyprus is also known for its safe, stable, and welcoming environment. The country benefits from a strong legal framework based on English Common Law principles, low crime rates, and a transparent property ownership system. English is widely spoken, and the multicultural population makes relocation and property ownership straightforward for foreign investors."
-              />
-              {/* Growth */}
-              <FeatureCard 
-                icon={TrendingUp}
-                title="Market Growth"
-                text="From an investment perspective, the Cyprus real estate market continues to grow, driven by tourism, residential demand, and limited supply in prime locations. These factors create attractive opportunities for both capital appreciation and steady rental income, whether through holiday rentals or long-term leasing."
-              />
-           </motion.div>
-        </div>
-
-        {/* --- SCENE 3: LEGAL & BUSINESS (Glass Panel) --- */}
-        <div className="w-full max-w-5xl px-6 mb-32">
-            <motion.div 
-               initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeUp}
-               className="apple-glass rounded-3xl p-10 md:p-14 border border-white/10 shadow-[0_0_50px_rgba(0,0,0,0.5)]"
-            >
-               <div className="flex flex-col md:flex-row gap-10 items-center">
-                  <div className="flex-1">
-                      <div className="flex items-center gap-3 mb-4 text-[#C2A139]">
-                          <Landmark size={24} />
-                          <span className="text-xs font-bold uppercase tracking-widest">Legal Framework</span>
-                      </div>
-                      <h2 className="text-3xl font-montserrat font-bold mb-4 text-white">Strong Legal & Business Environment</h2>
-                      <p className="text-white/80 mb-6 leading-relaxed">
-                          Cyprus operates under a robust and well-established legal and regulatory system based on English Common Law. This framework is widely recognised for its transparency, investor protection, and reliability, making Cyprus one of the safest jurisdictions in Europe for real estate investment.
-                      </p>
-                      <p className="text-white/60 text-sm mb-4">The regulatory environment ensures:</p>
-                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-y-3 gap-x-6">
-                          <CheckItem text="Secure and clearly defined property ownership" />
-                          <CheckItem text="Transparent land registry procedures" />
-                          <CheckItem text="Reliable contract enforcement" />
-                          <CheckItem text="Business-friendly policies for foreign investors" />
-                      </div>
-                  </div>
-                  {/* Decorative Icon */}
-                  <div className="hidden md:flex bg-white/5 p-8 rounded-full border border-white/10">
-                      <ShieldCheck size={64} className="text-[#C2A139] opacity-80" />
-                  </div>
-               </div>
+        <section className="relative bg-[#242124] px-6 py-16 md:px-10 md:py-20">
+          <div className="mx-auto w-full max-w-7xl">
+            <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-90px" }} variants={stagger} className="mb-10 grid gap-6 lg:grid-cols-[0.78fr_1.22fr] lg:items-end">
+              <div>
+                <motion.p variants={fadeUp} className="mb-4 text-[10px] font-bold uppercase tracking-[0.3em] text-[#C2A139]">
+                  Key Drivers
+                </motion.p>
+                <motion.h2 variants={fadeUp} className="font-montserrat text-[clamp(2rem,3.7vw,4.4rem)] font-bold leading-[1.02] tracking-[-0.055em] text-[#F5F0E8]">
+                  Why Cyprus Continues to Attract Investors
+                </motion.h2>
+              </div>
+              <motion.p variants={fadeUp} className="max-w-2xl text-sm leading-7 text-[#F5F0E8]/66 md:text-[0.95rem] md:leading-8">
+                The island combines strategic geography, lifestyle appeal, market resilience and legal clarity, creating a strong foundation for real estate investment.
+              </motion.p>
             </motion.div>
-        </div>
 
-        {/* --- SCENE 4: TAX & FINANCIAL BENEFITS (White Section) --- */}
-        <div className="w-full bg-[#F5F0E8] text-[#0D1B2E] py-32 rounded-[4rem] relative overflow-hidden my-10">
-           <div className="max-w-7xl mx-auto px-6">
-              <div className="text-center mb-16">
-                 <h2 className="text-4xl md:text-5xl font-montserrat font-bold">Attractive Tax & Financial Benefits</h2>
-                 <p className="text-[#0D1B2E]/70 mt-4 max-w-3xl mx-auto text-lg">
-                    Cyprus offers one of the most competitive tax regimes in the European Union, significantly enhancing the overall return on real estate and business investments.
-                 </p>
+            <div className="grid gap-4 md:grid-cols-3">
+              {drivers.map((item) => (
+                <FeatureCard key={item.title} {...item} />
+              ))}
+            </div>
+          </div>
+        </section>
+
+        <section className="relative bg-[#F5F0E8] px-6 py-16 text-[#242124] md:px-10 md:py-20">
+          <div className="mx-auto grid w-full max-w-7xl gap-12 lg:grid-cols-[0.9fr_1.1fr] lg:items-center lg:gap-20">
+            <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-90px" }} variants={stagger}>
+              <motion.p variants={fadeUp} className="mb-4 text-[10px] font-bold uppercase tracking-[0.3em] text-[#C2A139]">
+                Legal Framework
+              </motion.p>
+              <motion.h2 variants={fadeUp} className="font-montserrat text-[clamp(2rem,3.5vw,4rem)] font-bold leading-[1.02] tracking-[-0.055em]">
+                Strong Legal & Business Environment
+              </motion.h2>
+              <motion.p variants={fadeUp} className="mt-6 max-w-2xl text-sm leading-7 text-[#242124]/72 md:text-[0.95rem] md:leading-8">
+                Cyprus operates under a robust and well-established legal and regulatory system based on English Common Law. This framework is widely recognised for its transparency, investor protection, and reliability, making Cyprus one of the safest jurisdictions in Europe for real estate investment.
+              </motion.p>
+            </motion.div>
+
+            <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-90px" }} variants={stagger} className="investment-panel relative overflow-hidden bg-white shadow-[0_28px_95px_rgba(36,33,36,0.16)]">
+              <div className="pointer-events-none absolute inset-x-0 top-0 h-[2px] overflow-hidden bg-[#C2A139]/14">
+                <div className="investment-gold-line h-full w-1/3 bg-gradient-to-r from-transparent via-[#C2A139] to-transparent" />
+              </div>
+              <div className="grid gap-px bg-[#242124]/8 sm:grid-cols-2">
+                {legalItems.map((item) => (
+                  <motion.div key={item} variants={fadeUp} className="group bg-white p-6 transition-colors hover:bg-[#F5F0E8]">
+                    <CheckCircle2 className="mb-6 h-6 w-6 text-[#C2A139]" />
+                    <p className="text-sm font-semibold leading-7 text-[#242124]/76">{item}</p>
+                  </motion.div>
+                ))}
+              </div>
+            </motion.div>
+          </div>
+        </section>
+
+        <section className="relative overflow-hidden bg-[#C2A139] px-6 py-16 text-[#242124] md:px-10 md:py-20">
+          <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(36,33,36,0.08),transparent_24%,transparent_76%,rgba(36,33,36,0.08))]" />
+          <div className="relative mx-auto w-full max-w-7xl">
+            <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-90px" }} variants={stagger} className="mb-12 text-center">
+              <motion.p variants={fadeUp} className="mb-4 text-[10px] font-bold uppercase tracking-[0.3em] text-[#242124]/64">
+                Financial Benefits
+              </motion.p>
+              <motion.h2 variants={fadeUp} className="font-montserrat text-[clamp(2rem,3.7vw,4.4rem)] font-bold leading-[1.02] tracking-[-0.055em]">
+                Attractive Tax & Financial Benefits
+              </motion.h2>
+              <motion.p variants={fadeUp} className="mx-auto mt-5 max-w-3xl text-sm leading-7 text-[#242124]/76 md:text-[0.95rem] md:leading-8">
+                Cyprus offers one of the most competitive tax regimes in the European Union, significantly enhancing the overall return on real estate and business investments.
+              </motion.p>
+            </motion.div>
+
+            <div className="grid gap-5 lg:grid-cols-[0.85fr_1.15fr] lg:items-stretch">
+              <div className="grid gap-px bg-[#242124]/14">
+                <StatRow number="15%" label="Corporate Tax Rate (Among Lowest in EU)" />
+                <StatRow number="0% / 5%" label="Dividend Tax (Non-Dom vs Domiciled)" />
+                <StatRow number="0%" label="Inheritance, Succession, or Gift Taxes" />
+                <StatRow number="0%" label="Immovable Property Tax" />
               </div>
 
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-start">
-                  
-                  {/* Big Stats */}
-                  <div className="space-y-8 pt-4">
-                      <StatRow number="15%" label="Corporate Tax Rate (Among Lowest in EU)" />
-                      <div className="border-b border-[#0D1B2E]/10 pb-4">
-                          <span className="text-2xl font-bold text-[#C2A139] font-montserrat block mb-1">0% / 5%</span>
-                          <span className="text-[#0D1B2E]/80 text-sm font-bold uppercase tracking-wide">Dividend Tax (Non-Dom vs Domiciled)</span>
-                      </div>
-                      <StatRow number="0%" label="Inheritance, Succession, or Gift Taxes" />
-                      <StatRow number="0%" label="Immovable Property Tax" />
-                  </div>
-
-                  {/* Detailed Card */}
-                  <div className="bg-white p-8 md:p-12 rounded-3xl shadow-xl border border-[#C4B49A]/25 relative">
-                      <div className="absolute top-0 right-0 p-8 opacity-5">
-                          <Percent size={140} className="text-[#0D1B2E]" />
-                      </div>
-                      <h3 className="font-bold text-xl mb-6 flex items-center gap-2 text-[#C2A139]">
-                         Key Benefits Include:
-                      </h3>
-                      <ul className="space-y-5 text-sm text-[#0D1B2E]/70 relative z-10">
-                          <li className="flex gap-4"><CheckCircle2 className="text-[#C2A139] shrink-0 mt-0.5" size={18} /> <span>Extensive double taxation treaty network with over 75 countries</span></li>
-                          <li className="flex gap-4"><CheckCircle2 className="text-[#C2A139] shrink-0 mt-0.5" size={18} /> <span>No withholding tax on dividends, interest, or royalty payments abroad</span></li>
-                          <li className="flex gap-4"><CheckCircle2 className="text-[#C2A139] shrink-0 mt-0.5" size={18} /> <span>Capital gains from the sale of securities are tax exempt</span></li>
-                          <li className="flex gap-4"><CheckCircle2 className="text-[#C2A139] shrink-0 mt-0.5" size={18} /> <span><strong>Reduced VAT on First Residence</strong> - Buyers acquiring a new property as their primary residence in Cyprus may qualify for a reduced VAT rate of 5%.</span></li>
-                      </ul>
-                  </div>
-
+              <div className="relative overflow-hidden bg-[#242124] p-7 text-[#F5F0E8] shadow-[0_28px_95px_rgba(36,33,36,0.22)] md:p-10">
+                <Percent className="absolute -right-8 -top-8 h-40 w-40 text-[#C2A139]/10" />
+                <p className="mb-6 text-[10px] font-bold uppercase tracking-[0.3em] text-[#C2A139]">
+                  Key Benefits Include
+                </p>
+                <div className="grid gap-4">
+                  {taxBenefits.map((item) => (
+                    <CheckLine key={item} text={item} />
+                  ))}
+                </div>
               </div>
-           </div>
-        </div>
+            </div>
+          </div>
+        </section>
 
-        {/* --- SCENE 5: PERMANENT RESIDENCY --- */}
-        <div className="w-full max-w-7xl px-6 py-24">
-            <div className="text-center mb-16">
-               <span className="text-[#C2A139] font-bold tracking-widest uppercase text-xs">EU Access</span>
-               <h2 className="text-3xl md:text-5xl font-montserrat font-bold text-white mt-2">Permanent Residency Options</h2>
-               <p className="text-white/60 mt-4 max-w-2xl mx-auto">
-                 Cyprus offers different permanent residency categories to accommodate various investor profiles:
-               </p>
+        <section className="relative bg-[#242124] px-6 py-16 text-[#F5F0E8] md:px-10 md:py-20">
+          <div className="mx-auto w-full max-w-7xl">
+            <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-90px" }} variants={stagger} className="mb-12 text-center">
+              <motion.p variants={fadeUp} className="mb-4 text-[10px] font-bold uppercase tracking-[0.3em] text-[#C2A139]">
+                EU Access
+              </motion.p>
+              <motion.h2 variants={fadeUp} className="font-montserrat text-[clamp(2rem,3.7vw,4.4rem)] font-bold leading-[1.02] tracking-[-0.055em]">
+                Permanent Residency Options
+              </motion.h2>
+              <motion.p variants={fadeUp} className="mx-auto mt-5 max-w-2xl text-sm leading-7 text-[#F5F0E8]/66 md:text-[0.95rem] md:leading-8">
+                Cyprus offers different permanent residency categories to accommodate various investor profiles:
+              </motion.p>
+            </motion.div>
+
+            <div className="grid gap-5 md:grid-cols-2">
+              <ResidencyCard
+                featured
+                icon={Plane}
+                eyebrow="Most Popular"
+                title="Fast-Track Permanent Residency"
+                price="€300,000"
+                note="+VAT"
+                items={[
+                  "Investment in new residential property",
+                  "Properties under construction are eligible",
+                  "Residency valid for life",
+                  "Leads to eligibility for citizenship (5 Years)",
+                ]}
+              />
+              <ResidencyCard
+                icon={Users}
+                title="Permanent Residency"
+                price="Standard Category"
+                items={[
+                  "Lower investment requirements",
+                  "Suitable for individuals with stable income from abroad",
+                  "Ideal for retirees or non-working residents",
+                ]}
+              />
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                 
-                 {/* Option A: Fast Track */}
-                 <motion.div 
-                    whileHover={{ y: -5 }}
-                    className="bg-gradient-to-br from-[#0D1B2E] to-[#0D1B2E]/80 border border-[#C2A139]/40 p-10 rounded-3xl relative overflow-hidden shadow-2xl"
-                 >
-                    <div className="absolute top-0 right-0 bg-[#C2A139] text-[#0D1B2E] text-[10px] font-bold px-4 py-2 rounded-bl-xl uppercase tracking-wider">
-                       Most Popular
-                    </div>
-                    <Plane className="w-12 h-12 text-[#C2A139] mb-6" />
-                    <h3 className="text-2xl font-bold font-montserrat text-white mb-2">Fast-Track Permanent Residency</h3>
-                    <div className="text-3xl font-light text-[#C2A139] mb-6">€300,000 <span className="text-sm text-white/50">+VAT</span></div>
-                    
-                    <ul className="space-y-4 text-sm text-white/80">
-                       <li className="flex gap-3"><ShieldCheck size={18} className="text-[#C2A139] shrink-0" /> Investment in new residential property</li>
-                       <li className="flex gap-3"><ShieldCheck size={18} className="text-[#C2A139] shrink-0" /> Properties under construction are eligible</li>
-                       <li className="flex gap-3"><ShieldCheck size={18} className="text-[#C2A139] shrink-0" /> Residency valid for life</li>
-                       <li className="flex gap-3"><ShieldCheck size={18} className="text-[#C2A139] shrink-0" /> Leads to eligibility for citizenship (5 Years)</li>
-                    </ul>
-                 </motion.div>
-
-                 {/* Option B: Standard */}
-                 <div className="bg-white/5 border border-white/10 p-10 rounded-3xl hover:bg-white/10 transition-colors">
-                    <Users className="w-12 h-12 text-white/40 mb-6" />
-                    <h3 className="text-2xl font-bold font-montserrat text-white mb-2">Permanent Residency</h3>
-                    <div className="text-xl font-light text-white/60 mb-6">Standard Category</div>
-                    
-                    <ul className="space-y-4 text-sm text-white/60">
-                       <li className="flex gap-3"><CheckCircle2 size={18} className="text-white/40 shrink-0" /> Lower investment requirements</li>
-                       <li className="flex gap-3"><CheckCircle2 size={18} className="text-white/40 shrink-0" /> Suitable for individuals with stable income from abroad</li>
-                       <li className="flex gap-3"><CheckCircle2 size={18} className="text-white/40 shrink-0" /> Ideal for retirees or non-working residents</li>
-                    </ul>
-                 </div>
-            </div>
-            
-            <div className="mt-12 bg-white/5 p-8 rounded-2xl border border-white/10 text-center text-sm text-white/80 max-w-4xl mx-auto">
-               <h4 className="text-[#C2A139] font-bold mb-2 uppercase text-xs tracking-wider">Income Requirements & Family Coverage</h4>
-               <p className="mb-2">Applicants must demonstrate sufficient income from abroad (salaries, pensions, dividends, etc.).</p>
-               <p>Permanent residency may cover: <strong>Spouse</strong>, <strong>Dependent children</strong>, and in certain cases, <strong>parents or parents-in-law</strong>.</p>
-            </div>
-        </div>
-
-        {/* --- SCENE 6: HOW TMS SUPPORTS YOU (Finale) --- */}
-        <div className="w-full max-w-5xl px-6 pb-40">
-           <div className="relative overflow-hidden rounded-[3rem] bg-white text-[#0D1B2E] p-12 md:p-20 text-center shadow-[0_0_100px_rgba(255,255,255,0.15)]">
-              
-              <Briefcase className="w-16 h-16 text-[#C2A139] mx-auto mb-6" />
-              <h2 className="text-3xl md:text-4xl font-montserrat font-bold mb-6">
-                 How TMS ESTATES LTD Supports You
-              </h2>
-              <p className="text-lg text-[#0D1B2E]/70 max-w-3xl mx-auto mb-10 leading-relaxed">
-                 At TMS ESTATES LTD, we offer far more than property listings. With an in-house legal and finance team, we provide complete investment and relocation solutions tailored to each client’s objectives.
+            <div className="mt-8 border border-[#F5F0E8]/12 bg-[#05070B]/24 p-7 text-center">
+              <p className="mb-3 text-[10px] font-bold uppercase tracking-[0.3em] text-[#C2A139]">
+                Income Requirements & Family Coverage
               </p>
+              <p className="text-sm leading-7 text-[#F5F0E8]/76">
+                Applicants must demonstrate sufficient income from abroad (salaries, pensions, dividends, etc.).
+              </p>
+              <p className="mt-2 text-sm leading-7 text-[#F5F0E8]/76">
+                Permanent residency may cover: <strong>Spouse</strong>, <strong>Dependent children</strong>, and in certain cases, <strong>parents or parents-in-law</strong>.
+              </p>
+            </div>
+          </div>
+        </section>
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-4 text-left max-w-4xl mx-auto mb-16">
-                 <SupportItem text="Property selection and investment analysis" />
-                 <SupportItem text="Guidance on permanent residency requirements" />
-                 <SupportItem text="Coordination with legal, tax, and compliance professionals" />
-                 <SupportItem text="Assistance with banking setup (Cyprus, Dubai, HK)" />
-                 <SupportItem text="Property management and maintenance" />
-                 <SupportItem text="Ongoing after-sales and investor support" />
+        <section className="relative bg-[#F5F0E8] px-6 py-16 text-[#242124] md:px-10 md:py-20">
+          <div className="mx-auto grid w-full max-w-7xl gap-12 lg:grid-cols-[0.85fr_1.15fr] lg:items-center lg:gap-20">
+            <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-90px" }} variants={stagger}>
+              <motion.p variants={fadeUp} className="mb-4 text-[10px] font-bold uppercase tracking-[0.3em] text-[#C2A139]">
+                Investor Support
+              </motion.p>
+              <motion.h2 variants={fadeUp} className="font-montserrat text-[clamp(2rem,3.7vw,4.4rem)] font-bold leading-[1.02] tracking-[-0.055em]">
+                How TMS ESTATES LTD Supports You
+              </motion.h2>
+              <motion.p variants={fadeUp} className="mt-6 max-w-2xl text-sm leading-7 text-[#242124]/72 md:text-[0.95rem] md:leading-8">
+                At TMS ESTATES LTD, we offer far more than property listings. With an in-house legal and finance team, we provide complete investment and relocation solutions tailored to each client’s objectives.
+              </motion.p>
+            </motion.div>
+
+            <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-90px" }} variants={stagger} className="grid gap-3 sm:grid-cols-2">
+              {supportItems.map((item) => (
+                <SupportItem key={item} text={item} />
+              ))}
+            </motion.div>
+          </div>
+
+          <div className="mx-auto mt-14 w-full max-w-7xl border-t border-[#242124]/10 pt-10">
+            <div className="grid gap-8 lg:grid-cols-[0.9fr_1fr] lg:items-end">
+              <div>
+                <p className="mb-4 text-[10px] font-bold uppercase tracking-[0.3em] text-[#C2A139]">
+                  Invest with Confidence
+                </p>
+                <h3 className="font-montserrat text-[clamp(1.8rem,3vw,3.4rem)] font-bold leading-[1.02] tracking-[-0.055em]">
+                  Start Your Cyprus Investment Journey
+                </h3>
               </div>
-
-              <div className="flex flex-col items-center gap-6">
-                 <h3 className="text-2xl font-bold font-montserrat">Invest with Confidence</h3>
-                 <p className="text-sm text-[#0D1B2E]/60 max-w-2xl mx-auto mb-4">
-                    Whether your goal is lifestyle relocation, rental income, or long-term capital growth, Cyprus offers a secure and rewarding real estate environment.
-                 </p>
-
-                 <Link 
-                   href="/#contact"
-                   className="inline-flex items-center gap-3 bg-[#0D1B2E] text-white px-10 py-5 rounded-full font-bold uppercase text-xs tracking-widest hover:bg-[#C2A139] transition-all shadow-xl hover:-translate-y-1"
-                 >
-                    Contact TMS Estates Today
-                    <ArrowRight size={16} />
-                 </Link>
+              <div>
+                <p className="mb-6 max-w-2xl text-sm leading-7 text-[#242124]/66 md:text-[0.95rem] md:leading-8">
+                  Whether your goal is lifestyle relocation, rental income, or long-term capital growth, Cyprus offers a secure and rewarding real estate environment.
+                </p>
+                <Link href="/#contact" className="group inline-flex items-center gap-3 bg-[#242124] px-6 py-4 text-[11px] font-bold uppercase tracking-[0.22em] text-[#F5F0E8] transition-all duration-300 hover:bg-[#C2A139] hover:text-[#242124]">
+                  Contact TMS Estates Today
+                  <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
+                </Link>
               </div>
-
-           </div>
-        </div>
-
+            </div>
+          </div>
+        </section>
       </div>
+
+      <style jsx>{`
+        .investment-panel {
+          box-shadow:
+            0 28px 95px rgba(36, 33, 36, 0.16),
+            inset 0 1px 0 rgba(194, 161, 57, 0.08);
+        }
+
+        .investment-gold-line {
+          animation: investmentGoldSweep 4.8s cubic-bezier(0.65, 0, 0.35, 1) infinite;
+          opacity: 0.9;
+          filter: drop-shadow(0 0 8px rgba(194, 161, 57, 0.45));
+        }
+
+        @keyframes investmentGoldSweep {
+          0% {
+            transform: translateX(-115%);
+          }
+          46%,
+          100% {
+            transform: translateX(320%);
+          }
+        }
+      `}</style>
+    </main>
+  );
+}
+
+function FeatureCard({ icon: Icon, title, text }: { icon: any; title: string; text: string }) {
+  return (
+    <motion.article initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-80px" }} variants={fadeUp} className="group relative min-h-[360px] overflow-hidden border border-[#F5F0E8]/12 bg-[#05070B]/24 p-7 transition-all duration-300 hover:border-[#C2A139]/55 hover:bg-[#05070B]/36">
+      <div className="absolute inset-0 opacity-0 transition-opacity duration-300 group-hover:opacity-100">
+        <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-[#C2A139]/70 to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-br from-[#C2A139]/10 via-[#F5F0E8]/[0.025] to-transparent" />
+      </div>
+      <div className="relative z-10">
+        <div className="mb-7 flex h-12 w-12 items-center justify-center border border-[#C2A139]/34 bg-[#C2A139]/10 text-[#C2A139] transition-all duration-300 group-hover:bg-[#C2A139] group-hover:text-[#242124]">
+          <Icon className="h-5 w-5" />
+        </div>
+        <h3 className="font-montserrat text-2xl font-semibold tracking-[-0.04em] text-[#F5F0E8]">{title}</h3>
+        <p className="mt-5 text-sm leading-7 text-[#F5F0E8]/68">{text}</p>
+      </div>
+    </motion.article>
+  );
+}
+
+function CheckLine({ text }: { text: string }) {
+  return (
+    <div className="flex gap-4 border border-[#F5F0E8]/10 bg-[#F5F0E8]/[0.045] p-4">
+      <CheckCircle2 className="mt-0.5 h-5 w-5 shrink-0 text-[#C2A139]" />
+      <p className="text-sm leading-7 text-[#F5F0E8]/76">{text}</p>
     </div>
   );
 }
 
-// --- SUB-COMPONENTS ---
-function FeatureCard({ icon: Icon, title, text }: { icon: any, title: string, text: string }) {
-   return (
-      <div className="group bg-white/5 border border-white/10 p-8 rounded-2xl hover:bg-white/10 transition-colors backdrop-blur-sm h-full">
-         <div className="w-12 h-12 bg-[#C2A139]/20 rounded-full flex items-center justify-center text-[#C2A139] mb-6 group-hover:scale-110 transition-transform">
-            <Icon size={24} />
-         </div>
-         <h3 className="text-lg font-bold font-montserrat text-white mb-3">{title}</h3>
-         <p className="text-white/60 text-sm leading-relaxed">{text}</p>
-      </div>
-   );
+function StatRow({ number, label }: { number: string; label: string }) {
+  return (
+    <div className="bg-[#F5F0E8] p-6">
+      <p className="font-montserrat text-4xl font-bold tracking-[-0.05em] text-[#242124] md:text-5xl">{number}</p>
+      <p className="mt-3 text-[10px] font-bold uppercase tracking-[0.22em] text-[#242124]/62">{label}</p>
+    </div>
+  );
 }
 
-function CheckItem({ text }: { text: string }) {
-    return (
-        <div className="flex items-start gap-3">
-            <div className="h-1.5 w-1.5 rounded-full bg-[#C2A139] mt-2 shrink-0" />
-            <span className="text-white/80 text-sm">{text}</span>
+function ResidencyCard({
+  icon: Icon,
+  title,
+  price,
+  note,
+  items,
+  featured = false,
+  eyebrow,
+}: {
+  icon: any;
+  title: string;
+  price: string;
+  note?: string;
+  items: string[];
+  featured?: boolean;
+  eyebrow?: string;
+}) {
+  return (
+    <motion.article whileHover={{ y: -4 }} className={`relative overflow-hidden border p-7 shadow-[0_28px_95px_rgba(0,0,0,0.18)] md:p-9 ${featured ? "border-[#C2A139]/45 bg-[#05070B]/42" : "border-[#F5F0E8]/12 bg-[#05070B]/22"}`}>
+      {eyebrow && (
+        <div className="absolute right-0 top-0 bg-[#C2A139] px-4 py-2 text-[9px] font-bold uppercase tracking-[0.22em] text-[#242124]">
+          {eyebrow}
         </div>
-    )
-}
-
-function StatRow({ number, label }: { number: string, label: string }) {
-   return (
-      <div className="flex items-end gap-4 border-b border-[#0D1B2E]/10 pb-4">
-         <span className="text-4xl md:text-5xl font-bold text-[#C2A139] font-montserrat w-24 tabular-nums">{number}</span>
-         <span className="text-[#0D1B2E]/80 text-sm pb-2 font-bold uppercase tracking-wide leading-tight">{label}</span>
+      )}
+      <Icon className="mb-7 h-12 w-12 text-[#C2A139]" />
+      <h3 className="font-montserrat text-2xl font-semibold tracking-[-0.045em] text-[#F5F0E8]">{title}</h3>
+      <p className="mt-4 font-montserrat text-3xl font-bold tracking-[-0.05em] text-[#C2A139]">
+        {price} {note && <span className="text-sm font-semibold tracking-normal text-[#F5F0E8]/52">{note}</span>}
+      </p>
+      <div className="mt-7 grid gap-3">
+        {items.map((item) => (
+          <CheckLine key={item} text={item} />
+        ))}
       </div>
-   );
+    </motion.article>
+  );
 }
 
 function SupportItem({ text }: { text: string }) {
-   return (
-      <div className="flex items-start gap-3 p-3 border border-[#C4B49A]/25 rounded-lg bg-[#F5F0E8]/70">
-         <FileText className="text-[#C2A139] shrink-0 mt-0.5" size={16} />
-         <span className="text-[#0D1B2E]/80 text-xs font-semibold leading-relaxed">{text}</span>
-      </div>
-   );
+  return (
+    <div className="group relative border border-[#242124]/10 bg-white p-5 transition-colors hover:bg-[#F5F0E8]">
+      <FileText className="mb-5 h-5 w-5 text-[#C2A139]" />
+      <p className="text-sm font-semibold leading-7 text-[#242124]/72">{text}</p>
+    </div>
+  );
 }
