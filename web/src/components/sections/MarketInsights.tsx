@@ -84,20 +84,17 @@ export default function MarketInsights() {
 
   return (
     <section className="relative flex min-h-[88svh] w-full flex-col justify-center overflow-hidden py-12 md:py-14 lg:py-16">
-      <div className="absolute inset-0 -z-10 bg-[#05070B]/46" />
-      <div className="absolute inset-0 -z-10 bg-gradient-to-b from-[#05070B]/10 via-transparent to-[#05070B]/34" />
-
       <div className="home-container relative z-10">
-        <div className="grid gap-7 pb-10 md:pb-12 lg:grid-cols-[minmax(0,0.96fr)_minmax(0,0.9fr)] lg:items-end lg:gap-20">
-          <h2 className="max-w-3xl font-montserrat text-[clamp(2.05rem,3vw,3.45rem)] font-bold leading-[1.02] tracking-[-0.055em] text-[#F5F0E8]">
+        <div className="grid gap-7 px-5 pb-8 pt-5 md:px-8 md:pb-9 lg:grid-cols-[0.92fr_1.08fr] lg:items-center">
+          <h2 className="max-w-[760px] font-montserrat text-[clamp(1.75rem,2.4vw,2.8rem)] font-bold leading-[1.04] tracking-[-0.052em] text-[#F5F0E8] text-balance drop-shadow-[0_18px_46px_rgba(0,0,0,0.44)]">
             <span className="block">Looking for Your Next</span>
             <span className="block text-[#C2A139]">
               Property Opportunity?
             </span>
           </h2>
 
-          <div className="max-w-2xl lg:pb-2">
-            <p className="text-balance text-base leading-8 text-[#F5F0E8]/84 md:text-[1.04rem] md:leading-9">
+          <div className="max-w-2xl lg:justify-self-end">
+            <p className="text-[0.98rem] leading-8 text-[#F5F0E8]/86 drop-shadow-[0_14px_34px_rgba(0,0,0,0.42)] md:text-[1.02rem] md:leading-9">
               Whether you are searching for a new home, an investment
               opportunity or information about our developments, our team would
               be pleased to assist.
@@ -105,28 +102,26 @@ export default function MarketInsights() {
 
             <a
               href="mailto:info@tmsestates.com"
-              className="group mt-7 inline-flex items-center gap-3 border border-[#C2A139]/48 bg-[#242124]/88 px-6 py-4 text-[11px] font-bold uppercase tracking-[0.22em] text-[#F5F0E8] shadow-[0_18px_55px_rgba(0,0,0,0.28)] transition-all duration-300 hover:-translate-y-0.5 hover:border-[#C2A139] hover:bg-[#C2A139] hover:text-[#242124] hover:shadow-[0_24px_75px_rgba(194,161,57,0.2)]"
+              className="group relative mt-6 inline-flex min-h-[54px] w-fit items-center justify-center overflow-hidden border border-[#C2A139]/70 bg-[#242124]/72 px-6 py-4 text-[11px] font-bold uppercase tracking-[0.24em] text-[#F5F0E8] shadow-[0_22px_64px_rgba(0,0,0,0.32)] backdrop-blur-[10px] transition-all duration-500 hover:-translate-y-0.5 hover:border-[#C2A139] hover:bg-[#C2A139] hover:text-[#242124] hover:shadow-[0_28px_84px_rgba(194,161,57,0.24)] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#C2A139]/70 md:px-8"
             >
-              Contact Us
-              <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
+              <span className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-[#F5F0E8] to-transparent opacity-50 transition-opacity duration-500 group-hover:opacity-80" />
+              <span className="pointer-events-none absolute inset-y-0 left-0 w-[3px] bg-[#C2A139] transition-all duration-500 group-hover:w-full" />
+              <span className="pointer-events-none absolute inset-0 translate-x-[-130%] bg-gradient-to-r from-transparent via-white/28 to-transparent transition-transform duration-700 group-hover:translate-x-[130%]" />
+
+              <span className="relative z-10 flex items-center gap-4">
+                Contact Us
+                <span className="flex h-8 w-8 items-center justify-center border border-[#C2A139]/55 bg-[#05070B]/28 text-[#C2A139] transition-all duration-500 group-hover:border-[#242124]/40 group-hover:bg-[#242124] group-hover:text-[#F5F0E8]">
+                  <ArrowRight className="h-4 w-4 transition-transform duration-500 group-hover:translate-x-0.5" />
+                </span>
+              </span>
             </a>
           </div>
         </div>
       </div>
 
-      <div className="property-rail-shell relative z-10 w-screen overflow-hidden bg-[#242124] py-7 md:py-9">
-        <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_50%_0%,rgba(194,161,57,0.09),transparent_34%),linear-gradient(90deg,rgba(5,7,11,0.36),transparent_18%,transparent_82%,rgba(5,7,11,0.36))]" />
-
-        <div className="pointer-events-none absolute inset-x-0 top-0 h-[2px] overflow-hidden bg-[#C2A139]/12">
-          <div className="rail-gold-sweep h-full w-[34vw] bg-gradient-to-r from-transparent via-[#C2A139] to-transparent" />
-        </div>
-
-        <div className="pointer-events-none absolute inset-x-0 bottom-0 h-[2px] overflow-hidden bg-[#C2A139]/8">
-          <div className="rail-gold-sweep rail-gold-sweep-delayed h-full w-[28vw] bg-gradient-to-r from-transparent via-[#C2A139]/80 to-transparent" />
-        </div>
-
-        <div className="pointer-events-none absolute left-0 top-0 h-16 w-px bg-gradient-to-b from-[#C2A139]/50 to-transparent" />
-        <div className="pointer-events-none absolute right-0 bottom-0 h-16 w-px bg-gradient-to-t from-[#C2A139]/50 to-transparent" />
+      <div className="relative z-10 mt-0 w-screen overflow-hidden bg-[#242124]/96 py-6 shadow-[0_38px_115px_rgba(0,0,0,0.38)] md:py-8">
+        <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-[#C2A139]/42 to-transparent" />
+        <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_50%_-20%,rgba(194,161,57,0.12),transparent_34%)]" />
 
         <Swiper
           modules={[Autoplay, Navigation]}
@@ -146,7 +141,7 @@ export default function MarketInsights() {
             768: { spaceBetween: 22 },
             1280: { spaceBetween: 26 },
           }}
-          className="tms-property-swiper tms-property-rail relative z-10 !overflow-visible !px-6 md:!px-10 lg:!px-[clamp(3rem,7vw,8.5rem)]"
+          className="tms-property-swiper tms-property-rail !overflow-visible !px-6 md:!px-10 lg:!px-[clamp(3rem,7vw,8.5rem)]"
         >
           {carouselProperties.map((property, index) => (
             <SwiperSlide
@@ -155,7 +150,7 @@ export default function MarketInsights() {
             >
               <Link
                 href={`/properties/${property.slug}`}
-                className="group relative block h-[360px] overflow-hidden border border-[#F5F0E8]/14 bg-[#05070B]/70 shadow-[0_20px_65px_rgba(0,0,0,0.3)] transition-all duration-500 hover:-translate-y-1 hover:border-[#C2A139]/50 hover:shadow-[0_28px_90px_rgba(0,0,0,0.42)] md:h-[405px] xl:h-[455px]"
+                className="group relative block h-[360px] overflow-hidden border border-[#F5F0E8]/22 bg-[#05070B]/70 shadow-[0_20px_65px_rgba(0,0,0,0.3)] transition-all duration-500 hover:-translate-y-1 hover:border-[#C2A139]/60 hover:shadow-[0_28px_90px_rgba(0,0,0,0.4)] md:h-[405px] xl:h-[455px]"
               >
                 <Image
                   src={imageFor(property)}
@@ -165,57 +160,56 @@ export default function MarketInsights() {
                   className="object-cover transition duration-[1200ms] ease-out group-hover:scale-105"
                 />
 
-                <div className="absolute inset-0 bg-[#05070B]/12" />
-                <div className="absolute inset-0 bg-gradient-to-t from-[#05070B]/98 via-[#05070B]/72 to-[#05070B]/24" />
-                <div className="absolute inset-x-0 top-0 h-36 bg-gradient-to-b from-[#05070B]/70 via-[#05070B]/28 to-transparent" />
-                <div className="absolute inset-x-0 bottom-0 h-[70%] bg-gradient-to-t from-[#05070B]/100 via-[#05070B]/88 to-transparent" />
-                <div className="absolute inset-0 bg-gradient-to-r from-[#05070B]/18 via-transparent to-[#05070B]/10" />
+                <div className="absolute inset-0 bg-[#05070B]/22 transition duration-500 group-hover:bg-[#05070B]/14" />
+                <div className="absolute inset-x-0 top-0 h-36 bg-gradient-to-b from-[#05070B]/66 via-[#05070B]/28 to-transparent" />
+                <div className="absolute inset-x-0 bottom-0 h-[70%] bg-gradient-to-t from-[#05070B]/98 via-[#05070B]/78 to-transparent" />
+                <div className="absolute inset-y-0 left-0 w-[68%] bg-gradient-to-r from-[#05070B]/52 to-transparent" />
 
                 <div className="absolute inset-x-0 top-0 flex items-start justify-between p-5 md:p-6">
-                  <span className="max-w-[70%] truncate border border-[#C2A139]/55 bg-[#05070B]/76 px-3.5 py-2 text-[9px] font-bold uppercase tracking-[0.22em] text-[#C2A139] shadow-[0_10px_35px_rgba(0,0,0,0.38)] backdrop-blur-md">
+                  <span className="max-w-[70%] truncate border border-[#C2A139]/50 bg-[#242124]/78 px-3.5 py-2 text-[9px] font-bold uppercase tracking-[0.22em] text-[#C2A139] shadow-[0_10px_35px_rgba(0,0,0,0.34)] backdrop-blur-md">
                     {badgeFor(property)}
                   </span>
 
-                  <span className="grid h-11 w-11 place-items-center rounded-full border border-white/20 bg-[#05070B]/58 text-[#F5F0E8] shadow-[0_10px_32px_rgba(0,0,0,0.3)] backdrop-blur-md transition-all group-hover:-translate-y-1 group-hover:translate-x-1 group-hover:border-[#C2A139] group-hover:bg-[#C2A139] group-hover:text-[#05070B]">
+                  <span className="grid h-11 w-11 place-items-center rounded-full border border-white/20 bg-[#242124]/58 text-[#F5F0E8] shadow-[0_10px_32px_rgba(0,0,0,0.28)] backdrop-blur-md transition-all group-hover:-translate-y-1 group-hover:translate-x-1 group-hover:border-[#C2A139] group-hover:bg-[#C2A139] group-hover:text-[#05070B]">
                     <ArrowUpRight className="h-4 w-4" />
                   </span>
                 </div>
 
                 <div className="absolute inset-x-0 bottom-0 p-5 md:p-6">
-                  <div className="mb-3 inline-flex items-center gap-2 rounded-full border border-white/18 bg-[#05070B]/62 px-3 py-1.5 text-[10px] font-bold uppercase tracking-[0.18em] text-[#F5F0E8]/90 shadow-[0_8px_26px_rgba(0,0,0,0.28)] backdrop-blur-md">
-                    <MapPin className="h-3.5 w-3.5 text-[#C2A139]" />
-                    <span>{property.city || "Cyprus"}</span>
+                  <div className="mb-3 inline-flex max-w-full items-center gap-2 rounded-full border border-white/22 bg-[#242124]/68 px-3 py-1.5 text-[10px] font-bold uppercase tracking-[0.18em] text-[#F5F0E8]/90 backdrop-blur-md">
+                    <MapPin className="h-3.5 w-3.5 shrink-0 text-[#C2A139]" />
+                    <span className="truncate">{property.city || "Cyprus"}</span>
                   </div>
 
-                  <h3 className="line-clamp-2 font-montserrat text-[1.35rem] font-semibold leading-[1.08] tracking-[-0.045em] text-[#F5F0E8] drop-shadow-[0_8px_24px_rgba(0,0,0,0.72)] md:text-[1.55rem] xl:text-[1.75rem]">
+                  <h3 className="line-clamp-2 font-montserrat text-[1.35rem] font-semibold leading-[1.08] tracking-[-0.045em] text-[#F5F0E8] drop-shadow-[0_8px_24px_rgba(0,0,0,0.78)] md:text-[1.55rem] xl:text-[1.75rem]">
                     {property.title}
                   </h3>
 
-                  <p className="mt-3 text-sm font-semibold text-[#F5F0E8]/88 drop-shadow-[0_6px_18px_rgba(0,0,0,0.55)]">
+                  <p className="mt-3 text-sm font-semibold text-[#F5F0E8]/90 drop-shadow-[0_8px_22px_rgba(0,0,0,0.62)]">
                     {formatPrice(property.price, property.currency)}
                   </p>
 
-                  <div className="mt-4 flex flex-wrap items-center gap-2 border-t border-white/16 pt-4 text-xs text-[#F5F0E8]/86">
-                    {property.bedrooms && (
-                      <span className="inline-flex items-center gap-2 rounded-full bg-[#05070B]/42 px-3 py-1.5 backdrop-blur-sm">
+                  <div className="mt-4 flex flex-wrap items-center gap-2 border-t border-white/16 pt-4 text-xs text-[#F5F0E8]/88">
+                    {property.bedrooms ? (
+                      <span className="inline-flex items-center gap-2 bg-[#242124]/62 px-3 py-1.5 backdrop-blur-sm">
                         <BedDouble className="h-4 w-4 text-[#C2A139]" />
                         {property.bedrooms} Beds
                       </span>
-                    )}
+                    ) : null}
 
-                    {(property as any).bathrooms && (
-                      <span className="inline-flex items-center gap-2 rounded-full bg-[#05070B]/42 px-3 py-1.5 backdrop-blur-sm">
+                    {(property as any).bathrooms ? (
+                      <span className="inline-flex items-center gap-2 bg-[#242124]/62 px-3 py-1.5 backdrop-blur-sm">
                         <Bath className="h-4 w-4 text-[#C2A139]" />
                         {(property as any).bathrooms} Baths
                       </span>
-                    )}
+                    ) : null}
 
-                    {property.area && (
-                      <span className="inline-flex items-center gap-2 rounded-full bg-[#05070B]/42 px-3 py-1.5 backdrop-blur-sm">
+                    {property.area ? (
+                      <span className="inline-flex items-center gap-2 bg-[#242124]/62 px-3 py-1.5 backdrop-blur-sm">
                         <Ruler className="h-4 w-4 text-[#C2A139]" />
                         {property.area} m²
                       </span>
-                    )}
+                    ) : null}
                   </div>
                 </div>
               </Link>
@@ -223,50 +217,6 @@ export default function MarketInsights() {
           ))}
         </Swiper>
       </div>
-
-      <style jsx>{`
-        .property-rail-shell {
-          box-shadow:
-            0 -18px 55px rgba(5, 7, 11, 0.24),
-            0 34px 110px rgba(5, 7, 11, 0.46),
-            inset 0 1px 0 rgba(194, 161, 57, 0.08),
-            inset 0 -1px 0 rgba(194, 161, 57, 0.06);
-          transform: perspective(1400px) rotateX(0.45deg);
-          transform-origin: center top;
-        }
-
-        .property-rail-shell::before {
-          content: "";
-          position: absolute;
-          inset: 0;
-          pointer-events: none;
-          background:
-            linear-gradient(180deg, rgba(245, 240, 232, 0.035), transparent 18%),
-            linear-gradient(0deg, rgba(5, 7, 11, 0.28), transparent 24%);
-          opacity: 0.85;
-        }
-
-        .rail-gold-sweep {
-          animation: railGoldSweep 4.8s cubic-bezier(0.65, 0, 0.35, 1) infinite;
-          opacity: 0.95;
-          filter: drop-shadow(0 0 8px rgba(194, 161, 57, 0.55));
-        }
-
-        .rail-gold-sweep-delayed {
-          animation-delay: 2.4s;
-          opacity: 0.54;
-        }
-
-        @keyframes railGoldSweep {
-          0% {
-            transform: translateX(-42vw);
-          }
-          46%,
-          100% {
-            transform: translateX(118vw);
-          }
-        }
-      `}</style>
     </section>
   );
 }
