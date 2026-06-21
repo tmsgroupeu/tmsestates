@@ -72,6 +72,7 @@ function splitDescription(text: string) {
 
   if (clean.includes("\n---\n")) {
     const [first, ...rest] = clean.split("\n---\n");
+
     return {
       first: first.trim(),
       second: rest.join("\n---\n").trim(),
@@ -223,21 +224,21 @@ export default function ProjectPageClient({ project }: { project: any }) {
       </section>
 
       <section className="relative z-20 bg-[#F5F0E8] px-6 md:px-10">
-  <motion.div
-    initial={{ opacity: 0, y: 28, filter: "blur(6px)" }}
-    animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
-    transition={{ delay: 0.18, duration: 0.9, ease: [0.16, 1, 0.3, 1] }}
-    className="project-meta-bar relative mx-auto -mt-12 grid w-full max-w-6xl overflow-hidden bg-white shadow-[0_28px_95px_rgba(36,33,36,0.18)] md:grid-cols-3"
-  >
-    <div className="pointer-events-none absolute inset-x-0 top-0 h-[2px] overflow-hidden bg-[#C2A139]/14">
-      <div className="project-meta-gold-line h-full w-1/3 bg-gradient-to-r from-transparent via-[#C2A139] to-transparent" />
-    </div>
+        <motion.div
+          initial={{ opacity: 0, y: 28, filter: "blur(6px)" }}
+          animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+          transition={{ delay: 0.18, duration: 0.9, ease: [0.16, 1, 0.3, 1] }}
+          className="project-meta-bar relative mx-auto -mt-12 grid w-full max-w-6xl overflow-hidden bg-white shadow-[0_28px_95px_rgba(36,33,36,0.18)] md:grid-cols-3"
+        >
+          <div className="pointer-events-none absolute inset-x-0 top-0 h-[2px] overflow-hidden bg-[#C2A139]/14">
+            <div className="project-meta-gold-line h-full w-1/3 bg-gradient-to-r from-transparent via-[#C2A139] to-transparent" />
+          </div>
 
-    <ProjectMeta icon={<MapPin />} label="Location" value={location} />
-    {status && <ProjectMeta icon={<CalendarClock />} label="Status" value={status} />}
-    {scale && <ProjectMeta icon={<Ruler />} label="Available Units" value={scale} />}
-  </motion.div>
-</section>
+          <ProjectMeta icon={<MapPin />} label="Location" value={location} />
+          {status && <ProjectMeta icon={<CalendarClock />} label="Status" value={status} />}
+          {scale && <ProjectMeta icon={<Ruler />} label="Available Units" value={scale} />}
+        </motion.div>
+      </section>
 
       <section className="bg-[#F5F0E8] px-6 py-16 md:px-10 md:py-20">
         <div className="mx-auto grid w-full max-w-7xl gap-12 lg:grid-cols-[1fr_0.92fr] lg:items-center lg:gap-20">
@@ -336,6 +337,7 @@ export default function ProjectPageClient({ project }: { project: any }) {
             <div className="mt-10 grid gap-5 md:grid-cols-2 xl:grid-cols-3">
               {connectedProperties.map((rawProp: any) => {
                 const prop = rawProp.attributes || rawProp;
+
                 return (
                   <UnitCard
                     key={rawProp.id || prop.id || prop.slug}
@@ -369,32 +371,31 @@ export default function ProjectPageClient({ project }: { project: any }) {
           </div>
         </div>
       </section>
-      
-<style jsx>{`
-  .project-meta-bar {
-    box-shadow:
-      0 28px 95px rgba(36, 33, 36, 0.18),
-      0 -10px 32px rgba(36, 33, 36, 0.1),
-      inset 0 1px 0 rgba(194, 161, 57, 0.08);
-  }
 
-  .project-meta-gold-line {
-    animation: projectMetaGoldSweep 4.8s cubic-bezier(0.65, 0, 0.35, 1) infinite;
-    opacity: 0.9;
-    filter: drop-shadow(0 0 8px rgba(194, 161, 57, 0.45));
-  }
+      <style jsx>{`
+        .project-meta-bar {
+          box-shadow:
+            0 28px 95px rgba(36, 33, 36, 0.18),
+            0 -10px 32px rgba(36, 33, 36, 0.1),
+            inset 0 1px 0 rgba(194, 161, 57, 0.08);
+        }
 
-  @keyframes projectMetaGoldSweep {
-    0% {
-      transform: translateX(-115%);
-    }
-    46%,
-    100% {
-      transform: translateX(320%);
-    }
-  }
-`}</style>
-      
+        .project-meta-gold-line {
+          animation: projectMetaGoldSweep 4.8s cubic-bezier(0.65, 0, 0.35, 1) infinite;
+          opacity: 0.9;
+          filter: drop-shadow(0 0 8px rgba(194, 161, 57, 0.45));
+        }
+
+        @keyframes projectMetaGoldSweep {
+          0% {
+            transform: translateX(-115%);
+          }
+          46%,
+          100% {
+            transform: translateX(320%);
+          }
+        }
+      `}</style>
     </main>
   );
 }
@@ -415,7 +416,7 @@ function ProjectMeta({
       </div>
 
       <div className="relative z-10">
-        <div className="mb-3 flex h-9 w-9 items-center justify-center border border-[#C2A139]/30 bg-[#C2A139]/9 text-[#C2A139] transition-all duration-300 group-hover:bg-[#C2A139] group-hover:text-[#242124]">
+        <div className="mb-3 flex h-9 w-9 items-center justify-center border border-[#C2A139]/30 bg-[#C2A139]/[0.09] text-[#C2A139] transition-all duration-300 group-hover:bg-[#C2A139] group-hover:text-[#242124]">
           <span className="[&>svg]:h-4 [&>svg]:w-4">{icon}</span>
         </div>
 
@@ -464,8 +465,7 @@ function EditorialImage({
 
 function UnitCard({ property }: { property: any }) {
   const imageData = property.images?.data?.[0] || property.images?.[0];
-  const image =
-    getSafeUrl(imageData) || "/assets/hero-poster.jpg";
+  const image = getSafeUrl(imageData) || "/assets/hero-poster.jpg";
 
   return (
     <Link
@@ -481,6 +481,7 @@ function UnitCard({ property }: { property: any }) {
       />
 
       <div className="absolute inset-0 bg-gradient-to-t from-[#05070B]/98 via-[#05070B]/68 to-[#05070B]/22" />
+
       <div className="absolute right-5 top-5 grid h-11 w-11 place-items-center rounded-full border border-white/18 bg-[#05070B]/44 text-[#F5F0E8] backdrop-blur-md transition-all group-hover:-translate-y-1 group-hover:translate-x-1 group-hover:border-[#C2A139] group-hover:bg-[#C2A139] group-hover:text-[#242124]">
         <ArrowUpRight className="h-4 w-4" />
       </div>
