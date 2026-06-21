@@ -1,54 +1,42 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
-import {
-  motion,
-  useMotionValueEvent,
-  useScroll,
-  useTransform,
-} from "framer-motion";
+import { useEffect, useState } from "react";
+import { motion, useScroll, useTransform } from "framer-motion";
 
 const CLOUD_NAME = "dkbpthpxg";
 const VIDEO_PUBLIC_ID = "hero-scroller_xxfvss";
 const POSTER_PUBLIC_ID = "hero-poster_jo6bco";
 
-const DESKTOP_BREAKPOINT = 1024;
-
 function cloudinaryVideo(publicId: string, width: number, quality: "good" | "eco") {
-  return `https://res.cloudinary.com/${CLOUD_NAME}/video/upload/f_auto,q_auto:${quality},vc_auto,w_${width}/${publicId}.mp4`;
+  return `https://res.cloudinary.com/${CLOUD_NAME}/video/upload/f_auto,q_auto:${quality},vc_auto,c_limit,w_${width}/${publicId}.mp4`;
 }
 
 function cloudinaryImage(publicId: string, width: number) {
-  return `https://res.cloudinary.com/${CLOUD_NAME}/image/upload/f_auto,q_auto:good,w_${width}/${publicId}`;
+  return `https://res.cloudinary.com/${CLOUD_NAME}/image/upload/f_auto,q_auto:good,c_limit,w_${width}/${publicId}`;
 }
 
 export default function VideoScroller() {
-  const videoRef = useRef<HTMLVideoElement>(null);
-  const rafRef = useRef<number | null>(null);
-  const latestProgressRef = useRef(0);
-  const lastSeekTimeRef = useRef(-1);
-
   const [isMobile, setIsMobile] = useState(true);
   const [reducedMotion, setReducedMotion] = useState(false);
   const [videoReady, setVideoReady] = useState(false);
 
   const { scrollYProgress } = useScroll();
 
-  const openingPosterOpacity = useTransform(scrollYProgress, [0, 0.055], [1, 0]);
-  const openingPointerEvents = useTransform(scrollYProgress, (v) =>
-    v > 0.055 ? "none" : "auto",
-  );
-
-  const mobilePosterScale = useTransform(scrollYProgress, [0, 1], [1.02, 1.08]);
-  const mobilePosterY = useTransform(scrollYProgress, [0, 1], [0, -32]);
+  const heroPosterOpacity = useTransform(scrollYProgress, [0, 0.065], [1, 0]);
+  const videoScale = useTransform(scrollYProgress, [0, 1], [1.02, 1.08]);
+  const videoY = useTransform(scrollYProgress, [0, 1], [0, -42]);
+  const mobilePosterScale = useTransform(scrollYProgress, [0, 1], [1.02, 1.07]);
+  const mobilePosterY = useTransform(scrollYProgress, [0, 1], [0, -28]);
 
   const desktopVideo = cloudinaryVideo(VIDEO_PUBLIC_ID, 1920, "good");
+  const tabletVideo = cloudinaryVideo(VIDEO_PUBLIC_ID, 1280, "eco");
+
   const desktopPoster = cloudinaryImage(POSTER_PUBLIC_ID, 1920);
   const tabletPoster = cloudinaryImage(POSTER_PUBLIC_ID, 1400);
   const mobilePoster = cloudinaryImage(POSTER_PUBLIC_ID, 900);
 
   useEffect(() => {
-    const mobileQuery = window.matchMedia(`(max-width: ${DESKTOP_BREAKPOINT}px)`);
+    const mobileQuery = window.matchMedia("(max-width: 1024px)");
     const motionQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
 
     const update = () => {
@@ -67,69 +55,6 @@ export default function VideoScroller() {
     };
   }, []);
 
-  useEffect(() => {
-    if (isMobile || reducedMotion) return;
-
-    const video = videoRef.current;
-    if (!video) return;
-
-    video.defaultMuted = true;
-    video.muted = true;
-    video.pause();
-
-    const handleReady = () => setVideoReady(true);
-
-    video.addEventListener("loadedmetadata", handleReady);
-    video.addEventListener("canplay", handleReady);
-
-    if (video.readyState >= 2) {
-      setVideoReady(true);
-    }
-
-    return () => {
-      video.removeEventListener("loadedmetadata", handleReady);
-      video.removeEventListener("canplay", handleReady);
-    };
-  }, [isMobile, reducedMotion]);
-
-  useMotionValueEvent(scrollYProgress, "change", (latest) => {
-    if (isMobile || reducedMotion) return;
-
-    latestProgressRef.current = latest;
-
-    if (rafRef.current !== null) return;
-
-    rafRef.current = window.requestAnimationFrame(() => {
-      rafRef.current = null;
-
-      const video = videoRef.current;
-      if (!video || !video.duration || Number.isNaN(video.duration)) return;
-
-      const targetTime = video.duration * latestProgressRef.current;
-      const previousTime = lastSeekTimeRef.current;
-
-      if (previousTime >= 0 && Math.abs(targetTime - previousTime) < 0.045) {
-        return;
-      }
-
-      lastSeekTimeRef.current = targetTime;
-
-      if ("fastSeek" in video && Math.abs(video.currentTime - targetTime) > 0.25) {
-        video.fastSeek(targetTime);
-      } else {
-        video.currentTime = targetTime;
-      }
-    });
-  });
-
-  useEffect(() => {
-    return () => {
-      if (rafRef.current !== null) {
-        window.cancelAnimationFrame(rafRef.current);
-      }
-    };
-  }, []);
-
   return (
     <div className="fixed inset-0 z-0 h-screen w-full overflow-hidden bg-[#05070B]">
       {isMobile || reducedMotion ? (
@@ -139,7 +64,7 @@ export default function VideoScroller() {
         >
           <source media="(max-width: 640px)" srcSet={mobilePoster} />
           <source media="(max-width: 1024px)" srcSet={tabletPoster} />
-          <motion.img
+          <img
             src={tabletPoster}
             alt="TMS Estates background"
             className="h-full w-full object-cover"
@@ -149,22 +74,25 @@ export default function VideoScroller() {
         </motion.picture>
       ) : (
         <>
-          <video
-            ref={videoRef}
+          <motion.video
+            style={{ scale: videoScale, y: videoY }}
             className="h-full w-full object-cover"
-            src={desktopVideo}
             poster={desktopPoster}
+            autoPlay
+            loop
             muted
             playsInline
-            preload="auto"
-          />
+            preload="metadata"
+            onCanPlay={() => setVideoReady(true)}
+            onLoadedData={() => setVideoReady(true)}
+          >
+            <source media="(max-width: 1440px)" src={tabletVideo} type="video/mp4" />
+            <source src={desktopVideo} type="video/mp4" />
+          </motion.video>
 
           <motion.div
-            style={{
-              opacity: videoReady ? openingPosterOpacity : 1,
-              pointerEvents: openingPointerEvents,
-            }}
-            className="absolute inset-0 z-20"
+            style={{ opacity: videoReady ? heroPosterOpacity : 1 }}
+            className="pointer-events-none absolute inset-0 z-20"
           >
             <img
               src={desktopPoster}
