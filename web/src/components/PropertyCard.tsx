@@ -1,92 +1,119 @@
-/* FULL REPLACEMENT: src/components/PropertyCard.tsx */
 import Image from "next/image";
-import Link from "next/link";
-import { BedDouble, Ruler, MapPin, ArrowUpRight } from "lucide-react";
+import { ArrowUpRight, Bath, BedDouble, MapPin, Ruler } from "lucide-react";
+import { Link } from "@/i18n/routing";
 import type { Property } from "@/lib/cms";
-import { getStrapiMediaUrl } from "@/lib/media";
 
-const formatPrice = (price?: number, currency = 'EUR') => {
-  if (!price) return 'Price Upon Request';
-  return new Intl.NumberFormat('en-IE', {
-    style: 'currency', currency: currency, maximumFractionDigits: 0
+const API =
+  process.env.CMS_URL ||
+  process.env.STRAPI_URL ||
+  process.env.NEXT_PUBLIC_API_URL ||
+  "https://tmsestates.onrender.com";
+
+function asUrl(url?: string) {
+  if (!url) return "";
+  return url.startsWith("http") ? url : `${API}${url}`;
+}
+
+function mediaUrl(media: any) {
+  if (!media) return "/assets/hero-poster.jpg";
+  const item = media.attributes || media;
+  const url =
+    item.formats?.large?.url ||
+    item.formats?.medium?.url ||
+    item.formats?.small?.url ||
+    item.url;
+
+  return asUrl(url) || "/assets/hero-poster.jpg";
+}
+
+function formatPrice(price?: number, currency = "EUR") {
+  if (!price) return "Price Upon Request";
+
+  return new Intl.NumberFormat("en-IE", {
+    style: "currency",
+    currency,
+    maximumFractionDigits: 0,
   }).format(price);
-};
+}
+
+function readable(value?: string | null) {
+  if (!value) return "";
+  return value.replace(/[-_]/g, " ");
+}
 
 export default function PropertyCard({ p }: { p: Property }) {
-  const imgUrl = getStrapiMediaUrl(p.images?.[0]);
-  const tag = p.marketing_tags; // The new label
+  const imageData = (p as any).images?.data?.[0] || (p as any).images?.[0];
+  const tag =
+    (p as any).vip
+      ? "VIP"
+      : (p as any).marketing_label ||
+        p.marketing_tags ||
+        p.propertyType ||
+        p.prop_status ||
+        "Property";
 
   return (
     <Link
       href={`/properties/${p.slug}`}
-      className="group relative block w-full overflow-hidden rounded-3xl bg-white shadow-[0_10px_40px_-10px_rgba(0,0,0,0.08)] transition-all duration-500 hover:-translate-y-2 hover:shadow-[0_20px_50px_-10px_rgba(10,35,66,0.15)] flex flex-col border border-gray-100/50"
+      className="group relative min-h-[460px] overflow-hidden bg-[#242124] shadow-[0_24px_80px_rgba(36,33,36,0.2)] transition-all duration-500 hover:-translate-y-1 hover:shadow-[0_34px_110px_rgba(36,33,36,0.28)]"
     >
-      <div className="relative aspect-[4/3] w-full overflow-hidden bg-gray-100">
-        <Image
-          src={imgUrl}
-          alt={p.title || "Property"}
-          fill
-          sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-          className="object-cover transition-transform duration-700 ease-out will-change-transform group-hover:scale-110"
-        />
+      <Image
+        src={mediaUrl(imageData)}
+        alt={p.title || "TMS Estates property"}
+        fill
+        sizes="(max-width: 768px) 100vw, 33vw"
+        className="object-cover transition duration-[1200ms] group-hover:scale-105"
+      />
 
-        {/* Shine Effect */}
-        <div className="absolute inset-0 pointer-events-none z-10 opacity-0 group-hover:opacity-100 transition-opacity duration-700">
-             <div className="absolute top-0 -inset-full h-full w-1/2 z-5 block transform -skew-x-12 bg-gradient-to-r from-transparent to-white/20 opacity-40 group-hover:animate-shine" />
-        </div>
+      <div className="absolute inset-0 bg-gradient-to-t from-[#05070B]/98 via-[#05070B]/70 to-[#05070B]/22" />
+      <div className="absolute inset-x-0 top-0 h-36 bg-gradient-to-b from-[#05070B]/64 to-transparent" />
+      <div className="absolute inset-0 bg-gradient-to-r from-[#05070B]/18 via-transparent to-transparent" />
 
-        {/* ✅ NEW DYNAMIC TAG (Top Right) */}
-        {tag && (
-          <div className="absolute top-3 right-3 px-3 py-1.5 rounded-full text-[10px] font-bold uppercase tracking-widest bg-[#0A2342] text-white shadow-lg border border-white/10 z-20">
-            {tag.replace(/_/g, ' ')}
-          </div>
-        )}
-        
-        <div className="absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-black/40 to-transparent opacity-60" />
+      <div className="absolute inset-x-0 top-0 flex items-start justify-between p-5">
+        <span className="max-w-[72%] truncate border border-[#C2A139]/50 bg-[#05070B]/62 px-3.5 py-2 text-[9px] font-bold uppercase tracking-[0.22em] text-[#C2A139] shadow-[0_10px_35px_rgba(0,0,0,0.3)] backdrop-blur-md">
+          {readable(tag)}
+        </span>
+
+        <span className="grid h-11 w-11 place-items-center rounded-full border border-white/18 bg-[#05070B]/44 text-[#F5F0E8] backdrop-blur-md transition-all group-hover:-translate-y-1 group-hover:translate-x-1 group-hover:border-[#C2A139] group-hover:bg-[#C2A139] group-hover:text-[#242124]">
+          <ArrowUpRight className="h-4 w-4" />
+        </span>
       </div>
 
-      <div className="relative flex flex-col p-6 bg-white h-full justify-between">
-        <div>
-            {/* Eyebrow: Type + City */}
-            <div className="flex items-center justify-between mb-3">
-                <div className="flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-widest text-[#D4AF37]">
-                    <span className="truncate max-w-[120px]">{p.propertyType || 'Residence'}</span>
-                    <span className="text-gray-300">•</span>
-                    <div className="flex items-center gap-1">
-                        <MapPin size={10} />
-                        <span className="truncate max-w-[100px]">{p.city}</span>
-                    </div>
-                </div>
-                <div className="text-[#0A2342] opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-300">
-                  <ArrowUpRight size={18} />
-                </div>
-            </div>
-
-            <h3 className="font-montserrat text-lg font-bold leading-snug text-[#0A2342] line-clamp-2 group-hover:text-[#D4AF37] transition-colors">
-              {p.title}
-            </h3>
-            
-            {/* Price (or "Upon Request") */}
-            <p className="text-sm font-medium text-gray-500 mt-2">
-               {formatPrice(p.price, p.currency)}
-            </p>
+      <div className="absolute inset-x-0 bottom-0 p-6">
+        <div className="mb-3 inline-flex items-center gap-2 rounded-full border border-white/14 bg-[#05070B]/52 px-3 py-1.5 text-[10px] font-bold uppercase tracking-[0.18em] text-[#F5F0E8]/88 backdrop-blur-md">
+          <MapPin className="h-3.5 w-3.5 text-[#C2A139]" />
+          <span>{p.city || "Cyprus"}</span>
         </div>
 
-        <div className="w-full h-px bg-gray-100 mt-6 mb-4" />
+        <h3 className="font-montserrat text-[1.55rem] font-semibold leading-[1.08] tracking-[-0.045em] text-[#F5F0E8] drop-shadow-[0_8px_24px_rgba(0,0,0,0.7)]">
+          {p.title}
+        </h3>
 
-        <div className="flex items-center gap-6 text-xs font-medium text-gray-500">
-            {p.bedrooms && (
-                <div className="flex items-center gap-2">
-                    <BedDouble size={16} className="text-[#D4AF37]" />
-                    <span className="text-[#0A2342] font-bold">{p.bedrooms}</span> Beds
-                </div>
-            )}
-            {p.area && (
-                <div className="flex items-center gap-2">
-                    <Ruler size={16} className="text-[#D4AF37]" />
-                    <span className="text-[#0A2342] font-bold">{p.area}</span> m²
-                </div>
-            )}
+        <p className="mt-3 text-sm font-semibold text-[#F5F0E8]/86">
+          {formatPrice(p.price, p.currency)}
+        </p>
+
+        <div className="mt-5 flex flex-wrap gap-2 border-t border-white/14 pt-4 text-xs text-[#F5F0E8]/82">
+          {p.bedrooms && (
+            <span className="inline-flex items-center gap-2 bg-white/[0.08] px-3 py-1.5">
+              <BedDouble className="h-4 w-4 text-[#C2A139]" />
+              {p.bedrooms} Beds
+            </span>
+          )}
+
+          {(p as any).bathrooms && (
+            <span className="inline-flex items-center gap-2 bg-white/[0.08] px-3 py-1.5">
+              <Bath className="h-4 w-4 text-[#C2A139]" />
+              {(p as any).bathrooms} Baths
+            </span>
+          )}
+
+          {p.area && (
+            <span className="inline-flex items-center gap-2 bg-white/[0.08] px-3 py-1.5">
+              <Ruler className="h-4 w-4 text-[#C2A139]" />
+              {p.area} m²
+            </span>
+          )}
         </div>
       </div>
     </Link>
