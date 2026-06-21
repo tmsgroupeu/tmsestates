@@ -28,25 +28,25 @@ const values = [
 ];
 
 const fadeUp = {
-  hidden: { opacity: 0, y: 28, filter: "blur(6px)" },
+  hidden: { opacity: 0, y: 22, filter: "blur(4px)" },
   visible: {
     opacity: 1,
     y: 0,
     filter: "blur(0px)",
     transition: {
-      duration: 1.05,
+      duration: 1.15,
       ease: [0.16, 1, 0.3, 1],
     },
   },
 };
 
 const softFade = {
-  hidden: { opacity: 0, y: 14 },
+  hidden: { opacity: 0, y: 12 },
   visible: {
     opacity: 1,
     y: 0,
     transition: {
-      duration: 1,
+      duration: 1.08,
       ease: [0.16, 1, 0.3, 1],
     },
   },
@@ -56,7 +56,7 @@ const stagger = {
   hidden: {},
   visible: {
     transition: {
-      staggerChildren: 0.12,
+      staggerChildren: 0.14,
       delayChildren: 0.08,
     },
   },
@@ -65,21 +65,22 @@ const stagger = {
 export default function AboutPage() {
   return (
     <main className="overflow-hidden bg-[#F5F0E8] text-[#242124]">
-      <section className="relative flex min-h-[64svh] items-end overflow-hidden bg-[#242124] px-6 pb-16 pt-36 md:px-10 md:pb-20 md:pt-44 lg:min-h-[72svh]"
+      <section className="relative flex min-h-[64svh] items-end overflow-hidden bg-[#242124] px-6 pb-16 pt-36 md:px-10 md:pb-20 md:pt-44 lg:min-h-[72svh]">
         <video
-  autoPlay
-  loop
-  muted
-  playsInline
-  src={ABOUT_VIDEO_URL}
-  className="absolute inset-0 h-full w-full scale-105 object-cover opacity-75"
-/>
+          autoPlay
+          loop
+          muted
+          playsInline
+          src={ABOUT_VIDEO_URL}
+          className="absolute inset-0 h-full w-full scale-105 object-cover opacity-75"
+        />
 
-<div className="absolute inset-0 bg-[#242124]/18" />
-<div className="absolute inset-0 bg-gradient-to-r from-[#242124]/86 via-[#242124]/48 to-[#242124]/16" />
-<div className="absolute inset-0 bg-gradient-to-t from-[#242124]/92 via-[#242124]/34 to-[#242124]/12" />
-<div className="absolute bottom-0 left-0 h-[46%] w-full bg-gradient-to-t from-[#242124] via-[#242124]/66 to-transparent" />
-<div className="absolute inset-0 bg-[radial-gradient(circle_at_70%_18%,rgba(194,161,57,0.14),transparent_30%)]" />
+        <div className="absolute inset-0 bg-[#242124]/18" />
+        <div className="absolute inset-0 bg-gradient-to-r from-[#242124]/86 via-[#242124]/48 to-[#242124]/16" />
+        <div className="absolute inset-0 bg-gradient-to-t from-[#242124]/92 via-[#242124]/34 to-[#242124]/12" />
+        <div className="absolute bottom-0 left-0 h-[46%] w-full bg-gradient-to-t from-[#242124] via-[#242124]/66 to-transparent" />
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_70%_18%,rgba(194,161,57,0.14),transparent_30%)]" />
+
         <div className="relative mx-auto w-full max-w-7xl">
           <motion.div
             initial="hidden"
@@ -98,7 +99,7 @@ export default function AboutPage() {
 
             <motion.p
               variants={softFade}
-              className="mt-6 max-w-xl text-sm leading-7 text-[#F5F0E8]/80 md:text-base md:leading-8"
+              className="mt-6 max-w-xl text-sm leading-7 text-[#F5F0E8]/84 md:text-base md:leading-8"
             >
               TMS Estates is a real estate development company focused on creating residential and mixed-use properties in strategically selected locations across Cyprus.
             </motion.p>
