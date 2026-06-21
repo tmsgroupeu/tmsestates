@@ -88,11 +88,13 @@ export default function MarketInsights() {
         <div className="grid gap-7 px-5 pb-8 pt-5 md:px-8 md:pb-10 lg:grid-cols-[0.92fr_1.08fr] lg:items-center">
           <h2 className="max-w-[760px] font-montserrat text-[clamp(1.75rem,2.4vw,2.8rem)] font-bold leading-[1.04] tracking-[-0.052em] text-[#F5F0E8] text-balance drop-shadow-[0_18px_46px_rgba(0,0,0,0.44)]">
             <span className="block">Looking for Your Next</span>
-            <span className="block text-[#C2A139]">Property Opportunity?</span>
+            <span className="block text-[#C2A139]">
+              Property Opportunity?
+            </span>
           </h2>
 
           <div className="max-w-2xl lg:justify-self-end">
-            <p className="text-[0.98rem] leading-8 text-[#F5F0E8]/86 drop-shadow-[0_14px_34px_rgba(0,0,0,0.42)] md:text-[1.02rem] md:leading-9">
+            <p className="text-[0.98rem] leading-8 text-[#F5F0E8]/88 drop-shadow-[0_14px_34px_rgba(0,0,0,0.42)] md:text-[1.02rem] md:leading-9">
               Whether you are searching for a new home, an investment
               opportunity or information about our developments, our team would
               be pleased to assist.
@@ -117,10 +119,11 @@ export default function MarketInsights() {
         </div>
       </div>
 
-      <div className="property-opportunity-rail relative z-10 mt-0 w-screen overflow-hidden bg-[#242124]/94 py-6 shadow-[0_34px_110px_rgba(0,0,0,0.42)] md:py-8">
-        <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_50%_-35%,rgba(194,161,57,0.16),transparent_36%),linear-gradient(180deg,rgba(245,240,232,0.035),transparent_22%,rgba(5,7,11,0.18))]" />
-        <div className="property-opportunity-rail-line pointer-events-none absolute left-0 top-0 h-px w-full" />
-        <div className="property-opportunity-rail-shadow pointer-events-none absolute inset-x-0 -top-8 h-8" />
+      <div className="property-opportunity-rail relative z-10 w-screen overflow-hidden bg-[#242124] py-7 shadow-[0_34px_110px_rgba(0,0,0,0.46)] md:py-9">
+        <div className="pointer-events-none absolute inset-0 z-0 bg-[#242124]" />
+        <div className="pointer-events-none absolute inset-0 z-0 bg-[radial-gradient(circle_at_50%_-28%,rgba(194,161,57,0.13),transparent_38%),linear-gradient(180deg,rgba(245,240,232,0.035),transparent_28%,rgba(5,7,11,0.2))]" />
+        <div className="property-opportunity-rail-line pointer-events-none absolute left-0 top-0 z-[1] h-px w-full" />
+        <div className="pointer-events-none absolute inset-x-0 bottom-0 z-[1] h-px bg-gradient-to-r from-transparent via-[#F5F0E8]/12 to-transparent" />
 
         <Swiper
           modules={[Autoplay, Navigation]}
@@ -140,7 +143,7 @@ export default function MarketInsights() {
             768: { spaceBetween: 22 },
             1280: { spaceBetween: 26 },
           }}
-          className="tms-property-swiper tms-property-rail !overflow-visible !px-6 md:!px-10 lg:!px-[clamp(3rem,7vw,8.5rem)]"
+          className="tms-property-swiper tms-property-rail relative z-10 !overflow-visible !px-6 md:!px-10 lg:!px-[clamp(3rem,7vw,8.5rem)]"
         >
           {carouselProperties.map((property, index) => (
             <SwiperSlide
@@ -149,7 +152,7 @@ export default function MarketInsights() {
             >
               <Link
                 href={`/properties/${property.slug}`}
-                className="group relative block h-[360px] overflow-hidden border border-[#F5F0E8]/22 bg-[#05070B]/70 shadow-[0_20px_65px_rgba(0,0,0,0.3)] transition-all duration-500 hover:-translate-y-1 hover:border-[#C2A139]/60 hover:shadow-[0_28px_90px_rgba(0,0,0,0.4)] md:h-[405px] xl:h-[455px]"
+                className="group relative block h-[360px] overflow-hidden border border-[#F5F0E8]/22 bg-[#05070B] shadow-[0_20px_65px_rgba(0,0,0,0.34)] transition-all duration-500 hover:-translate-y-1 hover:border-[#C2A139]/60 hover:shadow-[0_28px_90px_rgba(0,0,0,0.44)] md:h-[405px] xl:h-[455px]"
               >
                 <Image
                   src={imageFor(property)}
@@ -159,7 +162,7 @@ export default function MarketInsights() {
                   className="object-cover transition duration-[1200ms] ease-out group-hover:scale-105"
                 />
 
-                <div className="absolute inset-0 bg-[#05070B]/20 transition duration-500 group-hover:bg-[#05070B]/12" />
+                <div className="absolute inset-0 bg-[#05070B]/18 transition duration-500 group-hover:bg-[#05070B]/10" />
                 <div className="absolute inset-x-0 top-0 h-36 bg-gradient-to-b from-[#05070B]/68 via-[#05070B]/28 to-transparent" />
                 <div className="absolute inset-x-0 bottom-0 h-[72%] bg-gradient-to-t from-[#05070B]/99 via-[#05070B]/82 to-transparent" />
                 <div className="absolute inset-y-0 left-0 w-[68%] bg-gradient-to-r from-[#05070B]/50 to-transparent" />
@@ -219,6 +222,7 @@ export default function MarketInsights() {
 
       <style jsx>{`
         .property-opportunity-rail {
+          isolation: isolate;
           transform: translateZ(0);
         }
 
@@ -234,14 +238,6 @@ export default function MarketInsights() {
           );
           background-size: 220% 100%;
           animation: propertyRailGoldSweep 7s ease-in-out infinite;
-        }
-
-        .property-opportunity-rail-shadow {
-          background: linear-gradient(
-            to bottom,
-            transparent,
-            rgba(36, 33, 36, 0.5)
-          );
         }
 
         @keyframes propertyRailGoldSweep {
