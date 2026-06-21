@@ -13,10 +13,10 @@ export default function LimassolAdvantage() {
   return (
     <section className="relative w-full py-14 md:py-18 lg:flex lg:min-h-[88svh] lg:items-center">
       <div className="home-container">
-        <div className="relative grid overflow-hidden shadow-[0_42px_150px_rgba(0,0,0,0.34)] lg:grid-cols-[1fr_1.12fr]">
+        <div className="relative grid overflow-hidden lg:grid-cols-[1fr_1.12fr]">
           <div className="relative p-5 md:p-7 lg:p-8 xl:p-9">
-            <div className="relative max-w-[720px] overflow-hidden bg-[#242124]/54 px-6 py-8 shadow-[0_24px_85px_rgba(0,0,0,0.26)] backdrop-blur-[3px] md:px-8 md:py-10 lg:px-9 lg:py-11">
-              <div className="pointer-events-none absolute inset-0 bg-gradient-to-br from-[#242124]/28 via-transparent to-[#C2A139]/8" />
+            <div className="relative max-w-[720px] overflow-hidden border border-[#F5F0E8]/12 bg-[#242124]/48 px-6 py-8 shadow-[0_24px_85px_rgba(0,0,0,0.24)] backdrop-blur-[3px] md:px-8 md:py-10 lg:px-9 lg:py-11">
+              <div className="pointer-events-none absolute inset-0 bg-gradient-to-br from-[#242124]/34 via-[#242124]/10 to-[#C2A139]/8" />
 
               <div className="relative z-10">
                 <p className="section-eyebrow">Investment Perspective</p>
@@ -26,7 +26,7 @@ export default function LimassolAdvantage() {
                   <span className="block text-[#C2A139]">in Cyprus?</span>
                 </h2>
 
-                <p className="mt-6 max-w-xl text-base leading-8 text-[#F5F0E8]/86 md:text-lg md:leading-9">
+                <p className="mt-6 max-w-xl text-base leading-8 text-[#F5F0E8]/88 md:text-lg md:leading-9">
                   A strategic gateway connecting continents, Cyprus offers a
                   stable legal framework, exceptional quality of life, and one
                   of the most attractive tax regimes in Europe.
@@ -51,7 +51,7 @@ export default function LimassolAdvantage() {
             </div>
           </div>
 
-          <div className="relative border border-[#F5F0E8]/10 bg-[#242124]/94 shadow-[0_34px_110px_rgba(0,0,0,0.36)]">
+          <div className="relative bg-[#242124]/96 shadow-[0_34px_110px_rgba(0,0,0,0.34)]">
             <div className="relative grid md:grid-cols-3 lg:grid-cols-1">
               {points.map((point, index) => (
                 <div
