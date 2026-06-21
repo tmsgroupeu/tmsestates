@@ -22,12 +22,12 @@ export default function PrivateCollection() {
   };
 
   return (
-    <section className="relative w-full overflow-hidden py-16 md:py-20 lg:py-24">
+    <section className="relative w-full overflow-hidden py-14 md:py-16 lg:py-20">
       <div className="home-container relative">
-        <div className="relative overflow-hidden bg-[#242124]/86 px-6 py-14 shadow-[0_38px_120px_rgba(0,0,0,0.34)] md:px-10 md:py-16 lg:px-14 lg:py-20">
-          <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_50%_0%,rgba(194,161,57,0.13),transparent_34%),linear-gradient(135deg,rgba(245,240,232,0.055),transparent_34%,rgba(194,161,57,0.08))]" />
-          <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-[#C2A139]/68 to-transparent" />
-          <div className="pointer-events-none absolute inset-x-10 bottom-0 h-px bg-gradient-to-r from-transparent via-[#F5F0E8]/20 to-transparent" />
+        <div className="private-collection-card relative mx-auto max-w-5xl overflow-hidden border border-[#F5F0E8]/12 bg-[#242124]/56 px-6 py-11 shadow-[0_30px_95px_rgba(0,0,0,0.32)] backdrop-blur-[8px] md:px-10 md:py-12 lg:px-14 lg:py-14">
+          <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(135deg,rgba(245,240,232,0.08),rgba(36,33,36,0.32)_42%,rgba(5,7,11,0.18)),radial-gradient(circle_at_50%_0%,rgba(194,161,57,0.16),transparent_36%)]" />
+          <div className="private-collection-line pointer-events-none absolute inset-x-0 top-0 h-px" />
+          <div className="pointer-events-none absolute inset-x-8 bottom-0 h-px bg-gradient-to-r from-transparent via-[#F5F0E8]/18 to-transparent" />
 
           <AnimatePresence mode="wait">
             {status !== "success" ? (
@@ -53,17 +53,17 @@ export default function PrivateCollection() {
                     repeat: Infinity,
                     ease: "easeInOut",
                   }}
-                  className="mb-7 grid h-12 w-12 place-items-center border border-[#C2A139]/55 bg-[#05070B]/28 text-[#C2A139]"
+                  className="mb-6 grid h-11 w-11 place-items-center border border-[#C2A139]/55 bg-[#05070B]/28 text-[#C2A139]"
                 >
                   <Lock className="h-5 w-5" strokeWidth={1.7} />
                 </motion.div>
 
-                <h2 className="font-montserrat text-[clamp(2.05rem,4.8vw,5.2rem)] font-bold leading-[0.96] tracking-[-0.06em] text-[#F5F0E8]">
+                <h2 className="font-montserrat text-[clamp(2rem,4.3vw,4.6rem)] font-bold leading-[0.96] tracking-[-0.06em] text-[#F5F0E8]">
                   The Private
                   <span className="block text-[#C2A139]">Collection</span>
                 </h2>
 
-                <p className="mt-7 max-w-2xl text-[0.98rem] leading-8 text-[#F5F0E8]/82 md:text-[1.04rem] md:leading-9">
+                <p className="mt-6 max-w-2xl text-[0.96rem] leading-8 text-[#F5F0E8]/84 md:text-[1.02rem] md:leading-9">
                   Gain exclusive access to our highly sought-after off-market
                   Signature Developments and VIP investment opportunities before
                   they launch to the public.
@@ -71,20 +71,18 @@ export default function PrivateCollection() {
 
                 <form
                   onSubmit={handleSubmit}
-                  className="mt-10 grid w-full max-w-3xl gap-3 sm:grid-cols-[1fr_auto]"
+                  className="mt-9 grid w-full max-w-3xl gap-3 sm:grid-cols-[1fr_auto]"
                 >
-                  <div className="relative">
-                    <input
-                      type="email"
-                      name="email"
-                      value={email}
-                      onChange={(event) => setEmail(event.target.value)}
-                      placeholder="Enter your email address..."
-                      className="h-[58px] w-full border border-[#F5F0E8]/18 bg-[#F5F0E8] px-5 text-sm font-medium text-[#242124] outline-none transition-all duration-300 placeholder:text-[#242124]/42 focus:border-[#C2A139] focus:shadow-[0_0_0_3px_rgba(194,161,57,0.16)] md:px-6"
-                      required
-                      disabled={status === "submitting"}
-                    />
-                  </div>
+                  <input
+                    type="email"
+                    name="email"
+                    value={email}
+                    onChange={(event) => setEmail(event.target.value)}
+                    placeholder="Enter your email address..."
+                    className="h-[58px] w-full border border-[#F5F0E8]/18 bg-[#F5F0E8]/94 px-5 text-sm font-medium text-[#242124] outline-none transition-all duration-300 placeholder:text-[#242124]/42 focus:border-[#C2A139] focus:bg-[#F5F0E8] focus:shadow-[0_0_0_3px_rgba(194,161,57,0.16)] md:px-6"
+                    required
+                    disabled={status === "submitting"}
+                  />
 
                   <button
                     type="submit"
@@ -104,7 +102,7 @@ export default function PrivateCollection() {
                   </button>
                 </form>
 
-                <div className="mt-9 flex w-full items-center justify-center gap-4 text-center text-[9px] font-bold uppercase tracking-[0.3em] text-[#F5F0E8]/42">
+                <div className="mt-8 flex w-full items-center justify-center gap-4 text-center text-[9px] font-bold uppercase tracking-[0.3em] text-[#F5F0E8]/46">
                   <span className="h-px w-8 bg-[#C2A139]/34" />
                   Curated for high-net-worth individuals
                   <span className="h-px w-8 bg-[#C2A139]/34" />
@@ -127,7 +125,7 @@ export default function PrivateCollection() {
                   <span className="block text-[#C2A139]">Granted</span>
                 </h3>
 
-                <p className="mt-6 text-base leading-8 text-[#F5F0E8]/82">
+                <p className="mt-6 text-base leading-8 text-[#F5F0E8]/84">
                   Your secured invitation has been formalized. Our VIP advisory
                   team will reach out to {email} shortly.
                 </p>
@@ -136,6 +134,40 @@ export default function PrivateCollection() {
           </AnimatePresence>
         </div>
       </div>
+
+      <style jsx>{`
+        .private-collection-card {
+          transform: translateZ(0);
+        }
+
+        .private-collection-line {
+          background: linear-gradient(
+            90deg,
+            transparent,
+            rgba(194, 161, 57, 0.2),
+            rgba(194, 161, 57, 0.9),
+            rgba(245, 240, 232, 0.44),
+            rgba(194, 161, 57, 0.2),
+            transparent
+          );
+          background-size: 220% 100%;
+          animation: privateCollectionGoldSweep 7s ease-in-out infinite;
+        }
+
+        @keyframes privateCollectionGoldSweep {
+          0% {
+            background-position: 120% 0;
+            opacity: 0.34;
+          }
+          45% {
+            opacity: 0.82;
+          }
+          100% {
+            background-position: -120% 0;
+            opacity: 0.34;
+          }
+        }
+      `}</style>
     </section>
   );
 }
