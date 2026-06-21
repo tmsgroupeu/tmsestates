@@ -1,5 +1,5 @@
 import { fetchProjects } from "@/lib/cms";
-import { ArrowRight } from "lucide-react";
+import { Building2, ArrowRight } from "lucide-react";
 import { Link } from "@/i18n/routing";
 import OurProjectsClient from "./OurProjectsClient";
 
@@ -86,26 +86,38 @@ export default async function OurProjects() {
       <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-[#05070B]/8 via-transparent to-[#05070B]/22" />
 
       <div className="home-container relative">
-        <div className="mb-8 grid gap-7 pb-3 lg:grid-cols-[minmax(0,0.96fr)_minmax(0,0.9fr)] lg:items-end lg:gap-20">
+        <div className="mb-8 grid gap-7 pb-3 lg:grid-cols-[0.9fr_1.1fr] lg:items-end">
           <div>
-            <h2 className="max-w-3xl font-montserrat text-[clamp(2.05rem,3vw,3.45rem)] font-bold leading-[1.02] tracking-[-0.055em] text-[#F5F0E8]">
-              <span className="block">Signature</span>
-              <span className="block text-[#C2A139]">Developments</span>
+            <div className="inline-flex items-center gap-3 text-[#C2A139]">
+              <Building2 className="h-4 w-4" strokeWidth={1.7} />
+              <p className="section-eyebrow">Our Projects</p>
+            </div>
+
+            <h2 className="section-heading mt-4 max-w-2xl">
+              Signature <span className="block text-[#C2A139]">Developments</span>
             </h2>
           </div>
 
-          <div className="max-w-2xl lg:pb-2">
-            <p className="text-balance text-base leading-8 text-[#F5F0E8]/80 md:text-[1.04rem] md:leading-9">
+          <div className="max-w-2xl lg:justify-self-end">
+            <p className="text-base leading-8 text-[#F5F0E8]/80 md:text-[1.04rem] md:leading-9">
               Discover a portfolio of residential developments across Cyprus,
               thoughtfully designed for modern living and long-term value.
             </p>
 
             <Link
               href="/projects"
-              className="group mt-7 inline-flex w-fit items-center gap-3 rounded-full border border-white/16 bg-[#F5F0E8] px-6 py-4 text-[11px] font-bold uppercase tracking-[0.22em] text-[#0D1B2E] shadow-[0_18px_55px_rgba(0,0,0,0.25)] transition-all hover:border-[#C2A139] hover:bg-[#C2A139] hover:text-[#05070B]"
+              className="group relative mt-7 inline-flex min-h-[54px] w-fit items-center justify-center overflow-hidden border border-[#C2A139]/70 bg-[#242124]/72 px-6 py-4 text-[11px] font-bold uppercase tracking-[0.24em] text-[#F5F0E8] shadow-[0_22px_64px_rgba(0,0,0,0.32)] backdrop-blur-[10px] transition-all duration-500 hover:-translate-y-0.5 hover:border-[#C2A139] hover:bg-[#C2A139] hover:text-[#242124] hover:shadow-[0_28px_84px_rgba(194,161,57,0.24)] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#C2A139]/70 md:px-8"
             >
-              View All Projects
-              <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
+              <span className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-[#F5F0E8] to-transparent opacity-50 transition-opacity duration-500 group-hover:opacity-80" />
+              <span className="pointer-events-none absolute inset-y-0 left-0 w-[3px] bg-[#C2A139] transition-all duration-500 group-hover:w-full" />
+              <span className="pointer-events-none absolute inset-0 translate-x-[-130%] bg-gradient-to-r from-transparent via-white/28 to-transparent transition-transform duration-700 group-hover:translate-x-[130%]" />
+
+              <span className="relative z-10 flex items-center gap-4">
+                View All Projects
+                <span className="flex h-8 w-8 items-center justify-center border border-[#C2A139]/55 bg-[#05070B]/28 text-[#C2A139] transition-all duration-500 group-hover:border-[#242124]/40 group-hover:bg-[#242124] group-hover:text-[#F5F0E8]">
+                  <ArrowRight className="h-4 w-4 transition-transform duration-500 group-hover:translate-x-0.5" />
+                </span>
+              </span>
             </Link>
           </div>
         </div>
