@@ -38,7 +38,7 @@ export default function WhyChooseUs() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: "-80px" }}
           transition={{ duration: 0.75, ease: [0.16, 1, 0.3, 1] }}
-          className="grid gap-8 pb-9 md:pb-11 lg:grid-cols-[minmax(0,1fr)_minmax(0,0.82fr)] lg:items-end lg:gap-20"
+          className="grid gap-8 pb-9 md:pb-11 lg:grid-cols-[minmax(0,1fr)_minmax(0,0.82fr)] lg:items-start lg:gap-20"
         >
           <div>
             <h2 className="max-w-3xl font-montserrat text-[clamp(2.1rem,3vw,3.35rem)] font-bold leading-[1.02] tracking-[-0.055em] text-[#F5F0E8]">
@@ -47,8 +47,8 @@ export default function WhyChooseUs() {
             </h2>
           </div>
 
-          <div className="max-w-2xl lg:pb-2">
-            <p className="text-balance text-base leading-8 text-[#F5F0E8]/84 md:text-[1.04rem] md:leading-9">
+          <div className="max-w-2xl">
+            <p className="text-balance text-base leading-6 text-[#F5F0E8]/84 md:text-[1.04rem] md:leading-7">
               Every project is guided by careful evaluation, ensuring the right
               location, market demand and long-term potential.
             </p>

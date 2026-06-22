@@ -85,7 +85,7 @@ export default function MarketInsights() {
   return (
     <section className="relative w-full overflow-hidden pt-12 md:pt-14 lg:pt-16">
       <div className="home-container relative z-10">
-        <div className="grid gap-7 px-5 pb-8 pt-5 md:px-8 md:pb-10 lg:grid-cols-[0.92fr_1.08fr] lg:items-center">
+        <div className="grid gap-7 px-5 pb-8 pt-5 md:px-8 md:pb-10 lg:grid-cols-[0.92fr_1.08fr] lg:items-start">
           <h2 className="max-w-[760px] font-montserrat text-[clamp(1.75rem,2.4vw,2.8rem)] font-bold leading-[1.04] tracking-[-0.052em] text-[#F5F0E8] text-balance drop-shadow-[0_18px_46px_rgba(0,0,0,0.44)]">
             <span className="block">Looking for Your Next</span>
             <span className="block text-[#C2A139]">
@@ -94,7 +94,7 @@ export default function MarketInsights() {
           </h2>
 
           <div className="max-w-2xl lg:justify-self-end">
-            <p className="text-[0.98rem] leading-8 text-[#F5F0E8]/88 drop-shadow-[0_14px_34px_rgba(0,0,0,0.42)] md:text-[1.02rem] md:leading-9">
+            <p className="text-[0.98rem] leading-6 text-[#F5F0E8]/88 drop-shadow-[0_14px_34px_rgba(0,0,0,0.42)] md:text-[1.02rem] md:leading-7">
               Whether you are searching for a new home, an investment
               opportunity or information about our developments, our team would
               be pleased to assist.
