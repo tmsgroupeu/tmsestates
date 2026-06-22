@@ -86,7 +86,7 @@ export default async function OurProjects() {
       <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-[#05070B]/8 via-transparent to-[#05070B]/22" />
 
       <div className="home-container relative">
-        <div className="mb-8 grid gap-7 pb-3 lg:grid-cols-[0.9fr_1.1fr] lg:items-end">
+        <div className="mb-8 grid gap-7 pb-3 lg:grid-cols-[0.9fr_1.1fr] lg:items-start">
           <div>
             <div className="inline-flex items-center gap-3 text-[#C2A139]">
               <Building2 className="h-4 w-4" strokeWidth={1.7} />
@@ -98,8 +98,8 @@ export default async function OurProjects() {
             </h2>
           </div>
 
-          <div className="max-w-2xl lg:justify-self-end">
-            <p className="text-base leading-8 text-[#F5F0E8]/80 md:text-[1.04rem] md:leading-9">
+          <div className="max-w-2xl lg:justify-self-end lg:pt-10">
+            <p className="text-base leading-6 text-[#F5F0E8]/80 md:text-[1.04rem] md:leading-7">
               Discover a portfolio of residential developments across Cyprus,
               thoughtfully designed for modern living and long-term value.
             </p>
