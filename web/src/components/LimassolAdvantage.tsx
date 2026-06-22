@@ -1,6 +1,6 @@
 "use client";
 
-import { ArrowRight, CheckCircle2 } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import { Link } from "@/i18n/routing";
 
 const points = [
@@ -59,17 +59,13 @@ export default function LimassolAdvantage() {
                 <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(135deg,rgba(245,240,232,0.045),transparent_44%,rgba(194,161,57,0.08))] opacity-70 transition-opacity duration-500 group-hover:opacity-100" />
                 <div className="investment-card-line pointer-events-none absolute inset-x-0 top-0 h-px opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
 
-                <div className="relative z-10 flex h-full items-center gap-5">
-                  <span className="grid h-11 w-11 shrink-0 place-items-center border border-[#F5F0E8]/34 bg-[#05070B]/18 text-[#C2A139] transition-all duration-500 group-hover:border-[#C2A139] group-hover:bg-[#C2A139] group-hover:text-[#242124]">
-                    <CheckCircle2 className="h-5 w-5" strokeWidth={1.8} />
+                <div className="relative z-10 flex h-full items-center gap-5 md:gap-6">
+                  <span className="grid h-14 w-14 shrink-0 place-items-center border border-[#F5F0E8]/38 bg-[#05070B]/24 font-montserrat text-[1.05rem] font-bold tracking-[0.08em] text-[#C2A139] shadow-[0_16px_42px_rgba(0,0,0,0.28)] transition-all duration-500 group-hover:border-[#C2A139] group-hover:bg-[#C2A139] group-hover:text-[#242124] md:h-16 md:w-16 md:text-[1.18rem]">
+                    {String(index + 1).padStart(2, "0")}
                   </span>
 
-                  <div>
-                    <span className="text-[10px] font-bold uppercase tracking-[0.28em] text-[#C2A139]/86">
-                      {String(index + 1).padStart(2, "0")}
-                    </span>
-
-                    <p className="mt-2 max-w-xl font-montserrat text-[1.18rem] font-semibold leading-tight tracking-[-0.038em] text-[#F5F0E8] md:text-[1.35rem] xl:text-[1.55rem]">
+                  <div className="flex min-h-14 items-center md:min-h-16">
+                    <p className="max-w-xl font-montserrat text-[1.28rem] font-bold leading-[1.08] tracking-[-0.042em] text-[#F5F0E8] drop-shadow-[0_8px_22px_rgba(0,0,0,0.62)] md:text-[1.52rem] xl:text-[1.72rem]">
                       {point}
                     </p>
                   </div>
