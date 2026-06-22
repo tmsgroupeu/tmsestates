@@ -1,9 +1,8 @@
-/* UPDATED: src/components/ai/MiniPropertyCard.tsx */
 "use client";
 
 import Image from "next/image";
 import Link from "next/link";
-import { MapPin, BedDouble, Ruler, ArrowRight } from "lucide-react";
+import { ArrowRight, BedDouble, MapPin, Ruler } from "lucide-react";
 
 interface MiniPropertyProps {
   data: {
@@ -17,66 +16,69 @@ interface MiniPropertyProps {
 }
 
 export default function MiniPropertyCard({ data }: MiniPropertyProps) {
-  // 🛡️ SAFETY CHECKS: Ensure we never render an Object directly
-  // This prevents the "Minified React Error #130"
-  
-  const safeTitle = typeof data.title === 'string' ? data.title : 'Exclusive Property';
-  const safeCity = typeof data.city === 'string' ? data.city : 'Cyprus';
-  const safeSlug = typeof data.slug === 'string' ? data.slug : '#';
-  const safeImage = typeof data.imageUrl === 'string' ? data.imageUrl : '/placeholder.jpg';
-  
-  // Ensure numbers are valid numbers (not objects or nulls)
-  const safeBeds = (typeof data.bedrooms === 'number' || typeof data.bedrooms === 'string') ? data.bedrooms : null;
-  const safeArea = (typeof data.area === 'number' || typeof data.area === 'string') ? data.area : null;
+  const safeTitle =
+    typeof data.title === "string" ? data.title : "Exclusive Property";
+  const safeCity = typeof data.city === "string" ? data.city : "Cyprus";
+  const safeSlug = typeof data.slug === "string" ? data.slug : "#";
+  const safeImage =
+    typeof data.imageUrl === "string" ? data.imageUrl : "/placeholder.jpg";
+  const safeBeds =
+    typeof data.bedrooms === "number" || typeof data.bedrooms === "string"
+      ? data.bedrooms
+      : null;
+  const safeArea =
+    typeof data.area === "number" || typeof data.area === "string"
+      ? data.area
+      : null;
 
-  // If slug is missing or invalid, don't render a broken card
-  if (safeSlug === '#') return null;
+  if (safeSlug === "#") return null;
 
   return (
-    <Link 
+    <Link
       href={`/properties/${safeSlug}`}
-      className="block w-full max-w-[280px] bg-white/10 border border-white/10 rounded-xl overflow-hidden hover:bg-white/20 transition-all group my-3 shadow-lg"
+      className="group my-3 block w-full max-w-[290px] overflow-hidden border border-[#F5F0E8]/12 bg-[#242124] shadow-[0_18px_55px_rgba(0,0,0,0.3)] transition-all duration-300 hover:border-[#C2A139]/55"
     >
-      {/* Image Header */}
-      <div className="relative h-32 w-full bg-navy/50">
-        <Image 
-          src={safeImage} 
+      <div className="relative h-34 w-full bg-[#05070B]">
+        <Image
+          src={safeImage}
           alt={safeTitle}
           fill
-          className="object-cover group-hover:scale-105 transition-transform duration-500"
-          sizes="280px"
+          className="object-cover transition-transform duration-700 group-hover:scale-105"
+          sizes="290px"
         />
-        <div className="absolute top-2 right-2 bg-black/50 backdrop-blur-sm px-2 py-1 rounded text-[10px] text-white font-bold uppercase tracking-wider border border-white/10">
-            View
+        <div className="absolute inset-0 bg-gradient-to-t from-[#05070B]/88 via-[#05070B]/22 to-transparent" />
+
+        <div className="absolute right-3 top-3 border border-[#C2A139]/45 bg-[#242124]/76 px-2.5 py-1.5 text-[9px] font-bold uppercase tracking-[0.2em] text-[#C2A139] backdrop-blur-md">
+          View
         </div>
       </div>
 
-      {/* Content */}
-      <div className="p-3">
-        <h4 className="text-sm font-bold text-white leading-tight line-clamp-1 font-montserrat">
-            {safeTitle}
+      <div className="p-4">
+        <h4 className="line-clamp-2 font-montserrat text-sm font-semibold leading-tight tracking-[-0.035em] text-[#F5F0E8]">
+          {safeTitle}
         </h4>
-        
-        <div className="flex items-center gap-1 mt-1 text-white/60 text-xs">
-            <MapPin size={10} className="text-[#D4AF37]" />
-            <span>{safeCity}</span>
+
+        <div className="mt-2 flex items-center gap-1.5 text-xs text-[#F5F0E8]/58">
+          <MapPin className="h-3 w-3 text-[#C2A139]" />
+          <span>{safeCity}</span>
         </div>
 
-        {/* Specs Grid */}
-        <div className="flex items-center gap-3 mt-3 pt-3 border-t border-white/10">
-            {safeBeds && (
-                <div className="flex items-center gap-1 text-[10px] text-white/80">
-                    <BedDouble size={12} /> {safeBeds} Bed
-                </div>
-            )}
-            {safeArea && (
-                <div className="flex items-center gap-1 text-[10px] text-white/80">
-                    <Ruler size={12} /> {safeArea}m²
-                </div>
-            )}
-            <div className="ml-auto">
-                <ArrowRight size={12} className="text-[#D4AF37] -rotate-45 group-hover:rotate-0 transition-transform" />
+        <div className="mt-4 flex items-center gap-3 border-t border-[#F5F0E8]/10 pt-3">
+          {safeBeds ? (
+            <div className="flex items-center gap-1.5 text-[10px] text-[#F5F0E8]/76">
+              <BedDouble className="h-3.5 w-3.5 text-[#C2A139]" />
+              {safeBeds} Bed
             </div>
+          ) : null}
+
+          {safeArea ? (
+            <div className="flex items-center gap-1.5 text-[10px] text-[#F5F0E8]/76">
+              <Ruler className="h-3.5 w-3.5 text-[#C2A139]" />
+              {safeArea} m²
+            </div>
+          ) : null}
+
+          <ArrowRight className="ml-auto h-3.5 w-3.5 -rotate-45 text-[#C2A139] transition-transform group-hover:rotate-0" />
         </div>
       </div>
     </Link>
