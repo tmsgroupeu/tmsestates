@@ -88,10 +88,6 @@ export default async function OurProjects() {
       <div className="home-container relative">
         <div className="mb-8 grid gap-7 pb-3 lg:grid-cols-[0.9fr_1.1fr] lg:items-start">
           <div>
-            <div className="inline-flex items-center gap-3 text-[#C2A139]">
-              <Building2 className="h-4 w-4" strokeWidth={1.7} />
-              <p className="section-eyebrow">Our Projects</p>
-            </div>
 
             <h2 className="section-heading mt-4 max-w-2xl">
               Signature <span className="block text-[#C2A139]">Developments</span>
