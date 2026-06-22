@@ -44,7 +44,7 @@ export default function HeroInteractive() {
               duration: 0.85,
               ease: [0.16, 1, 0.3, 1],
             }}
-            className="mx-auto mt-7 max-w-2xl text-balance text-[0.98rem] leading-8 text-[#F5F0E8]/88 md:mt-8 md:text-[1.08rem] md:leading-9"
+            className="mx-auto mt-7 max-w-2xl text-balance text-[0.98rem] leading-6 text-[#F5F0E8]/88 md:mt-8 md:text-[1.08rem] md:leading-7"
           >
             TMS Estates is a Cyprus-based real estate developer creating
             contemporary residential and mixed-use developments in carefully
