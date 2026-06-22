@@ -64,9 +64,7 @@ export default function PrivateCollection() {
                 </h2>
 
                 <p className="mt-6 max-w-2xl text-[0.96rem] leading-8 text-[#F5F0E8]/84 md:text-[1.02rem] md:leading-9">
-                  Gain exclusive access to our highly sought-after off-market
-                  Signature Developments and VIP investment opportunities before
-                  they launch to the public.
+                  New TMS Estates developments are always in planning. Register to preview upcoming residences before public launch, with priority on selection.
                 </p>
 
                 <form
