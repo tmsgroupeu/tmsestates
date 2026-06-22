@@ -89,7 +89,7 @@ export default async function OurProjects() {
         <div className="mb-8 grid gap-7 pb-3 lg:grid-cols-[0.9fr_1.1fr] lg:items-start">
           <div>
 
-            <h2 className="section-heading mt-4 max-w-2xl">
+            <h2 className="max-w-3xl font-montserrat text-[clamp(2.1rem,3vw,3.35rem)] font-bold leading-[1.02] tracking-[-0.055em] text-[#F5F0E8]">
               Signature <span className="block text-[#C2A139]">Developments</span>
             </h2>
           </div>
