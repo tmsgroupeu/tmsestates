@@ -55,10 +55,18 @@ export default function WhyChooseUs() {
 
             <Link
               href="/about"
-              className="group mt-7 inline-flex items-center gap-3 border border-[#C2A139]/48 bg-[#242124]/88 px-6 py-4 text-[11px] font-bold uppercase tracking-[0.22em] text-[#F5F0E8] shadow-[0_18px_55px_rgba(0,0,0,0.28)] transition-all duration-300 hover:-translate-y-0.5 hover:border-[#C2A139] hover:bg-[#C2A139] hover:text-[#242124] hover:shadow-[0_24px_75px_rgba(194,161,57,0.2)]"
+              className="group relative mt-7 inline-flex min-h-[56px] items-center justify-center overflow-hidden border border-[#C2A139]/70 bg-[#242124]/72 px-7 py-4 text-[11px] font-bold uppercase tracking-[0.26em] text-[#F5F0E8] shadow-[0_24px_70px_rgba(0,0,0,0.34)] backdrop-blur-[10px] transition-all duration-500 hover:-translate-y-0.5 hover:border-[#C2A139] hover:bg-[#C2A139] hover:text-[#242124] hover:shadow-[0_30px_90px_rgba(194,161,57,0.26)] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#C2A139]/70 md:px-9"
             >
-              About TMS Estates
-              <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
+              <span className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-[#F5F0E8] to-transparent opacity-50 transition-opacity duration-500 group-hover:opacity-80" />
+              <span className="pointer-events-none absolute inset-y-0 left-0 w-[3px] bg-[#C2A139] transition-all duration-500 group-hover:w-full group-hover:bg-[#C2A139]" />
+              <span className="pointer-events-none absolute inset-0 translate-x-[-130%] bg-gradient-to-r from-transparent via-white/28 to-transparent transition-transform duration-700 group-hover:translate-x-[130%]" />
+
+              <span className="relative z-10 flex items-center gap-4">
+                About TMS Estates
+                <span className="flex h-8 w-8 items-center justify-center border border-[#C2A139]/55 bg-[#05070B]/28 text-[#C2A139] transition-all duration-500 group-hover:border-[#242124]/40 group-hover:bg-[#242124] group-hover:text-[#F5F0E8]">
+                  <ArrowRight className="h-4 w-4 transition-transform duration-500 group-hover:translate-x-0.5" />
+                </span>
+              </span>
             </Link>
           </div>
         </motion.div>
