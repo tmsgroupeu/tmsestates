@@ -94,23 +94,23 @@ export default function PropertyCard({ p }: { p: Property }) {
           {formatPrice(p.price, p.currency)}
         </p>
 
-        <div className="mt-4 flex flex-wrap items-center gap-2 border-t border-white/16 pt-4 text-xs text-[#F5F0E8]/88">
+        <div className="mt-4 flex flex-wrap items-center gap-2 border-t border-white/16 pt-4 text-xs">
           {p.bedrooms && (
-            <span className="inline-flex items-center gap-2 bg-[#242124]/62 px-3 py-1.5 backdrop-blur-sm">
+            <span className="inline-flex items-center gap-2 border border-white/14 bg-[#05070B]/82 px-3 py-1.5 font-semibold text-white shadow-[0_8px_24px_rgba(0,0,0,0.42)] backdrop-blur-md">
               <BedDouble className="h-4 w-4 text-[#C2A139]" />
               {p.bedrooms} Beds
             </span>
           )}
 
           {(p as any).bathrooms && (
-            <span className="inline-flex items-center gap-2 bg-[#242124]/62 px-3 py-1.5 backdrop-blur-sm">
+            <span className="inline-flex items-center gap-2 border border-white/14 bg-[#05070B]/82 px-3 py-1.5 font-semibold text-white shadow-[0_8px_24px_rgba(0,0,0,0.42)] backdrop-blur-md">
               <Bath className="h-4 w-4 text-[#C2A139]" />
               {(p as any).bathrooms} Baths
             </span>
           )}
 
           {p.area && (
-            <span className="inline-flex items-center gap-2 bg-[#242124]/62 px-3 py-1.5 backdrop-blur-sm">
+            <span className="inline-flex items-center gap-2 border border-white/14 bg-[#05070B]/82 px-3 py-1.5 font-semibold text-white shadow-[0_8px_24px_rgba(0,0,0,0.42)] backdrop-blur-md">
               <Ruler className="h-4 w-4 text-[#C2A139]" />
               {p.area} m²
             </span>
