@@ -191,3 +191,11 @@ body:has(.listing-page-main) #page-footer {
 body:has(.listing-page-main) #page-footer > div:first-child {
   display: none;
 }
+
+body:has(.about-page-main) #page-footer {
+  padding-top: 0;
+}
+
+body:has(.about-page-main) #page-footer > div:first-child {
+  display: none;
+}
