@@ -291,10 +291,10 @@ export default function InvestPage() {
                 Investor Support
               </motion.p>
               <motion.h2 variants={fadeUp} className="font-montserrat text-[clamp(2rem,3.7vw,4.4rem)] font-bold leading-[1.02] tracking-[-0.055em]">
-                How TMS ESTATES LTD Supports You
+                How TMS Estates Supports You
               </motion.h2>
               <motion.p variants={fadeUp} className="mt-6 max-w-2xl text-sm leading-7 text-[#242124]/72 md:text-[0.95rem] md:leading-8">
-                At TMS ESTATES LTD, we offer far more than property listings. With an in-house legal and finance team, we provide complete investment and relocation solutions tailored to each client’s objectives.
+                At TMS ESTATES, we support you well beyond the purchase itself. With an in-house legal and finance team, we provide complete investment and relocation solutions tailored to each client’s objectives.
               </motion.p>
             </motion.div>
 
