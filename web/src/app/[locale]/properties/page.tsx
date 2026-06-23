@@ -93,10 +93,10 @@ export default async function PropertiesPage({ searchParams }: Props) {
         </div>
       </section>
 
-      <section className="relative z-20 bg-[#F5F0E8] px-6 md:px-10">
+      <section className="relative z-20 bg-[#242124] px-6 md:px-10">
         <div className="mx-auto -mt-12 w-full max-w-7xl">
           <div className="mb-4 flex justify-end">
-            <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[#242124]/46">
+            <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[#F5F0E8]/54">
               {properties?.length || 0} results
               {activeFilters > 0 ? ` · ${activeFilters} active filters` : ""}
             </p>
