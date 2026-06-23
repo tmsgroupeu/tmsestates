@@ -10,6 +10,8 @@ export const maxDuration = 30;
 // Initialize Email Client
 // If the key is missing during dev, it handles it gracefully in the execute function
 const resend = process.env.RESEND_API_KEY ? new Resend(process.env.RESEND_API_KEY) : null;
+const leadToEmail = process.env.CONTACT_TO_EMAIL || 'info@tmsestates.com';
+const leadFromEmail = process.env.CONTACT_FROM_EMAIL || 'TMS Concierge <noreply@tmsgroupeu.com>';
 
 const API_URL = process.env.STRAPI_API_URL || "https://tmsestates.onrender.com";
 
@@ -151,9 +153,8 @@ export async function POST(req: Request) {
             try {
               // 2. Attempt Real Email Send
               const { data, error } = await resend.emails.send({
-                from: 'TMS Concierge <noreply@tmsgroupeu.com>', 
-                // ⚠️ NOTE: Only send to the email you used to SIGN UP for Resend until you verify domain
-                to: ['chrysostomoss@tmsgroupeu.com'], 
+                from: leadFromEmail, 
+                to: [leadToEmail], 
                 subject: `🔥 New AI Lead: ${name}`,
                 html: `
                   <div style="font-family: sans-serif; padding: 20px; border: 1px solid #eee;">
