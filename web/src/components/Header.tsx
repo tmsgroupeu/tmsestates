@@ -7,6 +7,25 @@ import { Menu, X } from "lucide-react";
 import { Link, usePathname } from "@/i18n/routing";
 import LanguageSwitcher from "./LanguageSwitcher";
 
+const desktopNavItems = [
+  { label: "Who We Are", href: "/#who-we-are" },
+  { label: "Our Projects", href: "/#projects" },
+  { label: "Invest", href: "/#invest" },
+];
+
+const menuPrimaryItems = [
+  { label: "Home", href: "/" },
+  { label: "About Us", href: "/about" },
+  { label: "Investment", href: "/invest" },
+  { label: "Our Projects", href: "/projects" },
+  { label: "All Properties", href: "/properties" },
+];
+
+const menuSecondaryItems = [
+  { label: "Market Insights", href: "/insights" },
+  { label: "Contact Us", href: "/contact" },
+];
+
 export default function Header({ locale }: { locale: string }) {
   const pathname = usePathname();
   const [isScrolled, setIsScrolled] = useState(false);
@@ -75,15 +94,15 @@ export default function Header({ locale }: { locale: string }) {
                   exit={{ opacity: 0, x: 10 }}
                   className="hidden items-center gap-7 md:flex"
                 >
-                  <Link href="/#projects" className="text-[10px] font-bold uppercase tracking-[0.15em] text-[#F5F0E8] transition-colors hover:text-[#C2A139]">
-                    Our Projects
-                  </Link>
-                  <Link href="/about" className="text-[10px] font-bold uppercase tracking-[0.15em] text-[#F5F0E8] transition-colors hover:text-[#C2A139]">
-                    Who We Are
-                  </Link>
-                  <Link href="/contact" className="text-[10px] font-bold uppercase tracking-[0.15em] text-[#F5F0E8] transition-colors hover:text-[#C2A139]">
-                    Contact
-                  </Link>
+                  {desktopNavItems.map((item) => (
+                    <Link
+                      key={item.href}
+                      href={item.href}
+                      className="text-[10px] font-bold uppercase tracking-[0.15em] text-[#F5F0E8] transition-colors hover:text-[#C2A139]"
+                    >
+                      {item.label}
+                    </Link>
+                  ))}
                   <div className="h-4 w-px bg-[#F5F0E8]/18" />
                 </motion.div>
               )}
@@ -120,9 +139,9 @@ export default function Header({ locale }: { locale: string }) {
               animate={{ x: 0 }}
               exit={{ x: "100%" }}
               transition={{ type: "spring", stiffness: 300, damping: 30 }}
-              className="fixed inset-y-0 right-0 z-[200] flex h-full w-full flex-col border-l border-[#F5F0E8]/10 bg-[#242124] p-8 shadow-2xl md:w-[450px] md:p-12"
+              className="fixed inset-y-0 right-0 z-[200] flex h-full w-full flex-col overflow-y-auto border-l border-[#F5F0E8]/10 bg-[#242124] p-8 shadow-2xl md:w-[480px] md:p-12"
             >
-              <div className="mb-16 flex items-center justify-between">
+              <div className="mb-12 flex items-center justify-between">
                 <div className="w-32">
                   <Image
                     src="/tms-logo-white.svg"
@@ -143,19 +162,43 @@ export default function Header({ locale }: { locale: string }) {
                 </button>
               </div>
 
-              <nav className="flex flex-col items-start gap-6">
-                <Link href="/" onClick={toggleMenu} className="font-montserrat text-3xl font-bold text-[#F5F0E8] transition-colors hover:text-[#C2A139]">
-                  Home
-                </Link>
-                <Link href="/about" onClick={toggleMenu} className="font-montserrat text-3xl font-bold text-[#F5F0E8] transition-colors hover:text-[#C2A139]">
-                  Who We Are
-                </Link>
-                <Link href="/properties" onClick={toggleMenu} className="font-montserrat text-3xl font-bold text-[#F5F0E8] transition-colors hover:text-[#C2A139]">
-                  Developments
-                </Link>
-                <Link href="/#contact" onClick={toggleMenu} className="font-montserrat text-3xl font-bold text-[#F5F0E8] transition-colors hover:text-[#C2A139]">
-                  Contact
-                </Link>
+              <nav className="flex flex-col gap-9" aria-label="Main menu">
+                <div>
+                  <span className="mb-4 block text-[11px] font-bold uppercase tracking-[0.28em] text-[#C2A139]">
+                    Explore
+                  </span>
+                  <div className="flex flex-col items-start gap-5">
+                    {menuPrimaryItems.map((item) => (
+                      <Link
+                        key={item.href}
+                        href={item.href}
+                        onClick={toggleMenu}
+                        className="group flex w-full items-center justify-between border-b border-[#F5F0E8]/10 pb-4 font-montserrat text-[clamp(1.65rem,5vw,2.15rem)] font-bold leading-none tracking-[-0.04em] text-[#F5F0E8] transition-colors hover:text-[#C2A139]"
+                      >
+                        <span>{item.label}</span>
+                        <span className="h-px w-8 bg-[#F5F0E8]/28 transition-all duration-300 group-hover:w-12 group-hover:bg-[#C2A139]" />
+                      </Link>
+                    ))}
+                  </div>
+                </div>
+
+                <div>
+                  <span className="mb-4 block text-[11px] font-bold uppercase tracking-[0.28em] text-[#F5F0E8]/45">
+                    More
+                  </span>
+                  <div className="grid gap-3 sm:grid-cols-2">
+                    {menuSecondaryItems.map((item) => (
+                      <Link
+                        key={item.href}
+                        href={item.href}
+                        onClick={toggleMenu}
+                        className="border border-[#F5F0E8]/10 bg-[#05070B]/18 px-4 py-3 text-[11px] font-bold uppercase tracking-[0.2em] text-[#F5F0E8]/82 transition-all duration-300 hover:border-[#C2A139]/55 hover:bg-[#C2A139] hover:text-[#242124]"
+                      >
+                        {item.label}
+                      </Link>
+                    ))}
+                  </div>
+                </div>
               </nav>
 
               <div className="mt-auto flex items-end justify-between border-t border-[#F5F0E8]/10 pt-8">
@@ -163,10 +206,18 @@ export default function Header({ locale }: { locale: string }) {
                   <span className="mb-2 block text-xs uppercase tracking-widest text-[#F5F0E8]/50">
                     Language
                   </span>
-                  <div className="relative z-[201] scale-125 origin-bottom-left">
+                  <div className="relative z-[201]">
                     <LanguageSwitcher currentLocale={locale} upwards align="left" />
                   </div>
                 </div>
+
+                <Link
+                  href="/contact"
+                  onClick={toggleMenu}
+                  className="hidden border border-[#C2A139]/70 px-5 py-3 text-[10px] font-bold uppercase tracking-[0.22em] text-[#F5F0E8] transition-all duration-300 hover:bg-[#C2A139] hover:text-[#242124] sm:inline-flex"
+                >
+                  Enquire
+                </Link>
               </div>
             </motion.div>
           </>
