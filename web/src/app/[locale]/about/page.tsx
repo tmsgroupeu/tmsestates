@@ -1,201 +1,277 @@
-/* FULL REPLACEMENT: src/app/[locale]/about/page.tsx */
 "use client";
 
-import { useRef, useState } from "react";
-import { motion, useScroll, useTransform, AnimatePresence } from "framer-motion";
-import { Target, Gem, Quote } from "lucide-react";
+import { motion } from "framer-motion";
+import { ArrowRight } from "lucide-react";
+import { Link } from "@/i18n/routing";
+
+const CLOUD_NAME = "dkbpthpxg";
+const ABOUT_VIDEO_ID = "Reshoot_stationary_202601101139_egs3f_sfxo0c";
+const ABOUT_VIDEO_URL = `https://res.cloudinary.com/${CLOUD_NAME}/video/upload/f_auto,q_90/${ABOUT_VIDEO_ID}.mp4`;
+
+const values = [
+  {
+    title: "Selectivity",
+    text: "We pursue opportunities with purpose, focusing on developments that demonstrate genuine potential, strategic value and long-term relevance.",
+  },
+  {
+    title: "Integrity",
+    text: "Transparency, accountability and trust guide every relationship with buyers, investors, partners and the communities in which we build.",
+  },
+  {
+    title: "Excellence",
+    text: "From planning and design through to construction and delivery, we maintain uncompromising standards at every stage of the development process.",
+  },
+  {
+    title: "Longevity",
+    text: "We create developments designed to retain their appeal, functionality and value for generations to come. We build for decades, not market cycles.",
+  },
+];
+
+const fadeUp = {
+  hidden: { opacity: 0, y: 22, filter: "blur(4px)" },
+  visible: {
+    opacity: 1,
+    y: 0,
+    filter: "blur(0px)",
+    transition: {
+      duration: 1.15,
+      ease: [0.16, 1, 0.3, 1],
+    },
+  },
+};
+
+const softFade = {
+  hidden: { opacity: 0, y: 12 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: {
+      duration: 1.08,
+      ease: [0.16, 1, 0.3, 1],
+    },
+  },
+};
+
+const stagger = {
+  hidden: {},
+  visible: {
+    transition: {
+      staggerChildren: 0.14,
+      delayChildren: 0.08,
+    },
+  },
+};
 
 export default function AboutPage() {
-  const containerRef = useRef<HTMLDivElement>(null);
-  const { scrollYProgress } = useScroll({
-    target: containerRef,
-    offset: ["start start", "end end"],
-  });
-
-  // --- CONFIG ---
-  const CLOUD_NAME = "dkbpthpxg";
-  const INTRO_ID = "The_view_of_202601101217_dr2mr_-_Trim_cbwcvm";
-  const LOOP_ID = "Reshoot_stationary_202601101139_egs3f_sfxo0c";
-  
-  const INTRO_URL = `https://res.cloudinary.com/${CLOUD_NAME}/video/upload/f_auto,q_90/${INTRO_ID}.mp4`;
-  const LOOP_URL = `https://res.cloudinary.com/${CLOUD_NAME}/video/upload/f_auto,q_90/${LOOP_ID}.mp4`;
-
-  const [introFinished, setIntroFinished] = useState(false);
-
-  // --- SCROLL DYNAMICS ---
-  // The video stays clear for the initial content, then blurs as you scroll to Mission/Values
-  const bgBlur = useTransform(scrollYProgress, [0, 0.4], ["0px", "8px"]);
-  const bgOverlay = useTransform(scrollYProgress, [0, 0.4], ["rgba(10, 35, 66, 0.2)", "rgba(10, 35, 66, 0.7)"]);
-
-  // --- ANIMATION VARIANTS ---
-  const fadeInUpLoad = {
-    hidden: { opacity: 0, y: 40 },
-    visible: { opacity: 1, y: 0, transition: { duration: 0.8, ease: "easeOut" } }
-  };
-
-  const fadeInUpScroll = {
-    hidden: { opacity: 0, y: 60 },
-    visible: { opacity: 1, y: 0, transition: { duration: 1, ease: [0.25, 1, 0.5, 1] } }
-  };
-
   return (
-    <div ref={containerRef} className="relative bg-[#0A2342] overflow-x-hidden">
-      
-      {/* --- 1. VIDEO BACKDROP LAYER --- */}
-      <motion.div className="fixed inset-0 w-full h-full z-0 overflow-hidden pointer-events-none">
-        {/* Dynamic Tint/Blur Overlay */}
-        <motion.div 
-            style={{ backdropFilter: `blur(${bgBlur})`, backgroundColor: bgOverlay }}
-            className="absolute inset-0 z-10"
-        />
-
-        {/* The Loop (Bottom) */}
+    <main className="about-page-main overflow-hidden bg-[#F5F0E8] text-[#242124]">
+      <section className="relative flex min-h-[70svh] items-end overflow-hidden bg-[#242124] px-6 pb-16 pt-36 md:px-10 md:pb-20 md:pt-44 lg:min-h-[76svh]">
         <video
-          autoPlay loop muted playsInline
-          className="absolute inset-0 w-full h-full object-cover z-0 scale-110 origin-center"
-          src={LOOP_URL}
+          autoPlay
+          loop
+          muted
+          playsInline
+          src={ABOUT_VIDEO_URL}
+          className="absolute inset-0 h-full w-full scale-105 object-cover opacity-88"
         />
 
-        {/* The Intro (Top - Fades out) */}
-        <div className={`absolute inset-0 w-full h-full z-1 transition-opacity duration-[1500ms] ease-in-out ${introFinished ? 'opacity-0' : 'opacity-100'}`}>
-             <video
-               autoPlay muted playsInline
-               className="w-full h-full object-cover scale-110 origin-center"
-               src={INTRO_URL}
-               onEnded={() => setIntroFinished(true)}
-             />
-        </div>
-      </motion.div>
+        <div className="absolute inset-0 bg-[#242124]/10" />
+        <div className="absolute inset-0 bg-gradient-to-r from-[#242124]/74 via-[#242124]/26 to-[#242124]/46" />
+        <div className="absolute inset-0 bg-gradient-to-t from-[#242124]/92 via-[#242124]/20 to-[#242124]/18" />
+        <div className="absolute bottom-0 left-0 h-[48%] w-full bg-gradient-to-t from-[#242124] via-[#242124]/62 to-transparent" />
+        <div className="absolute right-0 top-0 h-full w-[54%] bg-gradient-to-l from-[#242124]/72 via-[#242124]/32 to-transparent" />
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_70%_18%,rgba(194,161,57,0.14),transparent_30%)]" />
 
-
-      {/* --- 2. CONTENT LAYER --- */}
-      {/* Z-20 ensures this sits above the fixed background */}
-      <div className="relative z-20 w-full flex flex-col items-center pt-32 md:pt-40 pb-40">
-
-        {/* -- SECTION 1: HERO TITLE & ABOUT CARD (On Load) -- */}
-        <div className="w-full max-w-5xl px-6 flex flex-col items-center">
-            
-            {/* Title Block */}
-            <motion.div 
-               initial="hidden" animate="visible" 
-               variants={{
-                 hidden: { opacity: 0, y: 20 },
-                 visible: { opacity: 1, y: 0, transition: { duration: 0.6 } }
-               }}
-               className="text-center w-full mb-10"
+        <div className="relative mx-auto grid w-full max-w-7xl gap-10 lg:grid-cols-[1fr_0.82fr] lg:items-end lg:gap-20">
+          <motion.div
+            initial="hidden"
+            animate="visible"
+            variants={stagger}
+            className="max-w-2xl"
+          >
+            <motion.h1
+              variants={fadeUp}
+              className="font-montserrat text-[clamp(2.15rem,4vw,5rem)] font-bold leading-[1.02] tracking-[-0.055em] text-[#F5F0E8] drop-shadow-[0_16px_40px_rgba(0,0,0,0.46)]"
             >
-               <span className="inline-block py-1.5 px-4 border border-white/20 rounded-full text-white/80 text-[10px] font-bold uppercase tracking-[0.3em] mb-4 backdrop-blur-md bg-white/5">
-                 About Us
-               </span>
-               {/* 
-                  TYPOGRAPHY UPDATE: "Who We Are"
-                  First & Last White, Middle Golden 
-               */}
-               <h1 className="text-5xl sm:text-6xl md:text-8xl font-montserrat font-extrabold text-white leading-tight drop-shadow-[0_4px_20px_rgba(0,0,0,0.5)]">
-                 Who <span className="text-[#D4AF37]">We</span> Are
-               </h1>
-            </motion.div>
+              Building <span className="text-[#C2A139]">Value.</span>
+              <br />
+              Creating <span className="text-[#C2A139]">Places.</span>
+            </motion.h1>
+          </motion.div>
 
-            {/* The First Card (Appears Immediately) */}
-            <motion.div 
-              initial="hidden" animate="visible" 
-              variants={{
-                hidden: { opacity: 0, y: 40 },
-                visible: { opacity: 1, y: 0, transition: { duration: 0.8, delay: 0.2, ease: "easeOut" } }
-              }}
-              className="relative overflow-hidden w-full rounded-[2rem] border border-white/10 bg-[#0A2342]/60 backdrop-blur-2xl p-10 md:p-14 shadow-[0_20px_60px_-10px_rgba(0,0,0,0.5)] group"
-           >
-              {/* Subtle glass reflection effect */}
-              <div className="absolute inset-0 z-0 pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity duration-1000">
-                 <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent -skew-x-12 translate-x-[-150%] group-hover:animate-[shine_1.5s_ease-in-out_infinite]" />
-              </div>
-
-              <div className="relative z-10 flex flex-col lg:flex-row gap-12 items-start">
-                  <div className="lg:w-1/3">
-                      <div className="w-14 h-14 bg-[#D4AF37] rounded-full flex items-center justify-center text-[#0A2342] mb-6 shadow-lg shadow-[#D4AF37]/30">
-                        <Quote size={28} />
-                      </div>
-                      <h2 className="text-3xl lg:text-4xl font-montserrat font-bold text-white leading-snug">
-                          Structured.<br/>Reliable.<br/>Results-Driven.
-                      </h2>
-                  </div>
-                  <div className="lg:w-2/3 text-white/80 leading-relaxed space-y-6 text-lg font-light">
-                      <p className="tracking-wide">
-                        <strong className="text-white font-medium">TMS ESTATES LTD</strong> is a professional real estate agency with over a decade of experience in real estate and financial services. 
-                        Based in Cyprus, with headquarters in Limassol, we deliver high-level expertise supported by in-depth market knowledge.
-                      </p>
-                      <p className="tracking-wide">
-                        As part of the <strong className="text-[#D4AF37] font-medium">TMS Group</strong>, an international organisation with worldwide activities, we benefit from a 
-                        strong global network while maintaining a focused, disciplined local presence. Our boutique-office operating model allows us to remain selective in our property portfolio and strategic in our partnerships, ensuring consistent quality and alignment with our corporate standards.
-                      </p>
-                  </div>
-              </div>
-           </motion.div>
-
-        </div>
-
-        {/* -- SCROLL CUE (Mouse Icon) -- */}
-        <div className="h-[30vh] w-full flex items-center justify-center pointer-events-none">
-            <motion.div 
-               initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 1 }}
-               className="flex flex-col items-center gap-2 text-white/50"
+          <motion.div
+            initial="hidden"
+            animate="visible"
+            variants={stagger}
+            className="max-w-xl lg:pb-5"
+          >
+            <motion.p
+              variants={softFade}
+              className="border-l border-[#C2A139]/55 bg-[#242124]/42 px-5 py-5 text-[0.98rem] leading-8 text-[#F5F0E8]/90 shadow-[0_22px_70px_rgba(0,0,0,0.24)] backdrop-blur-[2px] md:text-[1.04rem] md:leading-8"
             >
-               <span className="text-[10px] uppercase tracking-widest">Our Principles</span>
-               <div className="w-[1px] h-16 bg-gradient-to-b from-white/30 to-transparent" />
+              TMS Estates is a real estate development company focused on creating residential and mixed-use properties in strategically selected locations across Cyprus.
+            </motion.p>
+          </motion.div>
+        </div>
+      </section>
+
+      <section className="relative bg-[#F5F0E8] px-6 py-16 md:px-10 md:py-20">
+        <div className="mx-auto grid w-full max-w-7xl gap-12 lg:grid-cols-[0.72fr_1.28fr] lg:items-start lg:gap-20">
+          <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-90px" }} variants={stagger}>
+            <motion.p variants={fadeUp} className="font-montserrat text-2xl font-semibold italic tracking-[-0.04em] text-[#C2A139] md:text-3xl">
+              The Company
+            </motion.p>
+
+            <motion.div variants={softFade}>
+              <Link href="/projects" className="group mt-6 inline-flex items-center gap-3 border-b border-[#C2A139]/40 pb-2 text-[10px] font-bold uppercase tracking-[0.24em] text-[#242124] transition-colors hover:text-[#C2A139]">
+                Explore Projects
+                <ArrowRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-1" />
+              </Link>
             </motion.div>
+          </motion.div>
+
+          <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-90px" }} variants={stagger} className="grid gap-6 text-[0.98rem] leading-8 text-[#242124]/72 md:grid-cols-2 md:text-[1.03rem] md:leading-8">
+            <motion.p variants={fadeUp}>
+              Our developments vary in scale, concept and location, encompassing boutique apartment buildings, standalone residences and land-driven opportunities. Every project is carefully evaluated based on its long-term potential, market demand and strategic value.
+            </motion.p>
+
+            <motion.p variants={fadeUp}>
+              Backed by the strength and heritage of TMS Group, we combine local market insight, international business expertise and a disciplined development approach to create properties that deliver lasting value. From site selection and planning through construction and delivery, every decision is guided by quality, functionality and long-term vision.
+            </motion.p>
+          </motion.div>
+        </div>
+      </section>
+
+      <section className="relative overflow-hidden bg-[#242124] px-6 py-12 text-center text-[#F5F0E8] md:px-10 md:py-14">
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_-24%,rgba(194,161,57,0.18),transparent_38%),linear-gradient(135deg,rgba(245,240,232,0.055),transparent_42%,rgba(5,7,11,0.28))]" />
+        <div className="mission-gold-line pointer-events-none absolute inset-x-0 top-0 h-px" />
+        <div className="mission-gold-line pointer-events-none absolute inset-x-0 bottom-0 h-px opacity-60" />
+
+        <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-90px" }} variants={stagger} className="relative mx-auto max-w-5xl">
+          <motion.h2 variants={fadeUp} className="font-montserrat text-2xl font-semibold tracking-[-0.04em] text-[#C2A139] drop-shadow-[0_10px_28px_rgba(0,0,0,0.42)] md:text-3xl">
+            Our Mission
+          </motion.h2>
+
+          <motion.p variants={softFade} className="mx-auto mt-4 max-w-4xl text-[0.98rem] leading-8 text-[#F5F0E8]/84 drop-shadow-[0_8px_24px_rgba(0,0,0,0.36)] md:text-[1.03rem] md:leading-8">
+            To create thoughtfully designed developments that deliver lasting value for homeowners, investors and communities alike, balancing quality, functionality and sustainable growth in every project we undertake.
+          </motion.p>
+        </motion.div>
+      </section>
+
+      <section className="relative bg-[#F5F0E8] px-6 py-16 md:px-10 md:py-20">
+        <div className="mx-auto grid w-full max-w-7xl gap-12 lg:grid-cols-[0.72fr_1.28fr] lg:items-start lg:gap-20">
+          <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-90px" }} variants={fadeUp}>
+            <p className="font-montserrat text-2xl font-semibold italic tracking-[-0.04em] text-[#C2A139] md:text-3xl">
+              Our Approach
+            </p>
+          </motion.div>
+
+          <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-90px" }} variants={stagger} className="max-w-3xl space-y-5 text-[0.98rem] leading-8 text-[#242124]/72 md:text-[1.03rem] md:leading-8">
+            <motion.p variants={fadeUp}>
+              Every development begins with careful evaluation. We assess location, market demand, accessibility, infrastructure and future growth potential before committing to a project.
+            </motion.p>
+
+            <motion.p variants={fadeUp}>
+              This disciplined approach allows us to identify opportunities with genuine long-term potential and create properties that are designed to remain relevant, desirable and valuable well into the future.
+            </motion.p>
+
+            <motion.p variants={fadeUp}>
+              By combining strategic thinking with attention to detail, we develop projects that meet today's needs while anticipating tomorrow's expectations.
+            </motion.p>
+          </motion.div>
+        </div>
+      </section>
+
+      <section className="relative overflow-hidden bg-[#C2A139] px-6 py-12 text-[#242124] md:px-10 md:py-14">
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_-12%,rgba(245,240,232,0.34),transparent_34%),linear-gradient(135deg,rgba(245,240,232,0.18),transparent_38%,rgba(36,33,36,0.14))]" />
+        <div className="values-dark-line pointer-events-none absolute inset-x-0 top-0 h-px" />
+        <div className="values-dark-line pointer-events-none absolute inset-x-0 bottom-0 h-px opacity-55" />
+
+        <div className="relative mx-auto w-full max-w-7xl">
+          <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-90px" }} variants={stagger} className="text-center">
+            <motion.h2 variants={fadeUp} className="font-montserrat text-3xl font-semibold tracking-[-0.045em] text-[#242124] drop-shadow-[0_10px_28px_rgba(245,240,232,0.22)] md:text-[2.35rem]">
+              Our Values
+            </motion.h2>
+
+            <motion.p variants={softFade} className="mx-auto mt-3 max-w-4xl text-[0.98rem] font-medium leading-8 text-[#242124]/82 md:text-[1.03rem] md:leading-8">
+              Four principles that guide every decision from the opportunities we pursue to the developments we deliver.
+            </motion.p>
+          </motion.div>
+
+          <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-90px" }} variants={stagger} className="relative mt-9 grid gap-4 md:grid-cols-2">
+            <div className="pointer-events-none absolute left-1/2 top-0 hidden h-full w-px -translate-x-1/2 bg-[#242124]/22 md:block" />
+            <div className="pointer-events-none absolute left-0 top-1/2 hidden h-px w-full -translate-y-1/2 bg-[#242124]/22 md:block" />
+
+            {values.map((value, index) => (
+              <motion.article key={value.title} variants={fadeUp} className="group relative min-h-[174px] overflow-hidden border border-[#242124]/18 bg-[#F5F0E8]/10 p-6 shadow-[0_18px_70px_rgba(36,33,36,0.08)] backdrop-blur-[2px] transition-all duration-500 hover:-translate-y-1 hover:border-[#242124] hover:bg-[#242124] hover:shadow-[0_28px_90px_rgba(36,33,36,0.28)] md:p-7">
+                <div className="absolute inset-0 opacity-0 transition-opacity duration-500 group-hover:opacity-100">
+                  <div className="absolute inset-0 bg-[radial-gradient(circle_at_18%_0%,rgba(194,161,57,0.24),transparent_34%),linear-gradient(135deg,rgba(245,240,232,0.075),transparent_44%,rgba(5,7,11,0.42))]" />
+                  <div className="absolute inset-x-6 top-0 h-px bg-gradient-to-r from-transparent via-[#C2A139]/90 to-transparent" />
+                  <div className="absolute left-0 top-0 h-full w-[3px] bg-gradient-to-b from-[#C2A139] via-[#C2A139]/55 to-transparent opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
+                </div>
+
+                <div className="relative z-10">
+                  <span className="text-[10px] font-bold uppercase tracking-[0.3em] text-[#242124]/58 transition-colors duration-500 group-hover:text-[#C2A139]">
+                    {String(index + 1).padStart(2, "0")}
+                  </span>
+
+                  <h3 className="mt-5 font-montserrat text-[1.28rem] font-semibold tracking-[-0.035em] text-[#242124] transition-colors duration-500 group-hover:text-[#C2A139] md:text-[1.38rem]">
+                    {value.title}
+                  </h3>
+
+                  <p className="mt-3 max-w-md text-[0.98rem] font-medium leading-7 text-[#242124]/78 transition-colors duration-500 group-hover:text-[#F5F0E8] md:text-[1.02rem]">
+                    {value.text}
+                  </p>
+                </div>
+              </motion.article>
+            ))}
+          </motion.div>
         </div>
 
+        <style jsx>{`
+          .mission-gold-line,
+          .values-dark-line {
+            background: linear-gradient(
+              90deg,
+              transparent,
+              rgba(194, 161, 57, 0.28),
+              rgba(194, 161, 57, 0.95),
+              rgba(245, 240, 232, 0.56),
+              rgba(194, 161, 57, 0.28),
+              transparent
+            );
+            background-size: 240% 100%;
+            animation: aboutGoldSweep 6.8s ease-in-out infinite;
+          }
 
-        {/* -- SECTION 2: MISSION & VALUES (On Scroll) -- */}
-        <div className="w-full max-w-6xl px-6 grid grid-cols-1 md:grid-cols-2 gap-8">
-           
-           {/* Mission Card */}
-           <motion.div 
-             initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-100px" }} variants={fadeInUpScroll}
-             className="relative rounded-3xl border border-white/10 bg-[#0A2342]/80 backdrop-blur-xl p-10 md:p-12 shadow-2xl hover:border-[#D4AF37]/50 transition-colors duration-500 overflow-hidden"
-           >
-              <div className="absolute top-0 right-0 -mr-6 -mt-6 opacity-5">
-                 <Target size={180} />
-              </div>
-              <div className="relative z-10">
-                <div className="w-12 h-12 bg-white/10 rounded-full flex items-center justify-center text-white mb-6 backdrop-blur-md border border-white/10">
-                   <Target size={24} />
-                </div>
-                <h3 className="text-3xl font-montserrat font-bold text-white mb-4">Our Mission</h3>
-                <p className="text-white/70 leading-relaxed font-light text-lg">
-                   To establish a distinctive real estate identity founded on excellence in service, 
-                   innovation, and ethical business practices. We deliver long-term value, 
-                   transparency, and trust to our clients.
-                </p>
-              </div>
-           </motion.div>
+          .values-dark-line {
+            background: linear-gradient(
+              90deg,
+              transparent,
+              rgba(36, 33, 36, 0.2),
+              rgba(36, 33, 36, 0.72),
+              rgba(245, 240, 232, 0.52),
+              rgba(36, 33, 36, 0.2),
+              transparent
+            );
+            background-size: 240% 100%;
+          }
 
-           {/* Values Card */}
-           <motion.div 
-             initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-100px" }} variants={fadeInUpScroll}
-             className="relative rounded-3xl border border-white/10 bg-white/5 backdrop-blur-xl p-10 md:p-12 shadow-2xl hover:border-[#D4AF37]/50 transition-colors duration-500 overflow-hidden"
-           >
-              <div className="absolute top-0 right-0 -mr-6 -mt-6 text-[#D4AF37] opacity-5">
-                 <Gem size={180} />
-              </div>
-              <div className="relative z-10">
-                <div className="w-12 h-12 bg-[#D4AF37] rounded-full flex items-center justify-center text-[#0A2342] mb-6 shadow-md shadow-[#D4AF37]/30">
-                   <Gem size={24} />
-                </div>
-                <h3 className="text-3xl font-montserrat font-bold text-white mb-4">Our Values</h3>
-                <p className="text-white/80 leading-relaxed mb-6 font-light text-lg">
-                   Centered on professional excellence, integrity, and a client-focused approach. 
-                   We operate with accountability and strong ethical standards, ensuring trust and consistency in every engagement. By combining in-depth real estate expertise with strong financial insight, we deliver informed and reliable solutions. Through innovation and a disciplined, selective strategy, we create sustainable value for our clients and long-term partnerships.
-                </p>
-                <div className="flex flex-wrap gap-4 mt-auto">
-                   <span className="text-[10px] uppercase tracking-widest font-bold text-[#0A2342] bg-[#D4AF37] px-4 py-1.5 rounded-full shadow-lg">Integrity</span>
-                   <span className="text-[10px] uppercase tracking-widest font-bold text-white bg-white/10 border border-white/20 px-4 py-1.5 rounded-full">Excellence</span>
-                </div>
-              </div>
-           </motion.div>
-        </div>
-
-      </div>
-    </div>
+          @keyframes aboutGoldSweep {
+            0% {
+              background-position: 120% 0;
+              opacity: 0.42;
+            }
+            45% {
+              opacity: 1;
+            }
+            100% {
+              background-position: -120% 0;
+              opacity: 0.42;
+            }
+          }
+        `}</style>
+      </section>
+    </main>
   );
 }
