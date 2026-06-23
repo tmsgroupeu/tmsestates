@@ -1,7 +1,6 @@
 import Image from "next/image";
 import Filters from "@/components/Filters";
 import PropertyCard from "@/components/PropertyCard";
-import { Link } from "@/i18n/routing";
 import { fetchProperties, Property } from "@/lib/cms";
 
 export const revalidate = 0;
@@ -20,29 +19,14 @@ type Props = {
   searchParams: Promise<SearchParams>;
 };
 
-const statusTabs = [
-  { label: "All Listings", value: "all" },
-  { label: "For Sale", value: "for-sale" },
-  { label: "For Rent", value: "for-rent" },
-];
-
-function buildTabHref(status: string) {
-  return status === "all" ? "/properties" : `/properties?status=${status}`;
-}
-
 export default async function PropertiesPage({ searchParams }: Props) {
   const params = await searchParams;
-  const activeStatus = params.status || "all";
 
   const apiFilters: Record<string, string> = {
     "pagination[pageSize]": "100",
     "sort[0]": "updatedAt:desc",
     populate: "*",
   };
-
-  if (activeStatus !== "all") {
-    apiFilters["filters[prop_status][$eq]"] = activeStatus;
-  }
 
   if (params.type) apiFilters["filters[propertyType][$eq]"] = params.type;
   if (params.city) apiFilters["filters[city][$eq]"] = params.city;
@@ -63,7 +47,6 @@ export default async function PropertiesPage({ searchParams }: Props) {
   ].sort();
 
   const activeFilters = [
-    activeStatus !== "all",
     params.city,
     params.type,
     params.beds,
@@ -73,7 +56,7 @@ export default async function PropertiesPage({ searchParams }: Props) {
   ].filter(Boolean).length;
 
   return (
-    <main className="overflow-hidden bg-[#F5F0E8] text-[#242124]">
+    <main className="listing-page-main overflow-hidden bg-[#F5F0E8] text-[#242124]">
       <section className="relative flex min-h-[54svh] items-end overflow-hidden bg-[#242124] px-6 pb-20 pt-36 md:px-10 md:pt-44 lg:min-h-[62svh]">
         <Image
           src="/assets/hero-poster.jpg"
@@ -84,24 +67,25 @@ export default async function PropertiesPage({ searchParams }: Props) {
           className="object-cover"
         />
 
-        <div className="absolute inset-0 bg-[#242124]/42" />
-        <div className="absolute inset-0 bg-gradient-to-r from-[#242124]/92 via-[#242124]/58 to-[#242124]/28" />
-        <div className="absolute inset-0 bg-gradient-to-t from-[#242124]/96 via-[#242124]/38 to-transparent" />
-        <div className="absolute bottom-0 left-0 h-[48%] w-full bg-gradient-to-t from-[#242124] via-[#242124]/72 to-transparent" />
+        <div className="absolute inset-0 bg-[#242124]/52" />
+        <div className="absolute inset-x-0 top-0 h-48 bg-gradient-to-b from-[#242124]/92 via-[#242124]/52 to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-r from-[#242124]/96 via-[#242124]/68 to-[#242124]/30" />
+        <div className="absolute inset-0 bg-gradient-to-t from-[#242124]/98 via-[#242124]/48 to-transparent" />
+        <div className="absolute bottom-0 left-0 h-[54%] w-full bg-gradient-to-t from-[#242124] via-[#242124]/78 to-transparent" />
 
         <div className="relative mx-auto grid w-full max-w-7xl gap-8 lg:grid-cols-[1fr_0.78fr] lg:items-end">
           <div>
-            <p className="mb-5 text-[10px] font-bold uppercase tracking-[0.3em] text-[#C2A139]">
+            <p className="mb-5 w-fit border border-[#C2A139]/44 bg-[#242124]/62 px-4 py-2.5 text-[10px] font-bold uppercase tracking-[0.3em] text-[#C2A139] shadow-[0_12px_36px_rgba(0,0,0,0.34)] backdrop-blur-md">
               Property Portfolio
             </p>
 
-            <h1 className="max-w-4xl font-montserrat text-[clamp(2.7rem,5.8vw,6.6rem)] font-bold leading-[0.96] tracking-[-0.07em] text-[#F5F0E8]">
+            <h1 className="max-w-4xl font-montserrat text-[clamp(2.7rem,5.8vw,6.6rem)] font-bold leading-[0.96] tracking-[-0.07em] text-[#F5F0E8] drop-shadow-[0_18px_48px_rgba(0,0,0,0.76)]">
               Browse Available
               <span className="block text-[#C2A139]">Properties</span>
             </h1>
           </div>
 
-          <p className="max-w-xl border-l border-[#C2A139]/50 bg-[#242124]/44 px-5 py-5 text-sm leading-7 text-[#F5F0E8]/86 shadow-[0_22px_70px_rgba(0,0,0,0.2)] backdrop-blur-[2px] md:text-base md:leading-8">
+          <p className="max-w-xl border border-[#F5F0E8]/18 border-l-[#C2A139]/70 bg-[#242124]/72 px-5 py-5 text-sm leading-7 text-[#F5F0E8]/92 shadow-[0_24px_80px_rgba(0,0,0,0.36)] backdrop-blur-md md:text-base md:leading-8">
             Explore residential and investment opportunities across Cyprus.
             Filter by location, type, bedrooms or price to quickly find the
             properties most relevant to you.
@@ -111,24 +95,7 @@ export default async function PropertiesPage({ searchParams }: Props) {
 
       <section className="relative z-20 bg-[#F5F0E8] px-6 md:px-10">
         <div className="mx-auto -mt-12 w-full max-w-7xl">
-          <div className="mb-4 flex flex-wrap items-center justify-between gap-4">
-            <div className="inline-flex overflow-hidden bg-white shadow-[0_18px_60px_rgba(36,33,36,0.12)]">
-              {statusTabs.map((tab) => (
-                <Link
-                  key={tab.value}
-                  href={buildTabHref(tab.value)}
-                  scroll={false}
-                  className={`border-r border-[#242124]/8 px-5 py-3 text-[10px] font-bold uppercase tracking-[0.22em] transition-colors last:border-r-0 md:px-7 ${
-                    activeStatus === tab.value
-                      ? "bg-[#242124] text-[#F5F0E8]"
-                      : "text-[#242124]/58 hover:bg-[#F5F0E8] hover:text-[#242124]"
-                  }`}
-                >
-                  {tab.label}
-                </Link>
-              ))}
-            </div>
-
+          <div className="mb-4 flex justify-end">
             <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[#242124]/46">
               {properties?.length || 0} results
               {activeFilters > 0 ? ` · ${activeFilters} active filters` : ""}
@@ -159,7 +126,7 @@ export default async function PropertiesPage({ searchParams }: Props) {
           </div>
 
           {properties && properties.length > 0 ? (
-            <div className="grid grid-cols-1 gap-5 md:grid-cols-2 xl:grid-cols-3">
+            <div className="grid grid-cols-1 gap-5 md:grid-cols-2 lg:grid-cols-3">
               {properties.map((p: Property) => (
                 <PropertyCard key={p.id} p={p} />
               ))}
