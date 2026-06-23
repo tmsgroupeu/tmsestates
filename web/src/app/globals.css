@@ -183,3 +183,11 @@ body {
   -webkit-box-orient: vertical;
   overflow: hidden;
 }
+
+body:has(.listing-page-main) #page-footer {
+  padding-top: 0;
+}
+
+body:has(.listing-page-main) #page-footer > div:first-child {
+  display: none;
+}
