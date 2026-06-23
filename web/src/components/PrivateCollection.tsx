@@ -5,20 +5,48 @@ import { ArrowRight, Check, Lock } from "lucide-react";
 import { useState } from "react";
 
 export default function PrivateCollection() {
-  const [status, setStatus] = useState<"idle" | "submitting" | "success">(
-    "idle",
-  );
+  const [status, setStatus] = useState<"idle" | "submitting" | "success" | "error">("idle");
   const [email, setEmail] = useState("");
+  const [message, setMessage] = useState("");
 
-  const handleSubmit = (event: React.FormEvent) => {
+  const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
-    if (!email) return;
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      setStatus("error");
+      setMessage("Please add a valid email address.");
+      return;
+    }
 
     setStatus("submitting");
+    setMessage("Sending your request...");
 
-    setTimeout(() => {
+    try {
+      const response = await fetch("/api/contact", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          name: "Private Collection Subscriber",
+          email,
+          inquiry: "Private Collection Access",
+          message: `Please contact me about the TMS Estates Private Collection. Email: ${email}`,
+          source: "Private collection homepage form",
+        }),
+      });
+
+      const result = await response.json().catch(() => ({}));
+
+      if (!response.ok || !result.ok) {
+        setStatus("error");
+        setMessage(result.error || "We could not send the request. Please try again.");
+        return;
+      }
+
       setStatus("success");
-    }, 1200);
+      setMessage("");
+    } catch {
+      setStatus("error");
+      setMessage("Connection issue. Please try again in a moment.");
+    }
   };
 
   return (
@@ -99,6 +127,30 @@ export default function PrivateCollection() {
                     </span>
                   </button>
                 </form>
+
+                <AnimatePresence mode="wait">
+                  {status === "error" ? (
+                    <motion.p
+                      key="error"
+                      initial={{ opacity: 0, y: 8 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: -8 }}
+                      className="mt-4 border border-red-200 bg-red-50 px-4 py-3 text-xs font-semibold text-red-700"
+                    >
+                      {message}
+                    </motion.p>
+                  ) : status === "submitting" ? (
+                    <motion.p
+                      key="submitting"
+                      initial={{ opacity: 0, y: 8 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: -8 }}
+                      className="mt-4 border border-[#C2A139]/24 bg-[#C2A139]/10 px-4 py-3 text-xs font-semibold text-[#F5F0E8]/78"
+                    >
+                      {message}
+                    </motion.p>
+                  ) : null}
+                </AnimatePresence>
 
                 <div className="mt-8 flex w-full items-center justify-center gap-4 text-center text-[9px] font-bold uppercase tracking-[0.3em] text-[#F5F0E8]/46">
                   <span className="h-px w-8 bg-[#C2A139]/34" />
