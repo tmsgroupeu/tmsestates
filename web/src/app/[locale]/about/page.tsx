@@ -107,7 +107,7 @@ export default function AboutPage() {
           >
             <motion.p
               variants={softFade}
-              className="border-l border-[#C2A139]/55 bg-[#242124]/42 px-5 py-5 text-sm leading-7 text-[#F5F0E8]/90 shadow-[0_22px_70px_rgba(0,0,0,0.24)] backdrop-blur-[2px] md:text-base md:leading-8"
+              className="border-l border-[#C2A139]/55 bg-[#242124]/42 px-5 py-5 text-[0.98rem] leading-8 text-[#F5F0E8]/90 shadow-[0_22px_70px_rgba(0,0,0,0.24)] backdrop-blur-[2px] md:text-[1.04rem] md:leading-8"
             >
               TMS Estates is a real estate development company focused on creating residential and mixed-use properties in strategically selected locations across Cyprus.
             </motion.p>
@@ -130,7 +130,7 @@ export default function AboutPage() {
             </motion.div>
           </motion.div>
 
-          <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-90px" }} variants={stagger} className="grid gap-6 text-sm leading-7 text-[#242124]/72 md:grid-cols-2 md:text-[0.95rem] md:leading-8">
+          <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-90px" }} variants={stagger} className="grid gap-6 text-[0.98rem] leading-8 text-[#242124]/72 md:grid-cols-2 md:text-[1.03rem] md:leading-8">
             <motion.p variants={fadeUp}>
               Our developments vary in scale, concept and location, encompassing boutique apartment buildings, standalone residences and land-driven opportunities. Every project is carefully evaluated based on its long-term potential, market demand and strategic value.
             </motion.p>
@@ -152,7 +152,7 @@ export default function AboutPage() {
             Our Mission
           </motion.h2>
 
-          <motion.p variants={softFade} className="mx-auto mt-4 max-w-4xl text-sm leading-7 text-[#F5F0E8]/84 drop-shadow-[0_8px_24px_rgba(0,0,0,0.36)] md:text-[0.95rem] md:leading-8">
+          <motion.p variants={softFade} className="mx-auto mt-4 max-w-4xl text-[0.98rem] leading-8 text-[#F5F0E8]/84 drop-shadow-[0_8px_24px_rgba(0,0,0,0.36)] md:text-[1.03rem] md:leading-8">
             To create thoughtfully designed developments that deliver lasting value for homeowners, investors and communities alike, balancing quality, functionality and sustainable growth in every project we undertake.
           </motion.p>
         </motion.div>
@@ -166,7 +166,7 @@ export default function AboutPage() {
             </p>
           </motion.div>
 
-          <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-90px" }} variants={stagger} className="max-w-3xl space-y-5 text-sm leading-7 text-[#242124]/72 md:text-[0.95rem] md:leading-8">
+          <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-90px" }} variants={stagger} className="max-w-3xl space-y-5 text-[0.98rem] leading-8 text-[#242124]/72 md:text-[1.03rem] md:leading-8">
             <motion.p variants={fadeUp}>
               Every development begins with careful evaluation. We assess location, market demand, accessibility, infrastructure and future growth potential before committing to a project.
             </motion.p>
@@ -182,44 +182,44 @@ export default function AboutPage() {
         </div>
       </section>
 
-      <section className="relative overflow-hidden bg-[#C2A139] px-6 py-16 text-[#242124] md:px-10 md:py-20">
+      <section className="relative overflow-hidden bg-[#C2A139] px-6 py-12 text-[#242124] md:px-10 md:py-14">
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_-12%,rgba(245,240,232,0.34),transparent_34%),linear-gradient(135deg,rgba(245,240,232,0.18),transparent_38%,rgba(36,33,36,0.14))]" />
         <div className="values-dark-line pointer-events-none absolute inset-x-0 top-0 h-px" />
         <div className="values-dark-line pointer-events-none absolute inset-x-0 bottom-0 h-px opacity-55" />
 
         <div className="relative mx-auto w-full max-w-7xl">
           <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-90px" }} variants={stagger} className="text-center">
-            <motion.h2 variants={fadeUp} className="font-montserrat text-3xl font-semibold tracking-[-0.045em] text-[#242124] drop-shadow-[0_10px_28px_rgba(245,240,232,0.22)] md:text-4xl">
+            <motion.h2 variants={fadeUp} className="font-montserrat text-3xl font-semibold tracking-[-0.045em] text-[#242124] drop-shadow-[0_10px_28px_rgba(245,240,232,0.22)] md:text-[2.35rem]">
               Our Values
             </motion.h2>
 
-            <motion.p variants={softFade} className="mx-auto mt-4 max-w-4xl text-sm font-medium leading-7 text-[#242124]/82 md:text-[0.95rem] md:leading-8">
+            <motion.p variants={softFade} className="mx-auto mt-3 max-w-4xl text-[0.98rem] font-medium leading-8 text-[#242124]/82 md:text-[1.03rem] md:leading-8">
               Four principles that guide every decision from the opportunities we pursue to the developments we deliver.
             </motion.p>
           </motion.div>
 
-          <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-90px" }} variants={stagger} className="relative mt-12 grid md:grid-cols-2">
+          <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-90px" }} variants={stagger} className="relative mt-9 grid gap-4 md:grid-cols-2">
             <div className="pointer-events-none absolute left-1/2 top-0 hidden h-full w-px -translate-x-1/2 bg-[#242124]/22 md:block" />
             <div className="pointer-events-none absolute left-0 top-1/2 hidden h-px w-full -translate-y-1/2 bg-[#242124]/22 md:block" />
 
             {values.map((value, index) => (
-              <motion.article key={value.title} variants={fadeUp} className="group relative min-h-[220px] overflow-hidden border-b border-[#242124]/16 bg-[#242124]/0 p-7 transition-all duration-500 last:border-b-0 hover:-translate-y-1 hover:bg-[#242124] hover:shadow-[0_30px_100px_rgba(36,33,36,0.28)] md:border-b-0 md:p-10">
+              <motion.article key={value.title} variants={fadeUp} className="group relative min-h-[174px] overflow-hidden border border-[#242124]/18 bg-[#F5F0E8]/10 p-6 shadow-[0_18px_70px_rgba(36,33,36,0.08)] backdrop-blur-[2px] transition-all duration-500 hover:-translate-y-1 hover:border-[#242124] hover:bg-[#242124] hover:shadow-[0_28px_90px_rgba(36,33,36,0.28)] md:p-7">
                 <div className="absolute inset-0 opacity-0 transition-opacity duration-500 group-hover:opacity-100">
-                  <div className="absolute inset-0 bg-[radial-gradient(circle_at_18%_0%,rgba(194,161,57,0.22),transparent_36%),linear-gradient(135deg,rgba(245,240,232,0.075),transparent_44%,rgba(5,7,11,0.34))]" />
-                  <div className="absolute inset-x-8 top-0 h-px bg-gradient-to-r from-transparent via-[#C2A139]/80 to-transparent" />
+                  <div className="absolute inset-0 bg-[radial-gradient(circle_at_18%_0%,rgba(194,161,57,0.24),transparent_34%),linear-gradient(135deg,rgba(245,240,232,0.075),transparent_44%,rgba(5,7,11,0.42))]" />
+                  <div className="absolute inset-x-6 top-0 h-px bg-gradient-to-r from-transparent via-[#C2A139]/90 to-transparent" />
                   <div className="absolute left-0 top-0 h-full w-[3px] bg-gradient-to-b from-[#C2A139] via-[#C2A139]/55 to-transparent opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
                 </div>
 
                 <div className="relative z-10">
-                  <span className="text-[10px] font-bold uppercase tracking-[0.3em] text-[#242124]/62 transition-colors duration-500 group-hover:text-[#C2A139]">
+                  <span className="text-[10px] font-bold uppercase tracking-[0.3em] text-[#242124]/58 transition-colors duration-500 group-hover:text-[#C2A139]">
                     {String(index + 1).padStart(2, "0")}
                   </span>
 
-                  <h3 className="mt-7 font-montserrat text-xl font-semibold tracking-[-0.035em] text-[#242124] transition-colors duration-500 group-hover:text-[#C2A139]">
+                  <h3 className="mt-5 font-montserrat text-[1.28rem] font-semibold tracking-[-0.035em] text-[#242124] transition-colors duration-500 group-hover:text-[#C2A139] md:text-[1.38rem]">
                     {value.title}
                   </h3>
 
-                  <p className="mt-4 max-w-md text-sm font-medium leading-7 text-[#242124]/76 transition-colors duration-500 group-hover:text-[#F5F0E8]/78">
+                  <p className="mt-3 max-w-md text-[0.98rem] font-medium leading-7 text-[#242124]/78 transition-colors duration-500 group-hover:text-[#F5F0E8] md:text-[1.02rem]">
                     {value.text}
                   </p>
                 </div>
