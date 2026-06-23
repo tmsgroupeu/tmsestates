@@ -14,7 +14,9 @@ export default function Home() {
       <div className="relative z-10 w-full">
         <HeroInteractive />
 
-        <WhyChooseUs />
+        <div id="who-we-are" className="scroll-mt-28">
+          <WhyChooseUs />
+        </div>
 
         <div id="projects" className="scroll-mt-28">
           <OurProjects />
@@ -24,9 +26,7 @@ export default function Home() {
           <MarketInsights />
         </div>
 
-        <div id="invest" className="scroll-mt-28">
-          <LimassolAdvantage />
-        </div>
+        <LimassolAdvantage />
 
         <PrivateCollection />
       </div>

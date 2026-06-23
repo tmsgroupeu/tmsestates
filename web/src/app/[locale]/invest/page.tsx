@@ -319,7 +319,7 @@ export default function InvestPage() {
                 <p className="mb-6 max-w-2xl text-sm leading-7 text-[#242124]/66 md:text-[0.95rem] md:leading-8">
                   Whether your goal is lifestyle relocation, rental income, or long-term capital growth, Cyprus offers a secure and rewarding real estate environment.
                 </p>
-                <Link href="/#contact" className="group inline-flex items-center gap-3 bg-[#242124] px-6 py-4 text-[11px] font-bold uppercase tracking-[0.22em] text-[#F5F0E8] transition-all duration-300 hover:bg-[#C2A139] hover:text-[#242124]">
+                <Link href="/contact" className="group inline-flex items-center gap-3 bg-[#242124] px-6 py-4 text-[11px] font-bold uppercase tracking-[0.22em] text-[#F5F0E8] transition-all duration-300 hover:bg-[#C2A139] hover:text-[#242124]">
                   Contact TMS Estates Today
                   <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
                 </Link>

@@ -11,7 +11,7 @@ const points = [
 
 export default function LimassolAdvantage() {
   return (
-    <section className="relative w-full overflow-hidden py-12 md:py-14 lg:py-16">
+    <section id="invest" className="relative w-full scroll-mt-32 overflow-hidden py-12 md:py-14 lg:scroll-mt-36 lg:py-16">
       <div className="home-container">
         <div className="grid gap-4 lg:grid-cols-[0.88fr_1.12fr] lg:items-stretch">
           <div className="relative overflow-hidden bg-[#242124] px-6 py-8 shadow-[0_28px_95px_rgba(0,0,0,0.32)] md:px-8 md:py-10 lg:px-10 lg:py-11">

@@ -36,30 +36,6 @@ function getSafeUrl(data: any): string | null {
   return url.startsWith("http") ? url : `${API_URL}${url}`;
 }
 
-function extractText(value: any): string {
-  if (!value) return "";
-  if (typeof value === "string") return value;
-
-  if (Array.isArray(value)) {
-    return value
-      .map((block: any) =>
-        block.children?.map((child: any) => child.text).join(" "),
-      )
-      .join(" ")
-      .trim();
-  }
-
-  return "";
-}
-
-function summarize(text: string, fallback: string) {
-  const clean = (text || fallback).replace(/\s+/g, " ").trim();
-  const words = clean.split(" ").filter(Boolean);
-
-  if (words.length <= 34) return clean;
-  return `${words.slice(0, 34).join(" ")}...`;
-}
-
 export default async function ProjectsPage() {
   const { data: rawProjects } = await fetchProjects();
 
@@ -72,10 +48,6 @@ export default async function ProjectsPage() {
     const status =
       p.CompletionStatus || p.completionStatus || p.Status || p.status || "";
     const scale = p.Scale || p.scale || "";
-    const description = summarize(
-      extractText(p.Description || p.description),
-      "A carefully evaluated development designed for contemporary living and long-term value.",
-    );
 
     const image =
       getSafeUrl(
@@ -89,7 +61,6 @@ export default async function ProjectsPage() {
       location,
       status,
       scale,
-      description,
       image,
     };
   });
@@ -112,23 +83,17 @@ export default async function ProjectsPage() {
         <div className="absolute inset-0 bg-gradient-to-t from-[#242124]/98 via-[#242124]/48 to-transparent" />
         <div className="absolute bottom-0 left-0 h-[54%] w-full bg-gradient-to-t from-[#242124] via-[#242124]/78 to-transparent" />
 
-        <div className="relative mx-auto grid w-full max-w-7xl gap-8 lg:grid-cols-[1fr_0.78fr] lg:items-end">
+        <div className="relative mx-auto w-full max-w-7xl">
           <div>
             <p className="mb-5 w-fit border border-[#C2A139]/44 bg-[#242124]/62 px-4 py-2.5 text-[10px] font-bold uppercase tracking-[0.3em] text-[#C2A139] shadow-[0_12px_36px_rgba(0,0,0,0.34)] backdrop-blur-md">
               Project Portfolio
             </p>
 
-            <h1 className="max-w-4xl font-montserrat text-[clamp(2.7rem,5.8vw,6.6rem)] font-bold leading-[0.96] tracking-[-0.07em] text-[#F5F0E8] drop-shadow-[0_18px_48px_rgba(0,0,0,0.76)]">
+            <h1 className="max-w-4xl font-montserrat text-[clamp(2.35rem,4.8vw,5.25rem)] font-bold leading-[0.98] tracking-[-0.065em] text-[#F5F0E8] drop-shadow-[0_18px_48px_rgba(0,0,0,0.76)]">
               Signature
               <span className="block text-[#C2A139]">Developments</span>
             </h1>
           </div>
-
-          <p className="max-w-xl border border-[#F5F0E8]/18 border-l-[#C2A139]/70 bg-[#242124]/72 px-5 py-5 text-sm leading-7 text-[#F5F0E8]/92 shadow-[0_24px_80px_rgba(0,0,0,0.36)] backdrop-blur-md md:text-base md:leading-8">
-            Discover a portfolio of residential developments across Cyprus,
-            thoughtfully selected and designed for modern living, long-term
-            value and strategic growth.
-          </p>
         </div>
       </section>
 
@@ -146,7 +111,7 @@ export default async function ProjectsPage() {
 
       <section className="bg-[#F5F0E8] px-6 py-16 md:px-10 md:py-20">
         <div className="mx-auto w-full max-w-7xl">
-          <div className="mb-10 grid gap-6 border-b border-[#242124]/10 pb-8 lg:grid-cols-[0.82fr_1.18fr] lg:items-end">
+          <div className="mb-10 border-b border-[#242124]/10 pb-8">
             <div>
               <p className="mb-4 text-[10px] font-bold uppercase tracking-[0.3em] text-[#C2A139]">
                 Explore Projects
@@ -156,11 +121,6 @@ export default async function ProjectsPage() {
                 Current Portfolio
               </h2>
             </div>
-
-            <p className="max-w-2xl text-sm leading-7 text-[#242124]/66 md:text-[0.95rem] md:leading-8">
-              Each project page presents the wider development concept,
-              location, status, available units and project imagery from Strapi.
-            </p>
           </div>
 
           {projects.length > 0 ? (
@@ -179,10 +139,10 @@ export default async function ProjectsPage() {
                     className="object-cover transition duration-[1200ms] ease-out group-hover:scale-105"
                   />
 
-                  <div className="absolute inset-0 bg-[#05070B]/24 transition duration-500 group-hover:bg-[#05070B]/16" />
-                  <div className="absolute inset-x-0 top-0 h-40 bg-gradient-to-b from-[#05070B]/84 via-[#05070B]/42 to-transparent" />
-                  <div className="absolute inset-x-0 bottom-0 h-[82%] bg-gradient-to-t from-[#05070B]/100 via-[#05070B]/88 to-transparent" />
-                  <div className="absolute inset-y-0 left-0 w-[82%] bg-gradient-to-r from-[#05070B]/76 via-[#05070B]/42 to-transparent" />
+                  <div className="absolute inset-0 bg-[#05070B]/22 transition duration-500 group-hover:bg-[#05070B]/14" />
+                  <div className="absolute inset-x-0 top-0 h-36 bg-gradient-to-b from-[#05070B]/78 via-[#05070B]/30 to-transparent" />
+                  <div className="absolute inset-x-0 bottom-0 h-[56%] bg-gradient-to-t from-[#05070B]/100 via-[#05070B]/72 to-transparent" />
+                  <div className="absolute inset-y-0 left-0 w-[62%] bg-gradient-to-r from-[#05070B]/52 to-transparent" />
                   <div className="absolute inset-0 ring-1 ring-inset ring-white/10" />
 
                   <div className="absolute inset-x-0 top-0 flex items-start justify-between p-5 md:p-6">
@@ -197,41 +157,41 @@ export default async function ProjectsPage() {
                   </div>
 
                   <div className="absolute inset-x-0 bottom-0 p-5 md:p-6">
-                    <div className="mb-4 flex flex-wrap gap-2">
-                      {project.location && (
-                        <span className="inline-flex max-w-full items-center gap-2 border border-white/22 bg-[#05070B]/78 px-3 py-2 text-[10px] font-bold uppercase tracking-[0.16em] text-[#F5F0E8]/92 shadow-[0_10px_28px_rgba(0,0,0,0.3)] backdrop-blur-md">
-                          <MapPin className="h-3.5 w-3.5 shrink-0 text-[#C2A139]" />
-                          <span className="truncate">{project.location}</span>
-                        </span>
-                      )}
+                    <div className="relative overflow-hidden border border-white/12 bg-[#05070B]/62 p-4 shadow-[0_20px_70px_rgba(0,0,0,0.42)] backdrop-blur-md md:p-5">
+                      <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-[#C2A139]/82 to-transparent" />
 
-                      {project.status && (
-                        <span className="inline-flex max-w-full items-center gap-2 border border-[#C2A139]/54 bg-[#05070B]/78 px-3 py-2 text-[10px] font-bold uppercase tracking-[0.16em] text-[#C2A139] shadow-[0_10px_28px_rgba(0,0,0,0.3)] backdrop-blur-md">
-                          <CalendarClock className="h-3.5 w-3.5 shrink-0" />
-                          <span className="truncate">{project.status}</span>
-                        </span>
-                      )}
+                      <div className="mb-4 flex flex-wrap gap-2">
+                        {project.location && (
+                          <span className="inline-flex max-w-full items-center gap-2 border border-white/24 bg-[#05070B]/82 px-3 py-2 text-[10px] font-bold uppercase tracking-[0.16em] text-white shadow-[0_10px_28px_rgba(0,0,0,0.34)] backdrop-blur-md">
+                            <MapPin className="h-3.5 w-3.5 shrink-0 text-[#C2A139]" />
+                            <span className="truncate">{project.location}</span>
+                          </span>
+                        )}
 
-                      {project.scale && (
-                        <span className="inline-flex max-w-full items-center gap-2 border border-white/22 bg-[#05070B]/78 px-3 py-2 text-[10px] font-bold uppercase tracking-[0.16em] text-[#F5F0E8]/92 shadow-[0_10px_28px_rgba(0,0,0,0.3)] backdrop-blur-md">
-                          <Ruler className="h-3.5 w-3.5 shrink-0 text-[#C2A139]" />
-                          <span className="truncate">{project.scale}</span>
-                        </span>
-                      )}
+                        {project.status && (
+                          <span className="inline-flex max-w-full items-center gap-2 border border-[#C2A139]/58 bg-[#05070B]/82 px-3 py-2 text-[10px] font-bold uppercase tracking-[0.16em] text-[#C2A139] shadow-[0_10px_28px_rgba(0,0,0,0.34)] backdrop-blur-md">
+                            <CalendarClock className="h-3.5 w-3.5 shrink-0" />
+                            <span className="truncate">{project.status}</span>
+                          </span>
+                        )}
+
+                        {project.scale && (
+                          <span className="inline-flex max-w-full items-center gap-2 border border-white/24 bg-[#05070B]/82 px-3 py-2 text-[10px] font-bold uppercase tracking-[0.16em] text-white shadow-[0_10px_28px_rgba(0,0,0,0.34)] backdrop-blur-md">
+                            <Ruler className="h-3.5 w-3.5 shrink-0 text-[#C2A139]" />
+                            <span className="truncate">{project.scale}</span>
+                          </span>
+                        )}
+                      </div>
+
+                      <h3 className="line-clamp-2 font-montserrat text-[1.65rem] font-bold leading-[1.02] tracking-[-0.055em] text-white drop-shadow-[0_12px_34px_rgba(0,0,0,0.9)] xl:text-[1.9rem]">
+                        {project.title}
+                      </h3>
+
+                      <span className="mt-6 inline-flex items-center gap-3 text-[11px] font-bold uppercase tracking-[0.22em] text-[#C2A139] drop-shadow-[0_8px_22px_rgba(0,0,0,0.78)]">
+                        Explore Project
+                        <ArrowUpRight className="h-4 w-4 transition-transform group-hover:-translate-y-1 group-hover:translate-x-1" />
+                      </span>
                     </div>
-
-                    <h3 className="line-clamp-2 font-montserrat text-[1.65rem] font-bold leading-[1.02] tracking-[-0.055em] text-[#F5F0E8] drop-shadow-[0_12px_34px_rgba(0,0,0,0.86)] xl:text-[1.9rem]">
-                      {project.title}
-                    </h3>
-
-                    <p className="mt-4 max-w-2xl text-sm leading-7 text-[#F5F0E8]/88 line-clamp-3 drop-shadow-[0_8px_24px_rgba(0,0,0,0.72)]">
-                      {project.description}
-                    </p>
-
-                    <span className="mt-6 inline-flex items-center gap-3 text-[11px] font-bold uppercase tracking-[0.22em] text-[#C2A139] drop-shadow-[0_8px_22px_rgba(0,0,0,0.72)]">
-                      Explore Project
-                      <ArrowUpRight className="h-4 w-4 transition-transform group-hover:-translate-y-1 group-hover:translate-x-1" />
-                    </span>
                   </div>
                 </Link>
               ))}
