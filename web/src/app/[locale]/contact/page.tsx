@@ -2,7 +2,7 @@
 
 import type { FormEvent } from "react";
 import { useMemo, useState } from "react";
-import { motion } from "framer-motion";
+import { AnimatePresence, motion } from "framer-motion";
 import {
   ArrowRight,
   Building2,
@@ -27,8 +27,12 @@ const inquiryTypes = [
   "General enquiry",
 ];
 
+type FormStatus = "idle" | "submitting" | "success" | "error";
+
 export default function ContactPage() {
-  const [sent, setSent] = useState(false);
+  const [formStatus, setFormStatus] = useState<FormStatus>("idle");
+  const [formMessage, setFormMessage] = useState("");
+  const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
 
   const contactCards = useMemo(
     () => [
@@ -54,31 +58,68 @@ export default function ContactPage() {
     [],
   );
 
-  const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
-    const form = new FormData(event.currentTarget);
+    const formElement = event.currentTarget;
+    const form = new FormData(formElement);
     const name = String(form.get("name") || "");
     const email = String(form.get("email") || "");
     const phone = String(form.get("phone") || "");
     const inquiry = String(form.get("inquiry") || "");
     const message = String(form.get("message") || "");
 
-    const subject = encodeURIComponent(`TMS Estates enquiry: ${inquiry || name}`);
-    const body = encodeURIComponent(
-      [
-        `Name: ${name}`,
-        `Email: ${email}`,
-        `Phone: ${phone || "Not provided"}`,
-        `Inquiry type: ${inquiry || "General enquiry"}`,
-        "",
-        "Message:",
-        message,
-      ].join("\n"),
-    );
+    const errors: Record<string, string> = {};
+    if (!name.trim()) errors.name = "Please add your name.";
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      errors.email = "Please add a valid email address.";
+    }
+    if (!message.trim()) errors.message = "Please add a short message.";
 
-    setSent(true);
-    window.location.href = `mailto:${contactEmail}?subject=${subject}&body=${body}`;
+    if (Object.keys(errors).length) {
+      setFieldErrors(errors);
+      setFormStatus("error");
+      setFormMessage("Please complete the highlighted fields.");
+      return;
+    }
+
+    setFieldErrors({});
+    setFormStatus("submitting");
+    setFormMessage("Sending your enquiry...");
+
+    try {
+      const response = await fetch("/api/contact", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          name,
+          email,
+          phone,
+          inquiry,
+          message,
+          source: "Contact page enquiry form",
+        }),
+      });
+
+      const result = await response.json().catch(() => ({}));
+
+      if (!response.ok || !result.ok) {
+        if (result.field) {
+          setFieldErrors({ [result.field]: result.error });
+        }
+
+        setFormStatus("error");
+        setFormMessage(result.error || "We could not send the message. Please try again.");
+        return;
+      }
+
+      setFormStatus("success");
+      setFormMessage("Thank you. Your enquiry has been sent to our team.");
+      formElement.reset();
+    } catch {
+      setFormStatus("error");
+      setFormMessage("Connection issue. Please try again in a moment.");
+    }
   };
 
   return (
@@ -210,22 +251,31 @@ export default function ContactPage() {
                     </h2>
                   </div>
 
-                  {sent ? (
-                    <div className="inline-flex items-center gap-2 border border-[#C2A139]/45 bg-[#C2A139]/10 px-4 py-3 text-xs font-bold uppercase tracking-[0.18em] text-[#242124]">
-                      <CheckCircle2 className="h-4 w-4 text-[#C2A139]" />
-                      Email Draft Opened
-                    </div>
-                  ) : null}
+                  <AnimatePresence mode="wait">
+                    {formStatus === "success" ? (
+                      <motion.div
+                        key="success"
+                        initial={{ opacity: 0, y: 8 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: -8 }}
+                        className="inline-flex items-center gap-2 border border-[#C2A139]/45 bg-[#C2A139]/10 px-4 py-3 text-xs font-bold uppercase tracking-[0.18em] text-[#242124]"
+                      >
+                        <CheckCircle2 className="h-4 w-4 text-[#C2A139]" />
+                        Sent Successfully
+                      </motion.div>
+                    ) : null}
+                  </AnimatePresence>
                 </div>
 
                 <form onSubmit={handleSubmit} className="mt-7 grid gap-5">
                   <div className="grid gap-5 md:grid-cols-2">
-                    <label className="contact-field">
+                    <label className="contact-field" data-error={Boolean(fieldErrors.name)}>
                       <span>Full Name</span>
                       <input name="name" type="text" required placeholder="Your name" />
+                      {fieldErrors.name ? <em>{fieldErrors.name}</em> : null}
                     </label>
 
-                    <label className="contact-field">
+                    <label className="contact-field" data-error={Boolean(fieldErrors.email)}>
                       <span>Email Address</span>
                       <input
                         name="email"
@@ -233,6 +283,7 @@ export default function ContactPage() {
                         required
                         placeholder="you@example.com"
                       />
+                      {fieldErrors.email ? <em>{fieldErrors.email}</em> : null}
                     </label>
                   </div>
 
@@ -254,7 +305,7 @@ export default function ContactPage() {
                     </label>
                   </div>
 
-                  <label className="contact-field">
+                  <label className="contact-field" data-error={Boolean(fieldErrors.message)}>
                     <span>Message</span>
                     <textarea
                       name="message"
@@ -262,16 +313,35 @@ export default function ContactPage() {
                       rows={6}
                       placeholder="Tell us about the property, project or investment opportunity you would like to discuss."
                     />
+                    {fieldErrors.message ? <em>{fieldErrors.message}</em> : null}
                   </label>
 
                   <div className="flex flex-col gap-4 border-t border-[#242124]/10 pt-6 sm:flex-row sm:items-center sm:justify-between">
-                    <p className="max-w-md text-xs leading-6 text-[#242124]/54">
-                      Submitting opens a prepared email draft using your email
-                      client. A direct backend submission can be connected next.
-                    </p>
+                    <AnimatePresence mode="wait">
+                      {formStatus !== "idle" ? (
+                        <motion.p
+                          key={formStatus}
+                          initial={{ opacity: 0, y: 8 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          exit={{ opacity: 0, y: -8 }}
+                          className={`max-w-md border px-4 py-3 text-xs font-semibold leading-6 ${
+                            formStatus === "error"
+                              ? "border-red-200 bg-red-50 text-red-700"
+                              : "border-[#C2A139]/35 bg-[#C2A139]/10 text-[#242124]/70"
+                          }`}
+                        >
+                          {formMessage}
+                        </motion.p>
+                      ) : (
+                        <p className="max-w-md text-xs leading-6 text-[#242124]/54">
+                          Your message will be sent directly to the TMS Estates team.
+                        </p>
+                      )}
+                    </AnimatePresence>
 
                     <button
                       type="submit"
+                      disabled={formStatus === "submitting"}
                       className="group relative inline-flex min-h-[54px] w-fit items-center justify-center overflow-hidden border border-[#C2A139]/70 bg-[#242124] px-6 py-4 text-[11px] font-bold uppercase tracking-[0.24em] text-[#F5F0E8] shadow-[0_20px_58px_rgba(0,0,0,0.22)] transition-all duration-500 hover:-translate-y-0.5 hover:border-[#C2A139] hover:bg-[#C2A139] hover:text-[#242124] hover:shadow-[0_26px_78px_rgba(194,161,57,0.22)] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#C2A139]/70"
                     >
                       <span className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-[#F5F0E8] to-transparent opacity-50 transition-opacity duration-500 group-hover:opacity-80" />
@@ -279,7 +349,7 @@ export default function ContactPage() {
                       <span className="pointer-events-none absolute inset-0 translate-x-[-130%] bg-gradient-to-r from-transparent via-white/28 to-transparent transition-transform duration-700 group-hover:translate-x-[130%]" />
 
                       <span className="relative z-10 flex items-center gap-4">
-                        Send Enquiry
+                        {formStatus === "submitting" ? "Sending" : "Send Enquiry"}
                         <span className="flex h-8 w-8 items-center justify-center border border-[#C2A139]/55 bg-[#05070B]/28 text-[#C2A139] transition-all duration-500 group-hover:border-[#242124]/40 group-hover:bg-[#242124] group-hover:text-[#F5F0E8]">
                           <Send className="h-4 w-4 transition-transform duration-500 group-hover:translate-x-0.5" />
                         </span>
@@ -370,6 +440,13 @@ export default function ContactPage() {
           color: rgba(36, 33, 36, 0.64);
         }
 
+        .contact-field em {
+          font-style: normal;
+          font-size: 0.76rem;
+          font-weight: 700;
+          color: #b42318;
+        }
+
         .contact-field input,
         .contact-field select,
         .contact-field textarea {
@@ -397,6 +474,13 @@ export default function ContactPage() {
           border-color: rgba(194, 161, 57, 0.78);
           background: rgba(255, 255, 255, 0.78);
           box-shadow: 0 0 0 3px rgba(194, 161, 57, 0.14);
+        }
+
+        .contact-field[data-error="true"] input,
+        .contact-field[data-error="true"] textarea {
+          border-color: rgba(180, 35, 24, 0.52);
+          background: rgba(255, 247, 246, 0.82);
+          box-shadow: 0 0 0 3px rgba(180, 35, 24, 0.08);
         }
       `}</style>
     </main>
