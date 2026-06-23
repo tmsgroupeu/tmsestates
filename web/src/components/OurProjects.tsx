@@ -1,45 +1,51 @@
-/* FULL REPLACEMENT: src/components/OurProjects.tsx */
-import { Building2 } from "lucide-react";
 import { fetchProjects } from "@/lib/cms";
+import { Building2, ArrowRight } from "lucide-react";
+import { Link } from "@/i18n/routing";
 import OurProjectsClient from "./OurProjectsClient";
 
-export const revalidate = 0;
+const API_URL =
+  process.env.CMS_URL ||
+  process.env.STRAPI_URL ||
+  process.env.NEXT_PUBLIC_API_URL ||
+  "https://tmsestates.onrender.com";
 
-const API_URL = process.env.STRAPI_API_URL || process.env.NEXT_PUBLIC_API_URL || "http://127.0.0.1:1337";
-
-// ✅ RESTORED HYPER-RESILIENT IMAGE EXTRACTOR
-const getSafeUrl = (data: any) => {
+const getSafeUrl = (data: any): string | null => {
   if (!data) return null;
-  
-  // 1. Handle Arrays (Because 'coverimage' is Multiple Media in Strapi)
   let item = Array.isArray(data) ? data[0] : data;
-  
-  // 2. Handle Strapi v4 'data' wrapper if it exists
-  if (item && item.data) {
-    item = Array.isArray(item.data) ? item.data[0] : item.data;
-  }
-  
+  if (item?.data) item = Array.isArray(item.data) ? item.data[0] : item.data;
   if (!item) return null;
 
-  // 3. Handle 'attributes' wrapper OR flat structure
   const attributes = item.attributes || item;
-  const url = attributes?.url || item.url;
-  
+  const url =
+    attributes?.formats?.large?.url ||
+    attributes?.formats?.medium?.url ||
+    attributes?.formats?.small?.url ||
+    attributes?.url ||
+    item.url;
+
   if (!url) return null;
-  if (url.startsWith('http')) return url;
-  return `${API_URL}${url}`;
+  return url.startsWith("http") ? url : `${API_URL}${url}`;
 };
 
-// Helper to safely extract text from Strapi Rich Text blocks
-const extractText = (desc: any): string => {
-  if (!desc) return "";
-  if (typeof desc === 'string') return desc;
-  if (Array.isArray(desc)) {
-    try {
-      return desc.map((block: any) => block.children?.map((child: any) => child.text).join(" ")).join(" ");
-    } catch(e) { return ""; }
+const extractText = (value: any): string => {
+  if (!value) return "";
+  if (typeof value === "string") return value;
+  if (Array.isArray(value)) {
+    return value
+      .map((block: any) =>
+        block.children?.map((child: any) => child.text).join(" "),
+      )
+      .join(" ")
+      .trim();
   }
   return "";
+};
+
+const summarize = (text: string, fallback: string): string => {
+  const clean = (text || fallback).replace(/\s+/g, " ").trim();
+  const words = clean.split(" ").filter(Boolean);
+  if (words.length <= 26) return clean;
+  return `${words.slice(0, 26).join(" ")}…`;
 };
 
 export default async function OurProjects() {
@@ -47,54 +53,73 @@ export default async function OurProjects() {
 
   if (!rawProjects?.length) return null;
 
-  // 1. Clean the Strapi Data for the Client Component
-  const cleanProjects = rawProjects.map((projectItem: any) => {
-      const p = projectItem.attributes || projectItem;
-      
-      const title = p.Title || p.title || "Signature Project";
-      const location = p.location || p.Location || p.city || p.City || "Cyprus";
-      const completion = p.CompletionStatus || p.completionStatus || "";
-      const rawDesc = p.Description || p.description;
-      const description = extractText(rawDesc) || "Exclusive details available upon request.";
-      const slug = p.slug || p.Slug || '#';
-      
-      // ✅ FIX: Added 'p.coverimage' (lowercase i) to match your Strapi screenshot perfectly
-      const rawImage = p.coverimage || p.coverImage || p.CoverImage || p.image || p.Image;
-      const imgUrl = getSafeUrl(rawImage);
-      const finalImage = imgUrl || '/assets/hero-poster.jpg';
+  const projects = rawProjects.map((projectItem: any) => {
+    const p = projectItem.attributes || projectItem;
 
-      return {
-          id: projectItem.id || title,
-          title,
-          slug,
-          location,
-          completion,
-          description,
-          image: finalImage
-      };
+    const title = p.Title || p.title || "Signature Project";
+    const location = p.location || p.Location || p.city || p.City || "Cyprus";
+    const completion =
+      p.CompletionStatus || p.completionStatus || p.completionDate || "";
+    const description = summarize(
+      extractText(p.Description || p.description),
+      "A carefully selected development designed for contemporary living and long-term value.",
+    );
+    const slug = p.slug || p.Slug || "#";
+    const image =
+      getSafeUrl(
+        p.coverimage || p.coverImage || p.CoverImage || p.image || p.Image,
+      ) || "/assets/hero-poster.jpg";
+
+    return {
+      id: projectItem.id || title,
+      title,
+      slug,
+      location,
+      completion,
+      description,
+      image,
+    };
   });
 
   return (
-    <section className="relative z-10 mx-auto max-w-[1400px] px-4 md:px-6 w-full">
-      
-      {/* --- HEADER --- */}
-      <div className="mb-8 md:mb-10 text-center md:text-left max-w-7xl mx-auto">
-        <div className="inline-flex items-center gap-2 rounded-full border border-[#D4AF37]/30 bg-[#D4AF37]/10 px-3 py-1 text-[9px] font-bold uppercase tracking-[0.2em] text-[#D4AF37] mb-4 backdrop-blur-md">
-          <Building2 className="h-3 w-3" />
-          Signature Developments
-        </div>
-        <div className="flex items-center justify-between">
-            <h2 className="text-3xl md:text-4xl font-bold font-montserrat text-white drop-shadow-xl">
-              Our Projects
+    <section className="relative w-full overflow-hidden bg-[#05070B]/62 py-14 backdrop-blur-[1px] md:py-18 lg:flex lg:min-h-screen lg:items-center">
+      <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-[#05070B]/8 via-transparent to-[#05070B]/22" />
+
+      <div className="home-container relative">
+        <div className="mb-8 grid gap-7 pb-3 lg:grid-cols-[0.9fr_1.1fr] lg:items-start">
+          <div>
+
+              <h2 className="section-heading mt-4 max-w-3xl">
+              Signature <span className="block text-[#C2A139]">Developments</span>
             </h2>
-            <div className="hidden md:block w-32 h-[1px] bg-gradient-to-r from-[#D4AF37] to-transparent" />
+          </div>
+
+          <div className="max-w-2xl lg:justify-self-end lg:pt-10">
+            <p className="text-base leading-6 text-[#F5F0E8]/80 md:text-[1.04rem] md:leading-7">
+              Discover a portfolio of residential developments across Cyprus,
+              thoughtfully designed for modern living and long-term value.
+            </p>
+
+            <Link
+              href="/projects"
+              className="group relative mt-7 inline-flex min-h-[54px] w-fit items-center justify-center overflow-hidden border border-[#C2A139]/70 bg-[#242124]/72 px-6 py-4 text-[11px] font-bold uppercase tracking-[0.24em] text-[#F5F0E8] shadow-[0_22px_64px_rgba(0,0,0,0.32)] backdrop-blur-[10px] transition-all duration-500 hover:-translate-y-0.5 hover:border-[#C2A139] hover:bg-[#C2A139] hover:text-[#242124] hover:shadow-[0_28px_84px_rgba(194,161,57,0.24)] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#C2A139]/70 md:px-8"
+            >
+              <span className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-[#F5F0E8] to-transparent opacity-50 transition-opacity duration-500 group-hover:opacity-80" />
+              <span className="pointer-events-none absolute inset-y-0 left-0 w-[3px] bg-[#C2A139] transition-all duration-500 group-hover:w-full" />
+              <span className="pointer-events-none absolute inset-0 translate-x-[-130%] bg-gradient-to-r from-transparent via-white/28 to-transparent transition-transform duration-700 group-hover:translate-x-[130%]" />
+
+              <span className="relative z-10 flex items-center gap-4">
+                View All Projects
+                <span className="flex h-8 w-8 items-center justify-center border border-[#C2A139]/55 bg-[#05070B]/28 text-[#C2A139] transition-all duration-500 group-hover:border-[#242124]/40 group-hover:bg-[#242124] group-hover:text-[#F5F0E8]">
+                  <ArrowRight className="h-4 w-4 transition-transform duration-500 group-hover:translate-x-0.5" />
+                </span>
+              </span>
+            </Link>
+          </div>
         </div>
+
+        <OurProjectsClient projects={projects} />
       </div>
-
-      {/* --- INTERACTIVE CAROUSEL --- */}
-      {/* This renders the animated client component we built previously */}
-      <OurProjectsClient projects={cleanProjects} />
-
     </section>
   );
 }

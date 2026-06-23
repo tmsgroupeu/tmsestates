@@ -1,103 +1,82 @@
-/* FULL REPLACEMENT: src/components/HeroInteractive.tsx */
 "use client";
 
 import { useRef } from "react";
-import Link from "next/link";
 import { motion, useScroll, useTransform } from "framer-motion";
 import { ArrowRight } from "lucide-react";
+import { Link } from "@/i18n/routing";
 
 export default function HeroInteractive() {
-  const containerRef = useRef<HTMLDivElement>(null);
+  const sectionRef = useRef<HTMLElement>(null);
 
   const { scrollYProgress } = useScroll({
-    target: containerRef,
+    target: sectionRef,
     offset: ["start start", "end start"],
   });
 
-  const yText = useTransform(scrollYProgress, [0, 1],["0%", "-30%"]);
-  const opacityText = useTransform(scrollYProgress, [0, 0.6],[1, 0]);
-  const opacityIndicator = useTransform(scrollYProgress,[0, 0.15], [1, 0]);
-
-  const containerVariants = {
-    hidden: { opacity: 0 },
-    visible: { opacity: 1, transition: { staggerChildren: 0.15, delayChildren: 0.2 } },
-  };
-
-  const itemVariants = {
-    hidden: { y: 30, opacity: 0, rotateX: -10 },
-    visible: { y: 0, opacity: 1, rotateX: 0, transition: { type: "spring", stiffness: 80, damping: 20 } },
-  };
+  const y = useTransform(scrollYProgress, [0, 1], [0, -44]);
+  const opacity = useTransform(scrollYProgress, [0, 0.78], [1, 0]);
 
   return (
     <section
-      ref={containerRef}
-      className="relative h-screen w-full flex flex-col items-center justify-center pt-20 md:pt-32 z-20 overflow-hidden"
+      ref={sectionRef}
+      className="relative flex min-h-[100svh] w-full items-center justify-center overflow-hidden px-5 pt-24 md:px-8 lg:px-10"
     >
       <motion.div
-        style={{ y: yText, opacity: opacityText }}
-        className="relative z-20 flex flex-col items-center justify-center px-6 text-center w-full"
+        style={{ y, opacity }}
+        className="home-container relative mx-auto flex min-h-[72svh] w-full items-center justify-center"
       >
-        <motion.div
-          variants={containerVariants}
-          initial="hidden"
-          animate="visible"
-          className="max-w-5xl mx-auto flex flex-col items-center"
-        >
+        <div className="mx-auto max-w-[860px] text-center">
           <motion.h1
-            variants={itemVariants}
-            className="font-montserrat font-bold tracking-tight text-white text-5xl sm:text-6xl md:text-7xl xl:text-8xl drop-shadow-[0_10px_20px_rgba(0,0,0,0.5)] leading-[1.1] pb-2"
+            initial={{ opacity: 0, y: 24 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.9, ease: [0.16, 1, 0.3, 1] }}
+            className="font-montserrat text-[clamp(2rem,3.75vw,4.15rem)] font-bold leading-[0.98] tracking-[-0.055em] text-[#F5F0E8] drop-shadow-[0_18px_48px_rgba(0,0,0,0.52)]"
           >
-            Beyond Ordinary
-            <br />
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#FBF5E8] via-[#D4AF37] to-[#AA8C2C]">
-              Estates
-            </span>
+            Building Value.
+            <span className="block text-[#C2A139]">Creating Places.</span>
           </motion.h1>
 
           <motion.p
-            variants={itemVariants}
-            className="mt-6 md:mt-8 max-w-2xl mx-auto text-lg md:text-xl font-light text-white/90 leading-relaxed drop-shadow-md"
+            initial={{ opacity: 0, y: 18 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{
+              delay: 0.18,
+              duration: 0.85,
+              ease: [0.16, 1, 0.3, 1],
+            }}
+            className="mx-auto mt-7 max-w-2xl text-balance text-[0.98rem] leading-6 text-[#F5F0E8]/88 md:mt-8 md:text-[1.08rem] md:leading-7"
           >
-            Discover a curated portfolio of prestigious residences and high-yield investments 
-            in the Mediterranean&apos;s most dynamic metropolis.
+            TMS Estates is a Cyprus-based real estate developer creating
+            contemporary residential and mixed-use developments in carefully
+            selected locations.
           </motion.p>
 
           <motion.div
-            variants={itemVariants}
-            className="mt-10 md:mt-12 flex w-full justify-center"
+            initial={{ opacity: 0, y: 18 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{
+              delay: 0.34,
+              duration: 0.75,
+              ease: [0.16, 1, 0.3, 1],
+            }}
+            className="mt-9 flex flex-wrap items-center justify-center gap-4"
           >
             <Link
-  href="#projects"
-  className="group relative overflow-hidden rounded-full bg-white px-10 py-5 text-sm font-bold uppercase tracking-widest text-[#0A2342] transition-all duration-300 hover:scale-105 hover:shadow-[0_0_40px_rgba(255,255,255,0.4)] text-center shadow-xl"
->
-              <span className="relative z-10 flex items-center justify-center gap-3">
+              href="/#projects"
+              className="group relative inline-flex min-h-[56px] items-center justify-center overflow-hidden border border-[#C2A139]/70 bg-[#242124]/72 px-7 py-4 text-[11px] font-bold uppercase tracking-[0.26em] text-[#F5F0E8] shadow-[0_24px_70px_rgba(0,0,0,0.34)] backdrop-blur-[10px] transition-all duration-500 hover:-translate-y-0.5 hover:border-[#C2A139] hover:bg-[#C2A139] hover:text-[#242124] hover:shadow-[0_30px_90px_rgba(194,161,57,0.26)] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#C2A139]/70 md:px-9"
+            >
+              <span className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-[#F5F0E8] to-transparent opacity-50 transition-opacity duration-500 group-hover:opacity-80" />
+              <span className="pointer-events-none absolute inset-y-0 left-0 w-[3px] bg-[#C2A139] transition-all duration-500 group-hover:w-full group-hover:bg-[#C2A139]" />
+              <span className="pointer-events-none absolute inset-0 translate-x-[-130%] bg-gradient-to-r from-transparent via-white/28 to-transparent transition-transform duration-700 group-hover:translate-x-[130%]" />
+
+              <span className="relative z-10 flex items-center gap-4">
                 Explore Our Projects
-                <ArrowRight className="h-5 w-5 transition-transform group-hover:translate-x-1" />
+                <span className="flex h-8 w-8 items-center justify-center border border-[#C2A139]/55 bg-[#05070B]/28 text-[#C2A139] transition-all duration-500 group-hover:border-[#242124]/40 group-hover:bg-[#242124] group-hover:text-[#F5F0E8]">
+                  <ArrowRight className="h-4 w-4 transition-transform duration-500 group-hover:translate-x-0.5" />
+                </span>
               </span>
             </Link>
           </motion.div>
-
-        </motion.div>
-      </motion.div>
-
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 2.2, duration: 1 }}
-        style={{ opacity: opacityIndicator }} 
-        className="mt-16 md:mt-24 mx-auto z-20 pointer-events-none"
-      >
-        <div className="flex flex-col items-center gap-3">
-          <span className="text-[9px] font-bold uppercase tracking-[0.25em] text-white/70 animate-pulse">
-            Start the Journey
-          </span>
-          <div className="h-11 w-6 rounded-full border-[1.5px] border-white/30 bg-white/5 p-1 backdrop-blur-sm shadow-lg">
-            <motion.div
-              animate={{ y:[0, 12, 0] }}
-              transition={{ repeat: Infinity, duration: 2, ease: "easeInOut" }}
-              className="h-2 w-full rounded-full bg-white shadow-[0_0_8px_rgba(255,255,255,0.8)]"
-            />
-          </div>
         </div>
       </motion.div>
     </section>

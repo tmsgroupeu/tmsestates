@@ -1,10 +1,9 @@
-/* NEW FILE: src/components/OurProjectsClient.tsx */
 "use client";
 
-import { useState, useEffect } from "react";
-import Link from "next/link";
+import { useMemo, useState } from "react";
 import Image from "next/image";
-import { ArrowUpRight, MapPin, CalendarClock } from "lucide-react";
+import { ArrowUpRight, CalendarClock, MapPin } from "lucide-react";
+import { Link } from "@/i18n/routing";
 
 type ProjectData = {
   id: string | number;
@@ -16,131 +15,168 @@ type ProjectData = {
   image: string;
 };
 
-export default function OurProjectsClient({ projects }: { projects: ProjectData[] }) {
-  // 1. Auto-Focus State
-  const [activeIndex, setActiveIndex] = useState(0);
-  const [isHovered, setIsHovered] = useState(false);
+export default function OurProjectsClient({
+  projects,
+}: {
+  projects: ProjectData[];
+}) {
+  const visibleProjects = useMemo(() => projects.slice(0, 5), [projects]);
+  const [activeIndex, setActiveIndex] = useState(
+    Math.min(1, Math.max(0, visibleProjects.length - 1)),
+  );
 
-  // 2. The Autoplay Loop (4.5 seconds)
-  useEffect(() => {
-    // If the user is interacting with the section, pause the loop
-    if (isHovered) return;
-
-    const timer = setInterval(() => {
-      setActiveIndex((prevIndex) => (prevIndex + 1) % projects.length);
-    }, 4500);
-
-    return () => clearInterval(timer);
-  },[isHovered, projects.length]);
+  if (!visibleProjects.length) return null;
 
   return (
-    <div 
-       // Pause autoplay on mouse enter or touch
-       onMouseEnter={() => setIsHovered(true)}
-       onMouseLeave={() => setIsHovered(false)}
-       onTouchStart={() => setIsHovered(true)}
-       // Compact responsive heights: 60vh max on desktop, stacks vertically on mobile
-       className="flex flex-col lg:flex-row w-full h-[65vh] min-h-[450px] max-h-[600px] gap-3 lg:gap-4"
-    >
-      {projects.map((project, index) => {
-        const isActive = activeIndex === index;
+    <div className="relative overflow-visible">
+      <div className="hidden h-[clamp(410px,50svh,560px)] w-full gap-4 lg:flex">
+        {visibleProjects.map((project, index) => {
+          const isActive = index === activeIndex;
 
-        return (
-          <Link 
-              key={project.id} 
+          return (
+            <Link
+              key={project.id}
               href={`/projects/${project.slug}`}
-              // Update state instantly on hover
               onMouseEnter={() => setActiveIndex(index)}
-              // 🪄 THE ACCORDION ANIMATION:
-              // Flex-1 (Shrunk) vs Flex-[3.5] (Expanded). 
-              // Ease-out creates the luxurious slow-stop effect.
-              className={`group relative min-w-0 min-h-0 overflow-hidden rounded-3xl bg-[#0A2342] border border-white/10 shadow-xl flex flex-col justify-end cursor-pointer transition-all duration-[800ms] ease-[cubic-bezier(0.25,1,0.5,1)]
-                 ${isActive ? 'flex-[3.5] lg:flex-[4] shadow-[#D4AF37]/15' : 'flex-1'}
-              `}
-          >
-              {/* 1. BACKGROUND IMAGE */}
+              onFocus={() => setActiveIndex(index)}
+              style={{ flexGrow: isActive ? 1.72 : 0.62 }}
+              className={`group relative min-w-[150px] overflow-hidden border transition-[flex-grow,transform,border-color,box-shadow,opacity,filter] duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] ${
+                isActive
+                  ? "z-20 border-[#C2A139]/55 shadow-[0_30px_105px_rgba(0,0,0,0.46)]"
+                  : "z-10 border-white/16 opacity-[0.86] saturate-[0.92] hover:border-[#C2A139]/36 hover:opacity-100"
+              }`}
+            >
               <Image
-                  src={project.image}
-                  alt={project.title} 
-                  fill
-                  sizes="(max-width: 1024px) 100vw, 50vw"
-                  className={`object-cover object-center transition-all duration-[1.5s] ease-out
-                     ${isActive ? 'scale-105 opacity-90' : 'scale-110 opacity-40 grayscale-[30%]'}
-                  `}
-                  priority
+                src={project.image}
+                alt={project.title}
+                fill
+                sizes={isActive ? "56vw" : "20vw"}
+                className={`object-cover transition duration-[1400ms] ease-out ${isActive ? "scale-100" : "scale-[1.02]"} group-hover:scale-[1.045]`}
               />
-              
-              {/* 2. GRADIENTS FOR READABILITY */}
-              <div className={`absolute inset-0 transition-all duration-700 
-                  ${isActive ? 'bg-gradient-to-t from-[#0A2342] via-[#0A2342]/60 to-transparent' : 'bg-[#0A2342]/50'}
-              `} />
 
-              {/* 3. CONTENT CONTAINER */}
-              {/* ✅ THE TEXT REFLOW FIX: 
-                  By giving this absolute container a fixed width (w-[85vw] lg:w-[500px]), 
-                  the text never wraps or jumps. The expanding card just acts like a window 
-                  sliding open to reveal it. 
-              */}
-              <div className="absolute bottom-0 left-0 p-6 md:p-8 w-[85vw] lg:w-[550px] flex flex-col justify-end">
-                  
-                  {/* Top Right Arrow (Only on Active) */}
-                  <div className={`absolute top-6 right-6 bg-white/10 backdrop-blur-md border border-white/20 p-2 md:p-3 rounded-full text-white shadow-lg transition-all duration-500 delay-100
-                      ${isActive ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-4'}
-                  `}>
-                      <ArrowUpRight size={20} />
-                  </div>
+              {/* Dark editorial overlay: keeps images visible, but guarantees readable project information. */}
+              <div
+                className={`absolute inset-0 transition duration-500 ${isActive ? "bg-[#05070B]/50" : "bg-[#05070B]/70"}`}
+              />
+              <div className="absolute inset-x-0 top-0 h-44 bg-gradient-to-b from-[#05070B]/94 via-[#05070B]/66 to-transparent" />
+              <div className="absolute inset-x-0 bottom-0 h-[76%] bg-gradient-to-t from-[#05070B]/100 via-[#05070B]/94 to-transparent" />
+              <div className="absolute inset-y-0 left-0 w-[72%] bg-gradient-to-r from-[#05070B]/92 via-[#05070B]/70 to-transparent" />
+              <div className="absolute inset-0 ring-1 ring-inset ring-white/8" />
 
-                  {/* Title */}
-                  <h3 className={`text-xl md:text-3xl font-montserrat font-bold text-white mb-2 transition-colors duration-500 line-clamp-2
-                      ${isActive ? 'text-[#D4AF37]' : ''}
-                  `}>
-                      {project.title}
-                  </h3>
+              {!isActive && (
+                <div className="absolute inset-0 bg-[#05070B]/44 transition-opacity group-hover:opacity-0" />
+              )}
 
-                  {/* Expanded Content Details */}
-                  <div className={`overflow-hidden transition-all duration-[800ms] ease-[cubic-bezier(0.25,1,0.5,1)]
-                      ${isActive ? 'max-h-[200px] opacity-100' : 'max-h-0 opacity-0'}
-                  `}>
-                      <div className="flex flex-col gap-4 pt-2">
-                          
-                          {/* Tags */}
-                          <div className="flex flex-wrap items-center gap-2">
-                               {project.completion && (
-                                 <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-[#0A2342]/80 border border-[#D4AF37]/30 backdrop-blur-sm">
-                                    <CalendarClock size={12} className="text-[#D4AF37]" />
-                                    <span className="text-[9px] font-bold uppercase tracking-widest text-[#D4AF37]">
-                                        {project.completion}
-                                    </span>
-                                 </div>
-                               )}
-                               {project.location && (
-                                 <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white/10 border border-white/10 backdrop-blur-sm">
-                                    <MapPin size={12} className="text-white" />
-                                    <span className="text-[9px] font-bold uppercase tracking-widest text-white">
-                                        {project.location}
-                                    </span>
-                                 </div>
-                               )}
-                          </div>
+              {isActive && (
+                <>
+                  <div className="absolute inset-0 ring-1 ring-inset ring-[#C2A139]/50" />
+                  <div className="absolute left-0 top-0 h-full w-[3px] bg-gradient-to-b from-[#C2A139] via-[#C2A139]/55 to-transparent" />
+                </>
+              )}
 
-                          {/* Description */}
-                          <p className="text-white/80 text-xs md:text-sm line-clamp-2 leading-relaxed font-light">
-                              {project.description}
-                          </p>
-
-                          {/* CTA Text */}
-                          <div className="mt-1">
-                              <span className="inline-flex items-center gap-2 text-[10px] font-bold uppercase tracking-[0.2em] text-white hover:text-[#D4AF37] transition-colors border-b border-transparent hover:border-[#D4AF37] pb-1">
-                                  Explore Project <ArrowUpRight size={14} />
-                              </span>
-                          </div>
-                      </div>
-                  </div>
-
+              <div className="absolute left-6 top-6 z-10 flex items-center gap-3 rounded-full border border-white/16 bg-[#05070B]/66 px-3 py-2 shadow-[0_10px_35px_rgba(0,0,0,0.35)] backdrop-blur-md">
+                <span
+                  className={`h-2 w-2 rounded-full transition-colors ${isActive ? "bg-[#C2A139]" : "bg-[#F5F0E8]/44"}`}
+                />
+                <span className="text-[10px] font-bold uppercase tracking-[0.24em] text-[#F5F0E8]/86">
+                  {String(index + 1).padStart(2, "0")}
+                </span>
               </div>
+
+              <div
+                className={`absolute right-6 top-6 z-10 grid h-11 w-11 place-items-center rounded-full border shadow-[0_10px_30px_rgba(0,0,0,0.25)] backdrop-blur-md transition-all duration-300 ${
+                  isActive
+                    ? "border-[#C2A139]/60 bg-[#C2A139]/94 text-[#05070B] opacity-100"
+                    : "border-white/20 bg-[#05070B]/48 text-[#F5F0E8] opacity-75 group-hover:border-[#C2A139]/55 group-hover:bg-[#C2A139]/90 group-hover:text-[#05070B]"
+                } group-hover:-translate-y-1 group-hover:translate-x-1`}
+              >
+                <ArrowUpRight className="h-4 w-4" />
+              </div>
+
+              <div className="absolute inset-x-0 bottom-0 z-10 p-6 md:p-8">
+                {isActive ? (
+                  <div className="max-w-[680px]">
+                    <div className="mb-5 flex flex-wrap gap-3">
+                      {project.location && (
+                        <span className="inline-flex max-w-full items-center gap-2 border border-white/24 bg-[#05070B]/92 px-3 py-2 text-[10px] font-bold uppercase tracking-[0.18em] text-[#F5F0E8] shadow-[0_12px_34px_rgba(0,0,0,0.34)] backdrop-blur-md">
+                          <MapPin className="h-3.5 w-3.5 shrink-0 text-[#C2A139]" />
+                          <span className="truncate">{project.location}</span>
+                        </span>
+                      )}
+                      {project.completion && (
+                        <span className="inline-flex max-w-full items-center gap-2 border border-[#C2A139]/58 bg-[#05070B]/92 px-3 py-2 text-[10px] font-bold uppercase tracking-[0.18em] text-[#C2A139] shadow-[0_12px_34px_rgba(0,0,0,0.34)] backdrop-blur-md">
+                          <CalendarClock className="h-3.5 w-3.5 shrink-0" />
+                          <span className="truncate">{project.completion}</span>
+                        </span>
+                      )}
+                    </div>
+
+                    <h3 className="font-montserrat text-[clamp(1.55rem,2.3vw,2.45rem)] font-semibold leading-[1.04] tracking-[-0.052em] text-[#F5F0E8] drop-shadow-[0_12px_32px_rgba(0,0,0,0.82)]">
+                      {project.title}
+                    </h3>
+                    <p className="mt-4 max-w-xl text-sm leading-7 text-[#F5F0E8]/90 line-clamp-3 xl:text-[0.94rem] xl:leading-8">
+                      {project.description}
+                    </p>
+
+                    <span className="mt-6 inline-flex items-center gap-3 text-[11px] font-bold uppercase tracking-[0.22em] text-[#C2A139] drop-shadow-[0_8px_22px_rgba(0,0,0,0.7)]">
+                      Explore Project
+                      <ArrowUpRight className="h-4 w-4 transition-transform group-hover:-translate-y-1 group-hover:translate-x-1" />
+                    </span>
+                  </div>
+                ) : (
+                  <div className="max-w-[280px]">
+                    <h3 className="font-montserrat text-[1.38rem] font-semibold leading-tight tracking-[-0.05em] text-[#F5F0E8] drop-shadow-[0_10px_28px_rgba(0,0,0,0.82)] xl:text-[1.38rem]">
+                      {project.title}
+                    </h3>
+                    <p className="mt-3 text-[10px] font-bold uppercase tracking-[0.18em] text-[#F5F0E8]/84 line-clamp-2 drop-shadow-[0_8px_20px_rgba(0,0,0,0.75)]">
+                      {project.location || "Cyprus"}
+                    </p>
+                  </div>
+                )}
+              </div>
+            </Link>
+          );
+        })}
+      </div>
+
+      <div className="grid gap-3 lg:hidden">
+        {visibleProjects.map((project, index) => (
+          <Link
+            key={project.id}
+            href={`/projects/${project.slug}`}
+            className="group relative min-h-[320px] overflow-hidden border border-white/12 bg-[#05070B] shadow-[0_20px_70px_rgba(0,0,0,0.28)]"
+          >
+            <Image
+              src={project.image}
+              alt={project.title}
+              fill
+              sizes="100vw"
+              className="object-cover transition duration-[1200ms] group-hover:scale-105"
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-[#05070B]/99 via-[#05070B]/82 to-[#05070B]/48" />
+            <div className="absolute inset-x-0 top-0 h-28 bg-gradient-to-b from-[#05070B]/82 to-transparent" />
+            <div className="absolute inset-x-0 bottom-0 h-[72%] bg-gradient-to-t from-[#05070B]/100 via-[#05070B]/94 to-transparent" />
+            <div className="absolute inset-x-0 bottom-0 p-6">
+              <div className="mb-4 flex items-center gap-3 text-[10px] font-bold uppercase tracking-[0.2em] text-[#C2A139]">
+                <span>{String(index + 1).padStart(2, "0")}</span>
+                <span className="line-clamp-1">
+                  {project.location || "Cyprus"}
+                </span>
+              </div>
+              <h3 className="font-montserrat text-3xl font-semibold leading-tight tracking-[-0.055em] text-[#F5F0E8] drop-shadow-[0_10px_26px_rgba(0,0,0,0.72)]">
+                {project.title}
+              </h3>
+              <p className="mt-4 text-sm leading-7 text-[#F5F0E8]/84 line-clamp-2">
+                {project.description}
+              </p>
+              <span className="mt-5 inline-flex items-center gap-3 text-[11px] font-bold uppercase tracking-[0.22em] text-[#C2A139]">
+                Explore Project
+                <ArrowUpRight className="h-4 w-4" />
+              </span>
+            </div>
           </Link>
-        )
-      })}
+        ))}
+      </div>
     </div>
   );
 }

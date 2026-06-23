@@ -1,225 +1,433 @@
-/* FULL REPLACEMENT: src/components/PropertyPageClient.tsx */
 "use client";
 
-import { motion, Variants } from 'framer-motion';
 import Image from "next/image";
-import Link from "next/link";
-import { Bath, BedDouble, Ruler, MapPin, Crown, Calendar, Phone, Mail, House } from "lucide-react";
+import { motion } from "framer-motion";
+import {
+  ArrowUpRight,
+  Bath,
+  BedDouble,
+  ChevronLeft,
+  Home,
+  Mail,
+  Ruler,
+} from "lucide-react";
+import { Link } from "@/i18n/routing";
 
-// --- Type Definitions ---
-type StrapiMedia = { url: string; alternativeText?: string };
+const API =
+  process.env.CMS_URL ||
+  process.env.STRAPI_URL ||
+  process.env.NEXT_PUBLIC_API_URL ||
+  "https://tmsestates.onrender.com";
+
+type StrapiMedia = {
+  url?: string;
+  alternativeText?: string;
+  formats?: any;
+};
+
+type ProjectRelation = {
+  id?: number;
+  title?: string;
+  Title?: string;
+  slug?: string;
+  location?: string;
+  Location?: string;
+  coverImage?: StrapiMedia | StrapiMedia[];
+};
 
 export type Property = {
   id: number;
   title?: string;
   slug: string;
-  description?: string;
-  
+  description?: any;
   city?: string;
   address?: string;
-  
   area?: number | null;
   bedrooms?: number | null;
   bathrooms?: number | null;
   propertyType?: string | null;
-  
   price?: number | null;
-  currency?: 'EUR' | 'USD' | 'GBP' | null;
-  
-  // ✅ FIX: Use 'prop_status' matching the new cms.ts type
-  prop_status?: 'for-sale' | 'for-rent' | 'sold' | 'rented' | null;
-  
+  currency?: "EUR" | "USD" | "GBP" | null;
+  prop_status?: "for-sale" | "for-rent" | "sold" | "rented" | null;
+  marketing_label?: string | null;
+  marketing_tags?: string | null;
   vip?: boolean;
-  images?: StrapiMedia[];
-  updatedAt?: string;
+  images?: StrapiMedia[] | { data?: any[] };
+  project?: ProjectRelation | { data?: ProjectRelation } | null;
 };
 
-const API = process.env.NEXT_PUBLIC_API_URL || "";
-const asUrl = (u?: string) => (!u ? "" : u.startsWith("http") ? u : `${API}${u}`);
+const fadeUp = {
+  hidden: { opacity: 0, y: 28, filter: "blur(6px)" },
+  visible: {
+    opacity: 1,
+    y: 0,
+    filter: "blur(0px)",
+    transition: { duration: 0.95, ease: [0.16, 1, 0.3, 1] },
+  },
+};
 
-const formatPrice = (price?: number | null, currency?: string | null) => {
-  if (!price) return 'Price Upon Request';
-  return new Intl.NumberFormat('en-IE', {
-    style: 'currency',
-    currency: currency || 'EUR',
+const stagger = {
+  hidden: {},
+  visible: {
+    transition: {
+      staggerChildren: 0.12,
+      delayChildren: 0.08,
+    },
+  },
+};
+
+function asUrl(u?: string) {
+  if (!u) return "";
+  return u.startsWith("http") ? u : `${API}${u}`;
+}
+
+function normalizeMedia(media: any): StrapiMedia | undefined {
+  if (!media) return undefined;
+  if (media.attributes) return media.attributes;
+  return media;
+}
+
+function mediaUrl(media?: any) {
+  const item = normalizeMedia(media);
+  if (!item) return "/assets/hero-poster.jpg";
+
+  const url =
+    item.formats?.large?.url ||
+    item.formats?.medium?.url ||
+    item.formats?.small?.url ||
+    item.url;
+
+  return asUrl(url) || "/assets/hero-poster.jpg";
+}
+
+function mediaArray(images: any): any[] {
+  if (!images) return [];
+  const data = images.data || images;
+  return Array.isArray(data) ? data : [data];
+}
+
+function formatPrice(price?: number | null, currency?: string | null) {
+  if (!price) return "Price Upon Request";
+
+  return new Intl.NumberFormat("en-IE", {
+    style: "currency",
+    currency: currency || "EUR",
     maximumFractionDigits: 0,
   }).format(price);
-};
+}
 
-const sectionVariants: Variants = {
-  hidden: { opacity: 0, y: 20 },
-  visible: { 
-    opacity: 1, 
-    y: 0, 
-    transition: { duration: 0.6, ease: "easeInOut" } 
+function readable(value?: string | null) {
+  if (!value) return "";
+  return value.replace(/[-_]/g, " ");
+}
+
+function extractText(value: any): string {
+  if (!value) return "";
+  if (typeof value === "string") return value.trim();
+
+  if (Array.isArray(value)) {
+    return value
+      .map((block) => block.children?.map((child: any) => child.text).join("") || "")
+      .filter(Boolean)
+      .join("\n\n")
+      .trim();
   }
-};
 
-const StatCard = ({ icon: Icon, label, value }: { icon: React.ComponentType<{ className?: string }>, label: string, value: string | number | null | undefined }) => {
-    if (!value) return null;
-    return (
-        <div className="rounded-2xl bg-white border border-gray-100 p-4 flex items-center gap-4 shadow-sm hover:shadow-md transition-shadow">
-            <div className="bg-[#0A2342]/5 p-3 rounded-full text-[#D4AF37]">
-                <Icon className="h-5 w-5" />
-            </div>
-            <div>
-                <div className="text-gray-400 text-xs font-bold uppercase tracking-wider">{label}</div>
-                <div className="text-[#0A2342] font-semibold text-lg">{value}</div>
-            </div>
-        </div>
-    );
-};
+  return "";
+}
+
+function paragraphs(value?: any) {
+  return extractText(value)
+    .split(/\n{2,}|\r\n{2,}/)
+    .map((item) => item.trim())
+    .filter(Boolean);
+}
+
+function extractProject(property: Property): ProjectRelation | null {
+  const raw: any = property.project;
+  if (!raw) return null;
+
+  if (raw.data?.attributes) {
+    return { id: raw.data.id, ...raw.data.attributes };
+  }
+
+  return raw.data || raw.attributes || raw;
+}
 
 export default function PropertyPageClient({ property }: { property: Property }) {
   if (!property) {
-    return <div className="min-h-screen flex items-center justify-center text-gray-500">Property not found.</div>;
+    return <main className="min-h-screen bg-[#242124] text-[#F5F0E8]" />;
   }
-  
-  const p = property;
-  const allImages = p.images?.map(img => ({ url: asUrl(img.url), alt: img.alternativeText || p.title || "Property photo" })) || [];
-  const heroImage = allImages[0];
-  const galleryImages = allImages.slice(1);
+
+  const images = mediaArray(property.images);
+  const heroImage = mediaUrl(images[0]);
+  const sideImage = mediaUrl(images[1] || images[0]);
+  const galleryImages = images.slice(1, 4);
+
+  const project = extractProject(property);
+  const projectTitle = project?.Title || project?.title;
+  const projectSlug = project?.slug;
+
+  const descriptionParagraphs = paragraphs(property.description);
+  const label =
+    property.vip
+      ? "VIP"
+      : property.marketing_label ||
+        property.marketing_tags ||
+        property.propertyType ||
+        property.prop_status ||
+        "Property";
 
   return (
-    <motion.main
-      className="min-h-screen bg-[#F9F9F9]"
-      initial="hidden" animate="visible" variants={{ visible: { transition: { staggerChildren: 0.1 } } }}
-    >
-      {/* Hero */}
-      {heroImage && (
-        <motion.section variants={sectionVariants} className="relative h-[60vh] md:h-[70vh] w-full">
-          <Image 
-            src={heroImage.url} 
-            alt={heroImage.alt} 
-            fill 
-            priority
-            className="object-cover"
-          />
-          <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent" />
-          
-          {p.vip && (
-             <div className="absolute left-6 top-24 md:top-32 inline-flex items-center gap-2 rounded-full bg-[#D4AF37] px-4 py-2 text-xs font-bold uppercase tracking-widest text-white shadow-lg backdrop-blur-md">
-                <Crown className="h-4 w-4" /> VIP Collection
-            </div>
-          )}
-        </motion.section>
-      )}
+    <main className="detail-page-main overflow-hidden bg-[#F5F0E8] text-[#242124]">
+      <section className="relative flex min-h-[66svh] items-end overflow-hidden bg-[#242124] px-6 pb-20 pt-36 md:px-10 md:pt-44 lg:min-h-[74svh]">
+        <Image
+          src={heroImage}
+          alt={property.title || "Property"}
+          fill
+          priority
+          sizes="100vw"
+          className="object-cover"
+        />
 
-      <div className="mx-auto max-w-7xl px-6 py-12 -mt-20 relative z-10">
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 lg:gap-12">
-          
-          {/* Details */}
-          <div className="lg:col-span-2 space-y-12">
-            
-            <motion.div variants={sectionVariants} className="bg-white rounded-3xl p-8 shadow-xl border border-gray-100">
-              <div className="flex gap-2 mb-4">
-                 {/* ✅ FIX: Use prop_status */}
-                 {p.prop_status && (
-                    <span className="inline-flex px-3 py-1 rounded-full bg-[#0A2342] text-white text-[10px] font-bold uppercase tracking-widest">
-                       {p.prop_status.replace(/-/g, ' ')}
-                    </span>
-                 )}
-                 <span className="inline-flex px-3 py-1 rounded-full bg-gray-100 text-gray-500 text-[10px] font-bold uppercase tracking-widest">
-                    {p.propertyType || 'Residence'}
-                 </span>
-              </div>
+        <div className="absolute inset-0 bg-[#242124]/34" />
+        <div className="absolute inset-x-0 top-0 h-48 bg-gradient-to-b from-[#242124]/88 via-[#242124]/48 to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-r from-[#242124]/94 via-[#242124]/56 to-[#242124]/20" />
+        <div className="absolute inset-0 bg-gradient-to-t from-[#242124]/98 via-[#242124]/50 to-transparent" />
+        <div className="absolute bottom-0 left-0 h-[58%] w-full bg-gradient-to-t from-[#242124] via-[#242124]/76 to-transparent" />
 
-              <h1 className="text-3xl md:text-5xl font-bold font-montserrat text-[#0A2342] leading-tight mb-6">
-                {p.title}
-              </h1>
-              
-              <div className="flex flex-wrap items-end justify-between gap-6 border-t border-gray-100 pt-6">
-                 <div className="flex items-center gap-2 text-gray-500">
-                    <MapPin className="h-5 w-5 text-[#D4AF37]" />
-                    <span className="text-lg">{p.city || "Cyprus"}</span>
-                 </div>
-                 <div className="text-3xl font-bold text-[#D4AF37] font-montserrat">
-                    {formatPrice(p.price, p.currency)}
-                 </div>
-              </div>
+        <div className="relative mx-auto w-full max-w-7xl">
+          <motion.div initial="hidden" animate="visible" variants={stagger} className="max-w-5xl">
+            <motion.div variants={fadeUp}>
+              <Link href="/properties" className="mb-7 inline-flex items-center gap-3 border border-[#C2A139]/44 bg-[#242124]/62 px-4 py-2.5 text-[10px] font-bold uppercase tracking-[0.28em] text-[#C2A139] shadow-[0_12px_36px_rgba(0,0,0,0.34)] backdrop-blur-md transition-all duration-300 hover:border-[#C2A139] hover:bg-[#C2A139] hover:text-[#242124]">
+                <ChevronLeft className="h-4 w-4" />
+                Properties
+              </Link>
             </motion.div>
 
-            <motion.div variants={sectionVariants} className="grid grid-cols-2 md:grid-cols-4 gap-4">
-              <StatCard icon={BedDouble} label="Bedrooms" value={p.bedrooms} />
-              <StatCard icon={Bath} label="Bathrooms" value={p.bathrooms} />
-              <StatCard icon={Ruler} label="Area (m²)" value={p.area} />
-              <StatCard icon={House} label="Type" value={p.propertyType ? p.propertyType.replace(/-/g, ' ') : 'Property'} />
+            <motion.div variants={fadeUp} className="mb-5 flex flex-wrap gap-3">
+              <span className="border border-[#C2A139]/58 bg-[#242124]/72 px-4 py-2 text-[10px] font-bold uppercase tracking-[0.28em] text-[#C2A139] shadow-[0_12px_34px_rgba(0,0,0,0.34)] backdrop-blur-md">
+                {readable(label)}
+              </span>
+
+              {property.prop_status && (
+                <span className="border border-[#F5F0E8]/24 bg-[#242124]/58 px-4 py-2 text-[10px] font-bold uppercase tracking-[0.28em] text-[#F5F0E8]/90 shadow-[0_12px_34px_rgba(0,0,0,0.3)] backdrop-blur-md">
+                  {readable(property.prop_status)}
+                </span>
+              )}
             </motion.div>
 
-            {p.description && (
-              <motion.section variants={sectionVariants} className="bg-white rounded-3xl p-8 shadow-sm border border-gray-100">
-                 <h2 className="text-2xl font-bold font-montserrat text-[#0A2342] mb-6">Property Overview</h2>
-                 <div className="prose prose-lg prose-slate max-w-none text-gray-600 leading-relaxed">
-                    <p className="whitespace-pre-line">{p.description}</p>
-                 </div>
-              </motion.section>
-            )}
+            <motion.h1 variants={fadeUp} className="max-w-5xl font-montserrat text-[clamp(2.35rem,5.05vw,5.35rem)] font-bold leading-[0.98] tracking-[-0.065em] text-[#F5F0E8] drop-shadow-[0_16px_44px_rgba(0,0,0,0.72)]">
+              {property.title}
+            </motion.h1>
+          </motion.div>
+        </div>
+      </section>
 
-            {galleryImages.length > 0 && (
-              <motion.section variants={sectionVariants}>
-                <h2 className="text-2xl font-bold font-montserrat text-[#0A2342] mb-6">Gallery</h2>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  {galleryImages.map((img, i) => (
-                    <div 
-                        key={i} 
-                        className={`relative overflow-hidden rounded-2xl bg-gray-200 aspect-[4/3] group ${
-                            i === 0 || i % 3 === 0 ? 'md:col-span-2 aspect-[16/9]' : ''
-                        }`}
-                    >
-                      <Image 
-                        src={img.url} 
-                        alt={img.alt} 
-                        fill 
-                        className="object-cover transition-transform duration-700 group-hover:scale-105"
-                        sizes="(min-width: 1024px) 60vw, 100vw"
-                      />
-                    </div>
-                  ))}
-                </div>
-              </motion.section>
-            )}
+      <section className="relative z-20 bg-[#F5F0E8] px-6 md:px-10">
+        <motion.div
+          initial={{ opacity: 0, y: 28, filter: "blur(6px)" }}
+          animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+          transition={{ delay: 0.18, duration: 0.9, ease: [0.16, 1, 0.3, 1] }}
+          className="property-summary-bar relative mx-auto -mt-12 grid w-full max-w-6xl overflow-hidden bg-white shadow-[0_28px_95px_rgba(36,33,36,0.18)] md:grid-cols-4"
+        >
+          <div className="pointer-events-none absolute inset-x-0 top-0 h-[2px] overflow-hidden bg-[#C2A139]/14">
+            <div className="property-summary-gold-line h-full w-1/3 bg-gradient-to-r from-transparent via-[#C2A139] to-transparent" />
           </div>
 
-          {/* Sidebar */}
-          <aside className="lg:col-span-1">
-            <motion.div variants={sectionVariants} className="sticky top-28 space-y-6">
-                
-                <div className="rounded-3xl bg-white shadow-xl shadow-[#0A2342]/5 border border-gray-100 p-6 flex flex-col gap-4">
-                  <div className="text-center mb-2">
-                      <h3 className="text-xl font-bold font-montserrat text-[#0A2342]">Interested?</h3>
-                      <p className="text-sm text-gray-500 mt-1">Get the full brochure or schedule a private viewing.</p>
-                  </div>
-                  
-                  <div className="flex flex-col gap-3">
-                    <Link href={`/contact?property=${encodeURIComponent(p.slug)}`} className="btn btn-primary w-full gap-2 !bg-[#0A2342] hover:!bg-[#D4AF37] !text-white !border-0 shadow-lg flex items-center justify-center py-3 rounded-xl font-bold uppercase text-xs">
-                      <Mail className="h-4 w-4" /> Request Info
-                    </Link>
-                    <Link href={`/contact?type=tour&property=${encodeURIComponent(p.slug)}`} className="btn w-full gap-2 border border-gray-200 hover:border-[#0A2342] text-[#0A2342] flex items-center justify-center py-3 rounded-xl font-bold uppercase text-xs">
-                      <Calendar className="h-4 w-4" /> Book a Viewing
-                    </Link>
-                    <a href={`tel:+35700000000`} className="btn w-full gap-2 border border-gray-200 hover:border-[#0A2342] text-[#0A2342] flex items-center justify-center py-3 rounded-xl font-bold uppercase text-xs">
-                      <Phone className="h-4 w-4" /> Call Agent
-                    </a>
-                  </div>
+          <SummaryItem label="Price" value={formatPrice(property.price, property.currency)} />
+          <SummaryItem label="Location" value={property.city || property.address || "Cyprus"} />
+          <SummaryItem label="Type" value={readable(property.propertyType) || "Residence"} />
+          <SummaryItem label="Area" value={property.area ? `${property.area} m²` : "Upon Request"} />
+        </motion.div>
+      </section>
 
-                  <div className="mt-2 pt-4 border-t border-gray-100 text-center">
-                     <span className="text-[10px] uppercase tracking-widest text-gray-400">Reference ID</span>
-                     <p className="text-sm font-mono text-[#0A2342] font-bold">#{p.id.toString().padStart(4, '0')}</p>
-                  </div>
-                </div>
+      <section className="bg-[#F5F0E8] px-6 py-16 md:px-10 md:py-20">
+        <div className="mx-auto grid w-full max-w-7xl gap-12 lg:grid-cols-[0.95fr_1.05fr] lg:items-center lg:gap-20">
+          <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-90px" }} variants={stagger} className="max-w-2xl">
+            <motion.p variants={fadeUp} className="mb-5 text-[10px] font-bold uppercase tracking-[0.3em] text-[#C2A139]">
+              Property Overview
+            </motion.p>
 
-                <div className="rounded-2xl bg-[#0A2342] p-6 text-white text-center">
-                    <p className="text-xs font-bold uppercase tracking-widest text-[#D4AF37] mb-2">Exclusive Service</p>
-                    <p className="text-sm opacity-80 leading-relaxed">
-                        Represented by TMS Estates. We offer discreet advisory for high-net-worth acquisitions.
-                    </p>
-                </div>
+            <div className="space-y-5 text-sm leading-7 text-[#242124]/74 md:text-[0.95rem] md:leading-8">
+              {descriptionParagraphs.length > 0 ? (
+                descriptionParagraphs.map((paragraph) => (
+                  <motion.p key={paragraph} variants={fadeUp}>
+                    {paragraph}
+                  </motion.p>
+                ))
+              ) : (
+                <motion.p variants={fadeUp}>Property details will be available soon.</motion.p>
+              )}
+            </div>
+          </motion.div>
 
-            </motion.div>
-          </aside>
-
+          <EditorialImage src={sideImage} alt={property.title || "Property interior"} />
         </div>
+      </section>
+
+      <section className="bg-[#242124] px-6 py-16 text-[#F5F0E8] md:px-10 md:py-20">
+        <div className="mx-auto w-full max-w-7xl">
+          <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-90px" }} variants={stagger}>
+            <motion.p variants={fadeUp} className="mb-4 text-[10px] font-bold uppercase tracking-[0.3em] text-[#C2A139]">
+              Details
+            </motion.p>
+
+            <motion.h2 variants={fadeUp} className="font-montserrat text-[clamp(2rem,3.5vw,4rem)] font-bold leading-[1.02] tracking-[-0.055em] text-[#F5F0E8]">
+              Residence Specifications
+            </motion.h2>
+          </motion.div>
+
+          <div className="mt-10 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+            <Spec icon={<BedDouble />} label="Bedrooms" value={property.bedrooms ? `${property.bedrooms}` : "—"} />
+            <Spec icon={<Bath />} label="Bathrooms" value={property.bathrooms ? `${property.bathrooms}` : "—"} />
+            <Spec icon={<Ruler />} label="Area" value={property.area ? `${property.area} m²` : "—"} />
+            <Spec icon={<Home />} label="Property Type" value={readable(property.propertyType) || "Residence"} />
+          </div>
+
+          {galleryImages.length > 0 && (
+            <div className="mt-12 grid gap-4 md:grid-cols-3">
+              {galleryImages.map((image, index) => (
+                <EditorialImage key={index} src={mediaUrl(image)} alt={`${property.title || "Property"} gallery ${index + 1}`} compact />
+              ))}
+            </div>
+          )}
+        </div>
+      </section>
+
+      {projectTitle && projectSlug && (
+        <section className="bg-[#F5F0E8] px-6 py-16 md:px-10 md:py-20">
+          <div className="mx-auto grid w-full max-w-7xl gap-8 lg:grid-cols-[0.8fr_1.2fr] lg:items-end">
+            <div>
+              <p className="mb-4 text-[10px] font-bold uppercase tracking-[0.3em] text-[#C2A139]">
+                Project Connection
+              </p>
+
+              <h2 className="font-montserrat text-[clamp(2rem,3.6vw,4.2rem)] font-bold leading-[1.02] tracking-[-0.055em] text-[#242124]">
+                Part of {projectTitle}
+              </h2>
+            </div>
+
+            <div className="max-w-2xl text-sm leading-7 text-[#242124]/68 md:text-[0.95rem] md:leading-8">
+              This residence belongs to one of our carefully selected developments. View the full project to understand the wider concept, location and available units.
+            </div>
+          </div>
+
+          <div className="mx-auto mt-10 flex w-full max-w-7xl flex-col gap-3 border-t border-[#242124]/10 pt-8 sm:flex-row">
+            <Link href={`/projects/${projectSlug}`} className="group inline-flex items-center justify-center gap-3 bg-[#242124] px-6 py-4 text-[11px] font-bold uppercase tracking-[0.22em] text-[#F5F0E8] transition-all duration-300 hover:bg-[#C2A139] hover:text-[#242124]">
+              View Project
+              <ArrowUpRight className="h-4 w-4" />
+            </Link>
+
+            <a href="mailto:info@tmsestates.com" className="group inline-flex items-center justify-center gap-3 border border-[#242124]/18 px-6 py-4 text-[11px] font-bold uppercase tracking-[0.22em] text-[#242124] transition-all duration-300 hover:border-[#C2A139] hover:text-[#C2A139]">
+              Request Details
+              <Mail className="h-4 w-4" />
+            </a>
+          </div>
+        </section>
+      )}
+
+      <style jsx>{`
+        .property-summary-bar {
+          box-shadow:
+            0 28px 95px rgba(36, 33, 36, 0.18),
+            0 -10px 32px rgba(36, 33, 36, 0.1),
+            inset 0 1px 0 rgba(194, 161, 57, 0.08);
+        }
+
+        .property-summary-gold-line {
+          animation: propertySummaryGoldSweep 4.8s cubic-bezier(0.65, 0, 0.35, 1) infinite;
+          opacity: 0.9;
+          filter: drop-shadow(0 0 8px rgba(194, 161, 57, 0.45));
+        }
+
+        :global(body:has(.detail-page-main) #page-footer) {
+          padding-top: 0;
+        }
+
+        :global(body:has(.detail-page-main) #page-footer > div:first-child) {
+          display: none;
+        }
+
+        @keyframes propertySummaryGoldSweep {
+          0% {
+            transform: translateX(-115%);
+          }
+          46%,
+          100% {
+            transform: translateX(320%);
+          }
+        }
+      `}</style>
+    </main>
+  );
+}
+
+function SummaryItem({ label, value }: { label: string; value: string }) {
+  return (
+    <div className="group relative border-b border-[#242124]/8 bg-white px-6 py-6 transition-colors duration-300 last:border-b-0 hover:bg-[#F5F0E8] md:border-b-0 md:border-r md:px-8 md:last:border-r-0">
+      <div className="absolute inset-0 opacity-0 transition-opacity duration-300 group-hover:opacity-100">
+        <div className="absolute inset-x-6 top-0 h-px bg-gradient-to-r from-transparent via-[#C2A139]/70 to-transparent" />
       </div>
-    </motion.main>
+
+      <div className="relative z-10">
+        <p className="mb-2 text-[9px] font-bold uppercase tracking-[0.28em] text-[#C2A139]">
+          {label}
+        </p>
+
+        <p className="text-sm font-semibold leading-6 text-[#242124]">{value}</p>
+      </div>
+    </div>
+  );
+}
+
+function Spec({ icon, label, value }: { icon: React.ReactNode; label: string; value: string }) {
+  return (
+    <div className="group relative min-h-[170px] overflow-hidden border border-[#F5F0E8]/12 bg-[#05070B]/22 p-6 transition-all duration-300 hover:border-[#C2A139]/55 hover:bg-[#05070B]/34">
+      <div className="absolute inset-0 opacity-0 transition-opacity duration-300 group-hover:opacity-100">
+        <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-[#C2A139]/70 to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-br from-[#C2A139]/10 via-[#F5F0E8]/[0.025] to-transparent" />
+      </div>
+
+      <div className="relative z-10">
+        <div className="mb-7 flex h-11 w-11 items-center justify-center border border-[#C2A139]/34 bg-[#C2A139]/10 text-[#C2A139] transition-all duration-300 group-hover:bg-[#C2A139] group-hover:text-[#242124]">
+          <span className="[&>svg]:h-5 [&>svg]:w-5">{icon}</span>
+        </div>
+
+        <p className="mb-2 text-[9px] font-bold uppercase tracking-[0.28em] text-[#C2A139]/80">
+          {label}
+        </p>
+
+        <p className="font-montserrat text-2xl font-semibold tracking-[-0.04em] text-[#F5F0E8]">
+          {value}
+        </p>
+      </div>
+    </div>
+  );
+}
+
+function EditorialImage({
+  src,
+  alt,
+  compact = false,
+}: {
+  src: string;
+  alt: string;
+  compact?: boolean;
+}) {
+  return (
+    <motion.div
+      initial="hidden"
+      whileInView="visible"
+      viewport={{ once: true, margin: "-90px" }}
+      variants={fadeUp}
+      className={`relative overflow-hidden shadow-[0_28px_90px_rgba(36,33,36,0.18)] ${
+        compact ? "min-h-[280px]" : "min-h-[340px] md:min-h-[460px]"
+      }`}
+    >
+      <Image src={src} alt={alt} fill sizes="(max-width: 1024px) 100vw, 48vw" className="object-cover" />
+      <div className="absolute inset-0 bg-gradient-to-t from-[#242124]/34 via-transparent to-transparent" />
+      <div className="absolute inset-x-0 bottom-0 h-[2px] bg-gradient-to-r from-transparent via-[#C2A139]/70 to-transparent" />
+    </motion.div>
   );
 }

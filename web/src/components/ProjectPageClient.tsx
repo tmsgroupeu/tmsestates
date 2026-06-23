@@ -1,232 +1,622 @@
-/* NEW FILE: src/components/ProjectPageClient.tsx */
 "use client";
 
-import { useRef } from 'react';
-import { motion, useScroll, useTransform } from 'framer-motion';
 import Image from "next/image";
-import Link from "next/link";
-import { MapPin, CalendarClock, ChevronLeft, Building2, Download, Mail } from "lucide-react";
-import ReactMarkdown from 'react-markdown';
-import PropertyCard from './PropertyCard';
+import { motion } from "framer-motion";
+import { Swiper, SwiperSlide } from "swiper/react";
+import { Autoplay, Navigation } from "swiper/modules";
+import {
+  ArrowRight,
+  ArrowUpRight,
+  Bath,
+  BedDouble,
+  CalendarClock,
+  ChevronLeft,
+  Mail,
+  MapPin,
+  Ruler,
+} from "lucide-react";
+import { Link } from "@/i18n/routing";
+import "swiper/css";
+import "swiper/css/navigation";
 
-const API_URL = process.env.STRAPI_API_URL || process.env.NEXT_PUBLIC_API_URL || "http://127.0.0.1:1337";
+const API_URL =
+  process.env.CMS_URL ||
+  process.env.STRAPI_URL ||
+  process.env.NEXT_PUBLIC_API_URL ||
+  "https://tmsestates.onrender.com";
 
-// --- Data Extractors ---
-const getSafeUrl = (data: any) => {
+function firstDefined(...values: any[]) {
+  return values.find(
+    (value) => value !== undefined && value !== null && String(value).trim() !== "",
+  );
+}
+
+function getSafeUrl(data: any): string | null {
   if (!data) return null;
-  const item = Array.isArray(data) ? data[0] : (data.data ? (Array.isArray(data.data) ? data.data[0] : data.data) : data);
+
+  let item = Array.isArray(data) ? data[0] : data;
+  if (item?.data) item = Array.isArray(item.data) ? item.data[0] : item.data;
   if (!item) return null;
-  const url = item.attributes?.url || item.url;
+
+  const attributes = item.attributes || item;
+  const url =
+    attributes?.formats?.large?.url ||
+    attributes?.formats?.medium?.url ||
+    attributes?.formats?.small?.url ||
+    attributes?.url ||
+    item.url;
+
   if (!url) return null;
-  return url.startsWith('http') ? url : `${API_URL}${url}`;
-};
+  return url.startsWith("http") ? url : `${API_URL}${url}`;
+}
 
-const extractText = (desc: any): string => {
-  if (!desc) return "";
-  if (typeof desc === 'string') return desc;
-  if (Array.isArray(desc)) {
-    try {
-      return desc.map((block: any) => block.children?.map((child: any) => child.text).join(" ")).join("\n\n");
-    } catch(e) { return ""; }
+function getMediaArray(data: any): any[] {
+  if (!data) return [];
+  const items = data.data || data;
+  return Array.isArray(items) ? items : [items];
+}
+
+function extractText(value: any): string {
+  if (!value) return "";
+  if (typeof value === "string") return value.trim();
+
+  if (Array.isArray(value)) {
+    return value
+      .map((block) => block.children?.map((child: any) => child.text).join("") || "")
+      .filter(Boolean)
+      .join("\n\n")
+      .trim();
   }
+
   return "";
+}
+
+function splitDescription(text: string) {
+  const clean = text.replace(/\r\n/g, "\n").trim();
+
+  if (clean.includes("\n---\n")) {
+    const [first, ...rest] = clean.split("\n---\n");
+
+    return {
+      first: first.trim(),
+      second: rest.join("\n---\n").trim(),
+    };
+  }
+
+  const paragraphs = clean
+    .split(/\n{2,}/)
+    .map((item) => item.trim())
+    .filter(Boolean);
+
+  if (paragraphs.length <= 1) {
+    const sentences = clean.match(/[^.!?]+[.!?]+/g) || [clean];
+    const middle = Math.ceil(sentences.length / 2);
+
+    return {
+      first: sentences.slice(0, middle).join(" ").trim(),
+      second: sentences.slice(middle).join(" ").trim(),
+    };
+  }
+
+  const middle = Math.ceil(paragraphs.length / 2);
+
+  return {
+    first: paragraphs.slice(0, middle).join("\n\n"),
+    second: paragraphs.slice(middle).join("\n\n"),
+  };
+}
+
+function paragraphs(text: string) {
+  return text
+    .split(/\n{2,}/)
+    .map((item) => item.trim())
+    .filter(Boolean);
+}
+
+function formatPrice(price?: number, currency = "EUR") {
+  if (!price) return "Price Upon Request";
+
+  return new Intl.NumberFormat("en-IE", {
+    style: "currency",
+    currency,
+    maximumFractionDigits: 0,
+  }).format(price);
+}
+
+const fadeUp = {
+  hidden: { opacity: 0, y: 28, filter: "blur(6px)" },
+  visible: {
+    opacity: 1,
+    y: 0,
+    filter: "blur(0px)",
+    transition: { duration: 0.95, ease: [0.16, 1, 0.3, 1] },
+  },
 };
 
-const getGalleryArray = (galleryData: any) => {
-    if (!galleryData) return[];
-    const items = galleryData.data || galleryData;
-    if (!Array.isArray(items)) return [items];
-    return items;
+const stagger = {
+  hidden: {},
+  visible: {
+    transition: {
+      staggerChildren: 0.12,
+      delayChildren: 0.08,
+    },
+  },
 };
 
 export default function ProjectPageClient({ project }: { project: any }) {
-  const p = project.attributes || project;
-  
-  // Extract clean data
-  const title = p.Title || p.title || "Signature Development";
-  const location = p.location || p.Location || p.city || p.City || "Cyprus";
-  const completion = p.completionDate || p.CompletionDate || p.completionStatus || p.CompletionStatus || "Coming Soon";
-  const rawDesc = p.Description || p.description;
-  const description = extractText(rawDesc);
-  
-  const coverUrl = getSafeUrl(p.coverimage || p.coverImage || p.image) || '/assets/hero-poster.jpg';
-  
-  const rawGallery = getGalleryArray(p.gallery || p.Gallery);
-  const galleryUrls = rawGallery.map((img: any) => getSafeUrl(img)).filter(Boolean);
+  const p = project?.attributes || project || {};
 
-  // Extract connected properties
-  const connectedPropertiesRaw = p.properties?.data || p.properties ||[];
-  const connectedProperties = Array.isArray(connectedPropertiesRaw) ? connectedPropertiesRaw :[];
+  const title = firstDefined(p.Title, p.title, "Signature Development");
+  const location = firstDefined(
+    p.Location,
+    p.location,
+    p.Destination,
+    p.destination,
+    p.city,
+    "Cyprus",
+  );
+  const status = firstDefined(
+    p.CompletionStatus,
+    p.completionStatus,
+    p.Status,
+    p.status,
+    "",
+  );
+  const scale = firstDefined(p.Scale, p.scale, "");
 
-  // Parallax Setup
-  const containerRef = useRef<HTMLDivElement>(null);
-  const { scrollYProgress } = useScroll({ target: containerRef, offset: ["start start", "end start"] });
-  const yHero = useTransform(scrollYProgress, [0, 1], ["0%", "50%"]);
-  const opacityHero = useTransform(scrollYProgress, [0, 0.8], [1, 0]);
+  const overview = extractText(firstDefined(p.Description, p.description));
+  const { first, second } = splitDescription(overview);
+
+  const coverUrl =
+    getSafeUrl(firstDefined(p.coverImage, p.coverimage, p.CoverImage, p.image)) ||
+    "/assets/hero-poster.jpg";
+
+  const galleryUrls = getMediaArray(firstDefined(p.gallery, p.Gallery))
+    .map((img) => getSafeUrl(img))
+    .filter(Boolean) as string[];
+
+  const firstVisual = galleryUrls[0] || coverUrl;
+  const secondVisual = galleryUrls[1] || galleryUrls[0] || coverUrl;
+
+  const connectedPropertiesRaw = p.properties?.data || p.properties || [];
+  const connectedProperties = Array.isArray(connectedPropertiesRaw)
+    ? connectedPropertiesRaw
+    : [];
 
   return (
-    <main ref={containerRef} className="min-h-screen bg-[#F9F9F9] font-sans pb-32">
-      
-      {/* --- 1. HERO PARALLAX --- */}
-      <div className="relative h-[75vh] w-full overflow-hidden bg-[#0A2342]">
-        <motion.div style={{ y: yHero, opacity: opacityHero }} className="absolute inset-0 w-full h-full">
-            <Image 
-                src={coverUrl} 
-                alt={title} 
-                fill 
-                priority
-                className="object-cover object-center"
-            />
-            {/* Gradient to ensure text is readable */}
-            <div className="absolute inset-0 bg-gradient-to-t from-[#0A2342] via-[#0A2342]/40 to-transparent opacity-90" />
-        </motion.div>
+    <main className="detail-page-main overflow-hidden bg-[#F5F0E8] text-[#242124]">
+      <section className="relative flex min-h-[56svh] items-end overflow-hidden bg-[#242124] px-6 pb-20 pt-36 md:px-10 md:pt-44 lg:min-h-[64svh]">
+        <Image
+          src={coverUrl}
+          alt={title}
+          fill
+          priority
+          sizes="100vw"
+          className="object-cover"
+        />
 
-        {/* Hero Content */}
-        <div className="absolute inset-0 z-10 flex flex-col justify-end px-6 pb-24 md:pb-32">
-            <div className="max-w-7xl mx-auto w-full">
-                <Link href="/#properties" className="inline-flex items-center gap-2 text-[10px] font-bold uppercase tracking-[0.2em] text-[#D4AF37] hover:text-white transition-colors mb-6 backdrop-blur-md bg-white/5 border border-white/10 px-4 py-2 rounded-full">
-                   <ChevronLeft size={14} /> Back to Projects
-                </Link>
-                
-                <h1 className="text-4xl md:text-6xl lg:text-7xl font-montserrat font-bold text-white drop-shadow-xl max-w-4xl leading-[1.1] mb-6">
-                    {title}
-                </h1>
-            </div>
-        </div>
-      </div>
+        <div className="absolute inset-0 bg-[#242124]/36" />
+        <div className="absolute inset-x-0 top-0 h-48 bg-gradient-to-b from-[#242124]/88 via-[#242124]/48 to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-r from-[#242124]/94 via-[#242124]/56 to-[#242124]/22" />
+        <div className="absolute inset-0 bg-gradient-to-t from-[#242124]/98 via-[#242124]/48 to-transparent" />
+        <div className="absolute bottom-0 left-0 h-[54%] w-full bg-gradient-to-t from-[#242124] via-[#242124]/78 to-transparent" />
 
-      <div className="relative z-20 max-w-7xl mx-auto px-6 -mt-16">
-          
-          {/* --- 2. AT A GLANCE BAR --- */}
-          <motion.div 
-             initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }}
-             className="bg-white rounded-3xl p-6 md:p-8 shadow-2xl border border-gray-100 flex flex-wrap gap-8 items-center justify-between"
+        <div className="relative mx-auto w-full max-w-7xl">
+          <motion.div
+            initial="hidden"
+            animate="visible"
+            variants={stagger}
+            className="max-w-5xl"
           >
-             <div className="flex flex-wrap gap-8">
-                 <div className="flex items-center gap-3">
-                     <div className="w-10 h-10 rounded-full bg-[#0A2342]/5 flex items-center justify-center text-[#D4AF37]">
-                        <MapPin size={18} />
-                     </div>
-                     <div>
-                         <p className="text-[10px] uppercase tracking-widest text-gray-400 font-bold mb-0.5">Location</p>
-                         <p className="text-sm font-bold text-[#0A2342]">{location}</p>
-                     </div>
-                 </div>
-                 
-                 <div className="hidden sm:block w-px h-10 bg-gray-100" />
+            <motion.div variants={fadeUp}>
+              <Link
+                href="/projects"
+                className="mb-7 inline-flex items-center gap-3 border border-[#C2A139]/44 bg-[#242124]/62 px-4 py-2.5 text-[10px] font-bold uppercase tracking-[0.28em] text-[#C2A139] shadow-[0_12px_36px_rgba(0,0,0,0.34)] backdrop-blur-md transition-all duration-300 hover:border-[#C2A139] hover:bg-[#C2A139] hover:text-[#242124]"
+              >
+                <ChevronLeft className="h-4 w-4" />
+                Projects
+              </Link>
+            </motion.div>
 
-                 <div className="flex items-center gap-3">
-                     <div className="w-10 h-10 rounded-full bg-[#0A2342]/5 flex items-center justify-center text-[#D4AF37]">
-                        <CalendarClock size={18} />
-                     </div>
-                     <div>
-                         <p className="text-[10px] uppercase tracking-widest text-gray-400 font-bold mb-0.5">Status</p>
-                         <p className="text-sm font-bold text-[#0A2342]">{completion}</p>
-                     </div>
-                 </div>
+            <motion.h1
+              variants={fadeUp}
+              className="font-montserrat text-[clamp(2.75rem,6vw,6.8rem)] font-bold leading-[0.95] tracking-[-0.07em] text-[#F5F0E8] drop-shadow-[0_16px_44px_rgba(0,0,0,0.72)]"
+            >
+              {title}
+            </motion.h1>
+          </motion.div>
+        </div>
+      </section>
 
-                 <div className="hidden md:block w-px h-10 bg-gray-100" />
+      <section className="relative z-20 bg-[#F5F0E8] px-6 md:px-10">
+        <motion.div
+          initial={{ opacity: 0, y: 28, filter: "blur(6px)" }}
+          animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+          transition={{ delay: 0.18, duration: 0.9, ease: [0.16, 1, 0.3, 1] }}
+          className="project-meta-bar relative mx-auto -mt-12 grid w-full max-w-6xl overflow-hidden bg-white shadow-[0_28px_95px_rgba(36,33,36,0.18)] md:grid-cols-3"
+        >
+          <div className="pointer-events-none absolute inset-x-0 top-0 h-[2px] overflow-hidden bg-[#C2A139]/14">
+            <div className="project-meta-gold-line h-full w-1/3 bg-gradient-to-r from-transparent via-[#C2A139] to-transparent" />
+          </div>
 
-                 <div className="flex items-center gap-3">
-                     <div className="w-10 h-10 rounded-full bg-[#0A2342]/5 flex items-center justify-center text-[#D4AF37]">
-                        <Building2 size={18} />
-                     </div>
-                     <div>
-                         <p className="text-[10px] uppercase tracking-widest text-gray-400 font-bold mb-0.5">Available Units</p>
-                         <p className="text-sm font-bold text-[#0A2342]">{connectedProperties.length} Residences</p>
-                     </div>
-                 </div>
-             </div>
+          <ProjectMeta icon={<MapPin />} label="Location" value={location} />
+          {status && <ProjectMeta icon={<CalendarClock />} label="Status" value={status} />}
+          {scale && <ProjectMeta icon={<Ruler />} label="Available Units" value={scale} />}
+        </motion.div>
+      </section>
 
-             <a href="#available-units" className="bg-[#0A2342] text-white px-8 py-3.5 rounded-full text-xs font-bold uppercase tracking-widest hover:bg-[#D4AF37] transition-colors shadow-lg">
-                View Availability
-             </a>
+      <section className="bg-[#F5F0E8] px-6 py-16 md:px-10 md:py-20">
+        <div className="mx-auto grid w-full max-w-7xl gap-12 lg:grid-cols-[1fr_0.92fr] lg:items-center lg:gap-20">
+          <motion.div
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, margin: "-90px" }}
+            variants={stagger}
+            className="max-w-2xl"
+          >
+            <motion.p
+              variants={fadeUp}
+              className="mb-5 text-[10px] font-bold uppercase tracking-[0.3em] text-[#C2A139]"
+            >
+              Project Overview
+            </motion.p>
+
+            <div className="space-y-5 text-sm leading-7 text-[#242124]/74 md:text-[0.95rem] md:leading-8">
+              {paragraphs(first).map((item) => (
+                <motion.p key={item} variants={fadeUp}>
+                  {item}
+                </motion.p>
+              ))}
+            </div>
           </motion.div>
 
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 mt-20">
-             
-             {/* --- 3. THE STORY (Description) --- */}
-             <div className="lg:col-span-7 space-y-12">
-                 <div>
-                     <h2 className="text-2xl font-montserrat font-bold text-[#0A2342] mb-8 flex items-center gap-3">
-                         <span className="w-8 h-[2px] bg-[#D4AF37]" /> The Vision
-                     </h2>
-                     <div className="prose prose-lg prose-slate max-w-none text-gray-600 font-light leading-relaxed whitespace-pre-line">
-                        {description ? (
-                            <ReactMarkdown>{description}</ReactMarkdown>
-                        ) : (
-                            <p>Exclusive details and full project vision are available upon request during a private consultation.</p>
-                        )}
-                     </div>
-                 </div>
-             </div>
+          <EditorialImage src={firstVisual} alt={`${title} interior`} light />
+        </div>
+      </section>
 
-             {/* --- 4. ASYMMETRICAL GALLERY --- */}
-             <div className="lg:col-span-5 space-y-4">
-                 {galleryUrls.length > 0 ? (
-                     <div className="grid grid-cols-2 gap-4">
-                         {galleryUrls.slice(0, 3).map((url, i) => (
-                             <div key={i} className={`relative rounded-3xl overflow-hidden shadow-md bg-gray-200 ${i === 0 ? 'col-span-2 aspect-[4/3]' : 'col-span-1 aspect-square'}`}>
-                                <Image src={url} alt={`Gallery ${i}`} fill className="object-cover hover:scale-105 transition-transform duration-700" />
-                             </div>
-                         ))}
-                     </div>
-                 ) : (
-                     <div className="aspect-[4/3] rounded-3xl bg-gray-100 border border-dashed border-gray-300 flex items-center justify-center text-gray-400 text-sm">
-                         Gallery images coming soon.
-                     </div>
-                 )}
-                 {galleryUrls.length > 3 && (
-                     <p className="text-right text-xs text-gray-400 font-medium pt-2">+ {galleryUrls.length - 3} more images available on request.</p>
-                 )}
-             </div>
+      <section className="bg-[#242124] px-6 py-16 text-[#F5F0E8] md:px-10 md:py-20">
+        <div className="mx-auto grid w-full max-w-7xl gap-12 lg:grid-cols-[0.92fr_1fr] lg:items-center lg:gap-20">
+          <EditorialImage src={secondVisual} alt={`${title} detail`} />
 
+          <motion.div
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, margin: "-90px" }}
+            variants={stagger}
+            className="max-w-2xl"
+          >
+            <motion.p
+              variants={fadeUp}
+              className="mb-5 text-[10px] font-bold uppercase tracking-[0.3em] text-[#C2A139]"
+            >
+              Design & Value
+            </motion.p>
+
+            <div className="space-y-5 text-sm leading-7 text-[#F5F0E8]/76 md:text-[0.95rem] md:leading-8">
+              {paragraphs(second || first).map((item) => (
+                <motion.p key={item} variants={fadeUp}>
+                  {item}
+                </motion.p>
+              ))}
+            </div>
+          </motion.div>
+        </div>
+      </section>
+
+      <section className="bg-[#F5F0E8] px-6 py-16 md:px-10 md:py-20">
+        <div className="mx-auto w-full max-w-7xl">
+          <div className="grid gap-8 lg:grid-cols-[0.8fr_1.2fr] lg:items-end">
+            <motion.div
+              initial="hidden"
+              whileInView="visible"
+              viewport={{ once: true, margin: "-90px" }}
+              variants={stagger}
+            >
+              <motion.p
+                variants={fadeUp}
+                className="mb-4 text-[10px] font-bold uppercase tracking-[0.3em] text-[#C2A139]"
+              >
+                Residences
+              </motion.p>
+
+              <motion.h2
+                variants={fadeUp}
+                className="font-montserrat text-[clamp(2rem,3.6vw,4.2rem)] font-bold leading-[1.02] tracking-[-0.055em] text-[#242124]"
+              >
+                Available Units
+              </motion.h2>
+            </motion.div>
+
+            <motion.div
+              initial="hidden"
+              whileInView="visible"
+              viewport={{ once: true, margin: "-90px" }}
+              variants={fadeUp}
+              className="max-w-2xl text-sm leading-7 text-[#242124]/68 md:text-[0.95rem] md:leading-8"
+            >
+              Explore the available residences connected to this development, or contact our team for current availability and project guidance.
+            </motion.div>
           </div>
 
-          {/* --- 5. AVAILABLE RESIDENCES (Connected Properties) --- */}
-          <div id="available-units" className="mt-32 pt-20 border-t border-gray-200">
-              <div className="mb-12">
-                  <h2 className="text-3xl font-montserrat font-bold text-[#0A2342]">Available Residences</h2>
-                  <p className="text-gray-500 mt-2">Explore the individual units currently available within {title}.</p>
-              </div>
+          {connectedProperties.length > 0 ? (
+            <div className="available-units-rail relative mt-10 overflow-hidden bg-[#242124] py-7 shadow-[0_34px_110px_rgba(36,33,36,0.2)] md:py-9">
+              <div className="pointer-events-none absolute inset-0 z-0 bg-[#242124]" />
+              <div className="pointer-events-none absolute inset-0 z-0 bg-[radial-gradient(circle_at_50%_-28%,rgba(194,161,57,0.15),transparent_38%),linear-gradient(180deg,rgba(245,240,232,0.035),transparent_28%,rgba(5,7,11,0.22))]" />
+              <div className="available-units-rail-line pointer-events-none absolute left-0 top-0 z-[2] h-[2px] w-full" />
+              <div className="available-units-rail-line-bottom pointer-events-none absolute bottom-0 left-0 z-[2] h-px w-full" />
 
-              {connectedProperties.length > 0 ? (
-                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                      {connectedProperties.map((rawProp: any) => {
-                          const propData = rawProp.attributes || rawProp;
-                          // Standardize ID and Slug for the Card component
-                          propData.id = rawProp.id;
-                          return <PropertyCard key={propData.id} p={propData} />;
-                      })}
-                  </div>
-              ) : (
-                  <div className="bg-white rounded-3xl p-12 text-center border border-gray-100 shadow-sm">
-                      <div className="w-16 h-16 bg-gray-50 rounded-full flex items-center justify-center mx-auto mb-4 text-gray-300">
-                          <Building2 size={24} />
-                      </div>
-                      <h3 className="text-xl font-bold text-[#0A2342]">Units Pending Release</h3>
-                      <p className="text-gray-500 mt-2 max-w-md mx-auto">
-                          Specific residences for this project are currently being prepared for release. Register your interest to receive the floorplans first.
-                      </p>
-                  </div>
-              )}
+              <Swiper
+                modules={[Autoplay, Navigation]}
+                loop={connectedProperties.length > 3}
+                watchOverflow
+                navigation
+                slidesPerView="auto"
+                spaceBetween={18}
+                speed={850}
+                autoplay={
+                  connectedProperties.length > 3
+                    ? {
+                        delay: 3400,
+                        disableOnInteraction: false,
+                        pauseOnMouseEnter: true,
+                      }
+                    : false
+                }
+                breakpoints={{
+                  768: { spaceBetween: 22 },
+                  1280: { spaceBetween: 26 },
+                }}
+                className="tms-property-swiper relative z-10 !overflow-visible !px-6 md:!px-10"
+              >
+                {connectedProperties.map((rawProp: any) => {
+                  const prop = rawProp.attributes || rawProp;
+
+                  return (
+                    <SwiperSlide
+                      key={rawProp.id || prop.id || prop.slug}
+                      className="!w-[80vw] max-w-[360px] py-2 md:!w-[378px] md:max-w-none md:py-3 xl:!w-[405px]"
+                    >
+                      <UnitCard property={{ ...prop, id: rawProp.id || prop.id }} />
+                    </SwiperSlide>
+                  );
+                })}
+              </Swiper>
+            </div>
+          ) : (
+            <div className="mt-10 border border-[#242124]/10 bg-white/46 p-8 text-sm leading-7 text-[#242124]/68">
+              Available units will be updated soon. Contact our team for more information about this development.
+            </div>
+          )}
+
+          <div className="mt-12 flex flex-col gap-3 border-t border-[#242124]/10 pt-8 sm:flex-row">
+            <a
+              href="mailto:info@tmsestates.com"
+              className="group inline-flex items-center justify-center gap-3 bg-[#242124] px-6 py-4 text-[11px] font-bold uppercase tracking-[0.22em] text-[#F5F0E8] transition-all duration-300 hover:bg-[#C2A139] hover:text-[#242124]"
+            >
+              Request Project Details
+              <Mail className="h-4 w-4" />
+            </a>
+
+            <Link
+              href="/projects"
+              className="group inline-flex items-center justify-center gap-3 border border-[#242124]/18 px-6 py-4 text-[11px] font-bold uppercase tracking-[0.22em] text-[#242124] transition-all duration-300 hover:border-[#C2A139] hover:text-[#C2A139]"
+            >
+              View All Projects
+              <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
+            </Link>
           </div>
+        </div>
+      </section>
 
-          {/* --- 6. CTA BANNER --- */}
-          <div className="mt-32 bg-[#0A2342] rounded-[3rem] p-10 md:p-16 text-center text-white relative overflow-hidden shadow-2xl">
-              <div className="absolute top-0 right-0 w-64 h-64 bg-[#D4AF37]/20 blur-[80px] rounded-full pointer-events-none" />
-              <div className="relative z-10">
-                  <h2 className="text-3xl md:text-4xl font-montserrat font-bold mb-4">Request the Full Brochure</h2>
-                  <p className="text-white/70 max-w-xl mx-auto mb-10">
-                      Receive complete floorplans, pricing matrices, and technical specifications for {title} directly to your inbox.
-                  </p>
-                  <a href={`mailto:info@tmsestates.com?subject=Inquiry regarding ${title}`} className="inline-flex items-center gap-3 bg-[#D4AF37] text-[#0A2342] px-10 py-4 rounded-full font-bold uppercase text-xs tracking-widest hover:bg-white transition-all shadow-[0_0_30px_rgba(212,175,55,0.3)] hover:scale-105">
-                     <Mail size={16} /> Contact Sales Team
-                  </a>
-              </div>
-          </div>
+      <style jsx>{`
+        .project-meta-bar {
+          box-shadow:
+            0 28px 95px rgba(36, 33, 36, 0.18),
+            0 -10px 32px rgba(36, 33, 36, 0.1),
+            inset 0 1px 0 rgba(194, 161, 57, 0.08);
+        }
 
-      </div>
+        .project-meta-gold-line {
+          animation: projectMetaGoldSweep 4.8s cubic-bezier(0.65, 0, 0.35, 1) infinite;
+          opacity: 0.9;
+          filter: drop-shadow(0 0 8px rgba(194, 161, 57, 0.45));
+        }
+
+        .available-units-rail {
+          isolation: isolate;
+          transform: translateZ(0);
+        }
+
+        .available-units-rail-line,
+        .available-units-rail-line-bottom {
+          background: linear-gradient(
+            90deg,
+            transparent,
+            rgba(194, 161, 57, 0.4),
+            rgba(194, 161, 57, 1),
+            rgba(245, 240, 232, 0.78),
+            rgba(194, 161, 57, 1),
+            rgba(194, 161, 57, 0.4),
+            transparent
+          );
+          background-size: 260% 100%;
+          box-shadow: 0 0 20px rgba(194, 161, 57, 0.36);
+          animation: availableUnitsGoldSweep 5.6s ease-in-out infinite;
+        }
+
+        .available-units-rail-line-bottom {
+          opacity: 0.56;
+          animation-delay: 1.25s;
+        }
+
+        :global(body:has(.detail-page-main) #page-footer) {
+          padding-top: 0;
+        }
+
+        :global(body:has(.detail-page-main) #page-footer > div:first-child) {
+          display: none;
+        }
+
+        @keyframes projectMetaGoldSweep {
+          0% {
+            transform: translateX(-115%);
+          }
+          46%,
+          100% {
+            transform: translateX(320%);
+          }
+        }
+
+        @keyframes availableUnitsGoldSweep {
+          0% {
+            background-position: 130% 0;
+            opacity: 0.5;
+          }
+          42% {
+            opacity: 1;
+          }
+          100% {
+            background-position: -130% 0;
+            opacity: 0.5;
+          }
+        }
+      `}</style>
     </main>
+  );
+}
+
+function ProjectMeta({
+  icon,
+  label,
+  value,
+}: {
+  icon: React.ReactNode;
+  label: string;
+  value: string;
+}) {
+  return (
+    <div className="group relative border-b border-[#242124]/8 bg-white px-6 py-6 transition-colors duration-300 last:border-b-0 hover:bg-[#F5F0E8] md:border-b-0 md:border-r md:px-8 md:last:border-r-0">
+      <div className="absolute inset-0 opacity-0 transition-opacity duration-300 group-hover:opacity-100">
+        <div className="absolute inset-x-6 top-0 h-px bg-gradient-to-r from-transparent via-[#C2A139]/70 to-transparent" />
+      </div>
+
+      <div className="relative z-10">
+        <div className="mb-3 flex h-9 w-9 items-center justify-center border border-[#C2A139]/30 bg-[#C2A139]/[0.09] text-[#C2A139] transition-all duration-300 group-hover:bg-[#C2A139] group-hover:text-[#242124]">
+          <span className="[&>svg]:h-4 [&>svg]:w-4">{icon}</span>
+        </div>
+
+        <p className="mb-2 text-[9px] font-bold uppercase tracking-[0.28em] text-[#C2A139]">
+          {label}
+        </p>
+
+        <p className="text-sm font-semibold leading-6 text-[#242124]">{value}</p>
+      </div>
+    </div>
+  );
+}
+
+function EditorialImage({
+  src,
+  alt,
+  light = false,
+}: {
+  src: string;
+  alt: string;
+  light?: boolean;
+}) {
+  return (
+    <motion.div
+      initial="hidden"
+      whileInView="visible"
+      viewport={{ once: true, margin: "-90px" }}
+      variants={fadeUp}
+      className={`relative min-h-[320px] overflow-hidden shadow-[0_28px_90px_rgba(36,33,36,0.18)] md:min-h-[420px] ${
+        light ? "bg-white" : "bg-[#05070B]"
+      }`}
+    >
+      <Image
+        src={src}
+        alt={alt}
+        fill
+        sizes="(max-width: 1024px) 100vw, 48vw"
+        className="object-cover"
+      />
+
+      <div className="absolute inset-0 bg-gradient-to-t from-[#242124]/34 via-transparent to-transparent" />
+      <div className="absolute inset-x-0 bottom-0 h-[2px] bg-gradient-to-r from-transparent via-[#C2A139]/70 to-transparent" />
+    </motion.div>
+  );
+}
+
+function UnitCard({ property }: { property: any }) {
+  const imageData = property.images?.data?.[0] || property.images?.[0];
+  const image = getSafeUrl(imageData) || "/assets/hero-poster.jpg";
+
+  return (
+    <Link
+      href={`/properties/${property.slug}`}
+      className="group relative block h-[360px] overflow-hidden border border-[#F5F0E8]/22 bg-[#05070B] shadow-[0_20px_65px_rgba(0,0,0,0.34)] transition-all duration-500 hover:-translate-y-1 hover:border-[#C2A139]/60 hover:shadow-[0_28px_90px_rgba(0,0,0,0.44)] md:h-[405px] xl:h-[455px]"
+    >
+      <Image
+        src={image}
+        alt={property.title || "TMS Estates residence"}
+        fill
+        sizes="(max-width: 768px) 80vw, (max-width: 1280px) 378px, 405px"
+        className="object-cover transition duration-[1200ms] ease-out group-hover:scale-105"
+      />
+
+      <div className="absolute inset-0 bg-[#05070B]/18 transition duration-500 group-hover:bg-[#05070B]/10" />
+      <div className="absolute inset-x-0 top-0 h-36 bg-gradient-to-b from-[#05070B]/68 via-[#05070B]/28 to-transparent" />
+      <div className="absolute inset-x-0 bottom-0 h-[72%] bg-gradient-to-t from-[#05070B]/99 via-[#05070B]/82 to-transparent" />
+      <div className="absolute inset-y-0 left-0 w-[68%] bg-gradient-to-r from-[#05070B]/50 to-transparent" />
+
+      <div className="absolute inset-x-0 top-0 flex items-start justify-between p-5 md:p-6">
+        <span className="max-w-[70%] truncate border border-[#C2A139]/50 bg-[#242124]/78 px-3.5 py-2 text-[9px] font-bold uppercase tracking-[0.22em] text-[#C2A139] shadow-[0_10px_35px_rgba(0,0,0,0.34)] backdrop-blur-md">
+          {property.marketing_label || property.marketing_tags || property.propertyType || "Residence"}
+        </span>
+
+        <span className="grid h-11 w-11 place-items-center rounded-full border border-white/20 bg-[#242124]/58 text-[#F5F0E8] shadow-[0_10px_32px_rgba(0,0,0,0.28)] backdrop-blur-md transition-all group-hover:-translate-y-1 group-hover:translate-x-1 group-hover:border-[#C2A139] group-hover:bg-[#C2A139] group-hover:text-[#05070B]">
+          <ArrowUpRight className="h-4 w-4" />
+        </span>
+      </div>
+
+      <div className="absolute inset-x-0 bottom-0 p-5 md:p-6">
+        <div className="mb-3 inline-flex max-w-full items-center gap-2 rounded-full border border-white/22 bg-[#242124]/68 px-3 py-1.5 text-[10px] font-bold uppercase tracking-[0.18em] text-[#F5F0E8]/90 backdrop-blur-md">
+          <MapPin className="h-3.5 w-3.5 shrink-0 text-[#C2A139]" />
+          <span className="truncate">{property.city || "Cyprus"}</span>
+        </div>
+
+        <h3 className="line-clamp-2 font-montserrat text-[1.35rem] font-semibold leading-[1.08] tracking-[-0.045em] text-[#F5F0E8] drop-shadow-[0_8px_24px_rgba(0,0,0,0.78)] md:text-[1.55rem] xl:text-[1.75rem]">
+          {property.title}
+        </h3>
+
+        <p className="mt-3 text-sm font-semibold text-[#F5F0E8]/90 drop-shadow-[0_8px_22px_rgba(0,0,0,0.62)]">
+          {formatPrice(property.price, property.currency)}
+        </p>
+
+        <div className="mt-4 flex flex-wrap items-center gap-2 border-t border-white/16 pt-4 text-xs text-[#F5F0E8]/88">
+          {property.bedrooms && (
+            <span className="inline-flex items-center gap-2 bg-[#242124]/62 px-3 py-1.5 backdrop-blur-sm">
+              <BedDouble className="h-4 w-4 text-[#C2A139]" />
+              {property.bedrooms} Beds
+            </span>
+          )}
+
+          {property.bathrooms && (
+            <span className="inline-flex items-center gap-2 bg-[#242124]/62 px-3 py-1.5 backdrop-blur-sm">
+              <Bath className="h-4 w-4 text-[#C2A139]" />
+              {property.bathrooms} Baths
+            </span>
+          )}
+
+          {property.area && (
+            <span className="inline-flex items-center gap-2 bg-[#242124]/62 px-3 py-1.5 backdrop-blur-sm">
+              <Ruler className="h-4 w-4 text-[#C2A139]" />
+              {property.area} m²
+            </span>
+          )}
+        </div>
+      </div>
+    </Link>
   );
 }

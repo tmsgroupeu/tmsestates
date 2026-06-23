@@ -1,159 +1,210 @@
-/* FULL REPLACEMENT: src/components/Filters.tsx */
 "use client";
 
-import { useRouter, useSearchParams } from "next/navigation";
-import React, { useState } from 'react';
-import { Search, RotateCcw, MapPin, Home, Bed, Euro } from 'lucide-react';
-import PriceSlider from "./ui/PriceSlider"; // Ensure this path is correct based on where you saved Step 1
+import { RotateCcw, Search, SlidersHorizontal } from "lucide-react";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { useMemo, useState } from "react";
 
-// Styling Constants
-const inputWrapperClass = "relative flex items-center bg-gray-50 rounded-full border border-gray-100 px-4 py-3 focus-within:ring-2 focus-within:ring-[#D4AF37]/50 focus-within:border-[#D4AF37] transition-all group";
-const selectClass = "w-full bg-transparent border-none outline-none text-sm font-bold text-[#0A2342] placeholder-gray-400 appearance-none ml-2 cursor-pointer";
-const labelClass = "text-[10px] uppercase tracking-widest text-gray-400 font-bold mb-2 ml-4 block";
-const iconClass = "text-gray-400 group-focus-within:text-[#D4AF37] transition-colors shrink-0";
+const propertyTypes = [
+  "House",
+  "Apartment",
+  "Villa",
+  "Commercial/Offices",
+  "Plot/Land",
+];
+
+const bedrooms = ["1", "2", "3", "4", "5"];
+
+function FieldLabel({ children }: { children: React.ReactNode }) {
+  return (
+    <label className="mb-2 block text-[9px] font-bold uppercase tracking-[0.24em] text-[#C2A139]">
+      {children}
+    </label>
+  );
+}
+
+const fieldClass =
+  "h-12 w-full border border-[#242124]/10 bg-white px-4 text-sm font-semibold text-[#242124] outline-none transition-all placeholder:text-[#242124]/34 focus:border-[#C2A139]/70 focus:bg-[#F5F0E8]";
 
 export default function Filters({ cities }: { cities: string[] }) {
   const router = useRouter();
+  const pathname = usePathname();
   const sp = useSearchParams();
 
-  // State
-  const [propertyType, setPropertyType] = useState(sp.get("type") || "");
   const [city, setCity] = useState(sp.get("city") || "");
-  const [bedrooms, setBedrooms] = useState(sp.get("beds") || "");
-  const [refId, setRefId] = useState(sp.get("ref") || "");
-  
-  // Slider State (Default 100k - 5M)
-  const [priceRange, setPriceRange] = useState<{min: number, max: number}>({
-    min: Number(sp.get("min")) || 0,
-    max: Number(sp.get("max")) || 5000000
-  });
+  const [propertyType, setPropertyType] = useState(sp.get("type") || "");
+  const [beds, setBeds] = useState(sp.get("beds") || "");
+  const [min, setMin] = useState(sp.get("min") || "");
+  const [max, setMax] = useState(sp.get("max") || "");
+  const [ref, setRef] = useState(sp.get("ref") || "");
+
+  const currentStatus = sp.get("status");
+
+  const hasFilters = useMemo(
+    () => city || propertyType || beds || min || max || ref,
+    [city, propertyType, beds, min, max, ref],
+  );
+
+  const pushParams = (params: URLSearchParams) => {
+    const query = params.toString();
+    router.push(query ? `${pathname}?${query}` : pathname);
+  };
 
   const apply = () => {
     const params = new URLSearchParams(sp.toString());
-    
-    if (propertyType) params.set("type", propertyType); else params.delete("type");
-    if (city) params.set("city", city); else params.delete("city");
-    if (bedrooms) params.set("beds", bedrooms); else params.delete("beds");
-    
-    // Price
-    if (priceRange.min > 0) params.set("min", priceRange.min.toString()); else params.delete("min");
-    if (priceRange.max < 5000000) params.set("max", priceRange.max.toString()); else params.delete("max");
 
-    if (refId) params.set("ref", refId); else params.delete("ref");
+    city ? params.set("city", city) : params.delete("city");
+    propertyType ? params.set("type", propertyType) : params.delete("type");
+    beds ? params.set("beds", beds) : params.delete("beds");
+    min ? params.set("min", min) : params.delete("min");
+    max ? params.set("max", max) : params.delete("max");
+    ref ? params.set("ref", ref) : params.delete("ref");
 
-    router.push(`/properties?${params.toString()}`);
+    pushParams(params);
   };
 
   const reset = () => {
-    const currentStatus = sp.get("status");
-    setPriceRange({ min: 0, max: 5000000 });
-    setPropertyType("");
     setCity("");
-    setBedrooms("");
-    setRefId("");
-    router.push(currentStatus ? `/properties?status=${currentStatus}` : "/properties");
+    setPropertyType("");
+    setBeds("");
+    setMin("");
+    setMax("");
+    setRef("");
+
+    const params = new URLSearchParams();
+    if (currentStatus) params.set("status", currentStatus);
+    pushParams(params);
   };
 
   return (
-    // MAIN BAR CONTAINER - Designed to look like a cockpit
-    <div className="w-full bg-white rounded-[2rem] shadow-xl shadow-[#0A2342]/5 border border-white p-6 md:p-8">
-       
-       <div className="flex flex-col lg:flex-row gap-6 lg:gap-8 items-start lg:items-end">
+    <div className="property-filter-shell relative overflow-hidden bg-white shadow-[0_28px_95px_rgba(36,33,36,0.16)]">
+      <div className="pointer-events-none absolute inset-x-0 top-0 h-[2px] overflow-hidden bg-[#C2A139]/14">
+        <div className="filter-gold-line h-full w-1/3 bg-gradient-to-r from-transparent via-[#C2A139] to-transparent" />
+      </div>
 
-          {/* --- LEFT SECTION: FILTERS --- */}
-          <div className="flex-1 w-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            
-             {/* 1. Location */}
-             <div>
-                <label className={labelClass}>Location</label>
-                <div className={inputWrapperClass}>
-                   <MapPin size={18} className={iconClass} />
-                   <select className={selectClass} value={city} onChange={(e) => setCity(e.target.value)}>
-                      <option value="">All Cyprus</option>
-                      {cities.map(c => <option key={c} value={c}>{c}</option>)}
-                   </select>
-                </div>
-             </div>
+      <div className="grid gap-4 p-5 md:grid-cols-2 md:p-6 xl:grid-cols-[1fr_1fr_0.75fr_0.75fr_0.75fr_0.8fr_auto] xl:items-end">
+        <div>
+          <FieldLabel>Location</FieldLabel>
+          <select
+            className={fieldClass}
+            value={city}
+            onChange={(e) => setCity(e.target.value)}
+          >
+            <option value="">All Locations</option>
+            {cities.map((item) => (
+              <option key={item} value={item}>
+                {item}
+              </option>
+            ))}
+          </select>
+        </div>
 
-             {/* 2. Type */}
-             <div>
-                <label className={labelClass}>Property Type</label>
-                <div className={inputWrapperClass}>
-                   <Home size={18} className={iconClass} />
-                   <select className={selectClass} value={propertyType} onChange={(e) => setPropertyType(e.target.value)}>
-                      <option value="">All Types</option>
-                      <option value="villa">Villa</option>
-                      <option value="apartment">Apartment</option>
-                      <option value="penthouse">Penthouse</option>
-                      <option value="commercial">Commercial</option>
-                      <option value="plot">Plot / Land</option>
-                   </select>
-                </div>
-             </div>
+        <div>
+          <FieldLabel>Property Type</FieldLabel>
+          <select
+            className={fieldClass}
+            value={propertyType}
+            onChange={(e) => setPropertyType(e.target.value)}
+          >
+            <option value="">All Types</option>
+            {propertyTypes.map((item) => (
+              <option key={item} value={item}>
+                {item}
+              </option>
+            ))}
+          </select>
+        </div>
 
-             {/* 3. Bedrooms */}
-             <div>
-                <label className={labelClass}>Bedrooms</label>
-                <div className={inputWrapperClass}>
-                   <Bed size={18} className={iconClass} />
-                   <select className={selectClass} value={bedrooms} onChange={(e) => setBedrooms(e.target.value)}>
-                      <option value="">Any Beds</option>
-                      <option value="1">1+ Bedroom</option>
-                      <option value="2">2+ Bedrooms</option>
-                      <option value="3">3+ Bedrooms</option>
-                      <option value="4">4+ Bedrooms</option>
-                      <option value="5">5+ Bedrooms</option>
-                   </select>
-                </div>
-             </div>
+        <div>
+          <FieldLabel>Beds</FieldLabel>
+          <select
+            className={fieldClass}
+            value={beds}
+            onChange={(e) => setBeds(e.target.value)}
+          >
+            <option value="">Any</option>
+            {bedrooms.map((item) => (
+              <option key={item} value={item}>
+                {item}+
+              </option>
+            ))}
+          </select>
+        </div>
 
-             {/* 4. Price Slider (Replaces simple input) */}
-             <div>
-                <label className={labelClass}>Price Range</label>
-                <div className="px-2">
-                   <PriceSlider 
-                      min={0} 
-                      max={5000000} 
-                      initialMin={priceRange.min}
-                      initialMax={priceRange.max}
-                      onChange={(min, max) => setPriceRange({ min, max })} 
-                   />
-                </div>
-             </div>
+        <div>
+          <FieldLabel>Min Price</FieldLabel>
+          <input
+            className={fieldClass}
+            inputMode="numeric"
+            value={min}
+            onChange={(e) => setMin(e.target.value.replace(/\D/g, ""))}
+            placeholder="€ Min"
+          />
+        </div>
 
-          </div>
+        <div>
+          <FieldLabel>Max Price</FieldLabel>
+          <input
+            className={fieldClass}
+            inputMode="numeric"
+            value={max}
+            onChange={(e) => setMax(e.target.value.replace(/\D/g, ""))}
+            placeholder="€ Max"
+          />
+        </div>
 
-          {/* --- RIGHT SECTION: ACTIONS --- */}
-          <div className="w-full lg:w-auto flex items-center gap-3">
-             
-             {/* Ref ID (Hidden on mobile? No, let's keep it compacted) */}
-             <div className="flex-1 lg:w-32">
-                <label className={`${labelClass} lg:hidden`}>Ref ID</label>
-                <div className={`${inputWrapperClass} !py-2.5`}>
-                   <Search size={16} className={iconClass} />
-                   <input 
-                      type="text" 
-                      className={selectClass} 
-                      placeholder="Ref ID" 
-                      value={refId} 
-                      onChange={(e) => setRefId(e.target.value)} 
-                   />
-                </div>
-             </div>
+        <div>
+          <FieldLabel>Reference</FieldLabel>
+          <input
+            className={fieldClass}
+            value={ref}
+            onChange={(e) => setRef(e.target.value)}
+            placeholder="ID"
+          />
+        </div>
 
-             {/* Search Button */}
-             <button onClick={apply} className="bg-[#0A2342] text-white h-[46px] px-8 rounded-full font-bold uppercase text-xs tracking-widest hover:bg-[#D4AF37] transition-all shadow-lg hover:shadow-xl hover:-translate-y-0.5 flex-1 lg:flex-none">
-                Search
-             </button>
+        <div className="flex gap-2 md:col-span-2 xl:col-span-1">
+          <button
+            onClick={apply}
+            className="group inline-flex h-12 flex-1 items-center justify-center gap-3 bg-[#242124] px-5 text-[10px] font-bold uppercase tracking-[0.22em] text-[#F5F0E8] transition-all hover:bg-[#C2A139] hover:text-[#242124] xl:flex-none"
+          >
+            <Search className="h-4 w-4" />
+            Search
+          </button>
 
-             {/* Reset Button */}
-             <button onClick={reset} className="h-[46px] w-[46px] flex items-center justify-center rounded-full border border-gray-200 text-gray-400 hover:text-[#0A2342] hover:border-[#0A2342] hover:bg-white transition-all bg-gray-50" title="Reset Filters">
-                <RotateCcw size={18} />
-             </button>
+          <button
+            onClick={reset}
+            className="grid h-12 w-12 place-items-center border border-[#242124]/12 text-[#242124]/54 transition-all hover:border-[#C2A139]/70 hover:text-[#C2A139]"
+            title="Reset filters"
+          >
+            {hasFilters ? <RotateCcw className="h-4 w-4" /> : <SlidersHorizontal className="h-4 w-4" />}
+          </button>
+        </div>
+      </div>
 
-          </div>
+      <style jsx>{`
+        .property-filter-shell {
+          box-shadow:
+            0 28px 95px rgba(36, 33, 36, 0.16),
+            0 -10px 32px rgba(36, 33, 36, 0.08),
+            inset 0 1px 0 rgba(194, 161, 57, 0.08);
+        }
 
-       </div>
+        .filter-gold-line {
+          animation: filterGoldSweep 4.8s cubic-bezier(0.65, 0, 0.35, 1) infinite;
+          opacity: 0.9;
+          filter: drop-shadow(0 0 8px rgba(194, 161, 57, 0.45));
+        }
+
+        @keyframes filterGoldSweep {
+          0% {
+            transform: translateX(-115%);
+          }
+          46%,
+          100% {
+            transform: translateX(320%);
+          }
+        }
+      `}</style>
     </div>
   );
 }
