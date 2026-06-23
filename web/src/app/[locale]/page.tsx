@@ -26,9 +26,7 @@ export default function Home() {
           <MarketInsights />
         </div>
 
-        <div id="invest" className="scroll-mt-28">
-          <LimassolAdvantage />
-        </div>
+        <LimassolAdvantage />
 
         <PrivateCollection />
       </div>

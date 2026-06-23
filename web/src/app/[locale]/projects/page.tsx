@@ -124,7 +124,7 @@ export default async function ProjectsPage() {
             </h1>
           </div>
 
-          <p className="max-w-xl border border-[#F5F0E8]/18 border-l-[#C2A139]/70 bg-[#242124]/72 px-5 py-5 text-sm leading-7 text-[#F5F0E8]/92 shadow-[0_24px_80px_rgba(0,0,0,0.36)] backdrop-blur-md md:text-base md:leading-8">
+          <p className="max-w-xl border border-[#C2A139]/46 bg-[#05070B]/82 px-5 py-5 text-sm leading-7 text-white shadow-[0_24px_90px_rgba(0,0,0,0.56)] backdrop-blur-xl md:text-base md:leading-8">
             Discover a portfolio of residential developments across Cyprus,
             thoughtfully selected and designed for modern living, long-term
             value and strategic growth.
@@ -179,10 +179,10 @@ export default async function ProjectsPage() {
                     className="object-cover transition duration-[1200ms] ease-out group-hover:scale-105"
                   />
 
-                  <div className="absolute inset-0 bg-[#05070B]/24 transition duration-500 group-hover:bg-[#05070B]/16" />
-                  <div className="absolute inset-x-0 top-0 h-40 bg-gradient-to-b from-[#05070B]/84 via-[#05070B]/42 to-transparent" />
-                  <div className="absolute inset-x-0 bottom-0 h-[82%] bg-gradient-to-t from-[#05070B]/100 via-[#05070B]/88 to-transparent" />
-                  <div className="absolute inset-y-0 left-0 w-[82%] bg-gradient-to-r from-[#05070B]/76 via-[#05070B]/42 to-transparent" />
+                  <div className="absolute inset-0 bg-[#05070B]/42 transition duration-500 group-hover:bg-[#05070B]/30" />
+                  <div className="absolute inset-x-0 top-0 h-44 bg-gradient-to-b from-[#05070B]/92 via-[#05070B]/54 to-transparent" />
+                  <div className="absolute inset-x-0 bottom-0 h-[88%] bg-gradient-to-t from-[#05070B]/100 via-[#05070B]/94 to-transparent" />
+                  <div className="absolute inset-y-0 left-0 w-[86%] bg-gradient-to-r from-[#05070B]/86 via-[#05070B]/50 to-transparent" />
                   <div className="absolute inset-0 ring-1 ring-inset ring-white/10" />
 
                   <div className="absolute inset-x-0 top-0 flex items-start justify-between p-5 md:p-6">
@@ -197,41 +197,45 @@ export default async function ProjectsPage() {
                   </div>
 
                   <div className="absolute inset-x-0 bottom-0 p-5 md:p-6">
-                    <div className="mb-4 flex flex-wrap gap-2">
-                      {project.location && (
-                        <span className="inline-flex max-w-full items-center gap-2 border border-white/22 bg-[#05070B]/78 px-3 py-2 text-[10px] font-bold uppercase tracking-[0.16em] text-[#F5F0E8]/92 shadow-[0_10px_28px_rgba(0,0,0,0.3)] backdrop-blur-md">
-                          <MapPin className="h-3.5 w-3.5 shrink-0 text-[#C2A139]" />
-                          <span className="truncate">{project.location}</span>
-                        </span>
-                      )}
+                    <div className="relative overflow-hidden border border-white/12 bg-[#05070B]/78 p-4 shadow-[0_20px_70px_rgba(0,0,0,0.5)] backdrop-blur-xl md:p-5">
+                      <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-[#C2A139]/82 to-transparent" />
 
-                      {project.status && (
-                        <span className="inline-flex max-w-full items-center gap-2 border border-[#C2A139]/54 bg-[#05070B]/78 px-3 py-2 text-[10px] font-bold uppercase tracking-[0.16em] text-[#C2A139] shadow-[0_10px_28px_rgba(0,0,0,0.3)] backdrop-blur-md">
-                          <CalendarClock className="h-3.5 w-3.5 shrink-0" />
-                          <span className="truncate">{project.status}</span>
-                        </span>
-                      )}
+                      <div className="mb-4 flex flex-wrap gap-2">
+                        {project.location && (
+                          <span className="inline-flex max-w-full items-center gap-2 border border-white/24 bg-[#05070B]/82 px-3 py-2 text-[10px] font-bold uppercase tracking-[0.16em] text-white shadow-[0_10px_28px_rgba(0,0,0,0.34)] backdrop-blur-md">
+                            <MapPin className="h-3.5 w-3.5 shrink-0 text-[#C2A139]" />
+                            <span className="truncate">{project.location}</span>
+                          </span>
+                        )}
 
-                      {project.scale && (
-                        <span className="inline-flex max-w-full items-center gap-2 border border-white/22 bg-[#05070B]/78 px-3 py-2 text-[10px] font-bold uppercase tracking-[0.16em] text-[#F5F0E8]/92 shadow-[0_10px_28px_rgba(0,0,0,0.3)] backdrop-blur-md">
-                          <Ruler className="h-3.5 w-3.5 shrink-0 text-[#C2A139]" />
-                          <span className="truncate">{project.scale}</span>
-                        </span>
-                      )}
+                        {project.status && (
+                          <span className="inline-flex max-w-full items-center gap-2 border border-[#C2A139]/58 bg-[#05070B]/82 px-3 py-2 text-[10px] font-bold uppercase tracking-[0.16em] text-[#C2A139] shadow-[0_10px_28px_rgba(0,0,0,0.34)] backdrop-blur-md">
+                            <CalendarClock className="h-3.5 w-3.5 shrink-0" />
+                            <span className="truncate">{project.status}</span>
+                          </span>
+                        )}
+
+                        {project.scale && (
+                          <span className="inline-flex max-w-full items-center gap-2 border border-white/24 bg-[#05070B]/82 px-3 py-2 text-[10px] font-bold uppercase tracking-[0.16em] text-white shadow-[0_10px_28px_rgba(0,0,0,0.34)] backdrop-blur-md">
+                            <Ruler className="h-3.5 w-3.5 shrink-0 text-[#C2A139]" />
+                            <span className="truncate">{project.scale}</span>
+                          </span>
+                        )}
+                      </div>
+
+                      <h3 className="line-clamp-2 font-montserrat text-[1.65rem] font-bold leading-[1.02] tracking-[-0.055em] text-white drop-shadow-[0_12px_34px_rgba(0,0,0,0.9)] xl:text-[1.9rem]">
+                        {project.title}
+                      </h3>
+
+                      <p className="mt-4 line-clamp-3 max-w-2xl text-sm leading-7 text-white/90 drop-shadow-[0_8px_24px_rgba(0,0,0,0.78)]">
+                        {project.description}
+                      </p>
+
+                      <span className="mt-6 inline-flex items-center gap-3 text-[11px] font-bold uppercase tracking-[0.22em] text-[#C2A139] drop-shadow-[0_8px_22px_rgba(0,0,0,0.78)]">
+                        Explore Project
+                        <ArrowUpRight className="h-4 w-4 transition-transform group-hover:-translate-y-1 group-hover:translate-x-1" />
+                      </span>
                     </div>
-
-                    <h3 className="line-clamp-2 font-montserrat text-[1.65rem] font-bold leading-[1.02] tracking-[-0.055em] text-[#F5F0E8] drop-shadow-[0_12px_34px_rgba(0,0,0,0.86)] xl:text-[1.9rem]">
-                      {project.title}
-                    </h3>
-
-                    <p className="mt-4 max-w-2xl text-sm leading-7 text-[#F5F0E8]/88 line-clamp-3 drop-shadow-[0_8px_24px_rgba(0,0,0,0.72)]">
-                      {project.description}
-                    </p>
-
-                    <span className="mt-6 inline-flex items-center gap-3 text-[11px] font-bold uppercase tracking-[0.22em] text-[#C2A139] drop-shadow-[0_8px_22px_rgba(0,0,0,0.72)]">
-                      Explore Project
-                      <ArrowUpRight className="h-4 w-4 transition-transform group-hover:-translate-y-1 group-hover:translate-x-1" />
-                    </span>
                   </div>
                 </Link>
               ))}

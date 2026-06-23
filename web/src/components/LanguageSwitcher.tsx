@@ -39,7 +39,7 @@ export default function LanguageSwitcher({
       <button
         type="button"
         onClick={() => setIsOpen(!isOpen)}
-        className="group inline-flex min-h-10 items-center gap-2 border border-[#F5F0E8]/14 bg-[#05070B]/18 px-3 text-[10px] font-bold uppercase tracking-[0.18em] text-[#F5F0E8]/82 backdrop-blur-[10px] transition-all duration-300 hover:border-[#C2A139]/55 hover:bg-[#242124]/78 hover:text-[#C2A139] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#C2A139]/70"
+        className="group inline-flex min-h-10 items-center gap-2 bg-[#05070B]/18 px-3 text-[10px] font-bold uppercase tracking-[0.18em] text-[#F5F0E8]/82 backdrop-blur-[10px] transition-all duration-300 hover:bg-[#242124]/78 hover:text-[#C2A139] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#C2A139]/70"
         aria-haspopup="menu"
         aria-expanded={isOpen}
       >

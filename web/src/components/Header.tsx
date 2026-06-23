@@ -22,7 +22,6 @@ const menuPrimaryItems = [
 ];
 
 const menuSecondaryItems = [
-  { label: "Market Insights", href: "/insights" },
   { label: "Contact Us", href: "/contact" },
 ];
 
