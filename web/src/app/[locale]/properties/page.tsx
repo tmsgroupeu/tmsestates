@@ -84,12 +84,6 @@ export default async function PropertiesPage({ searchParams }: Props) {
               <span className="block text-[#C2A139]">Properties</span>
             </h1>
           </div>
-
-          <p className="max-w-xl border border-[#C2A139]/46 bg-[#05070B]/82 px-5 py-5 text-sm leading-7 text-white shadow-[0_24px_90px_rgba(0,0,0,0.56)] backdrop-blur-xl md:text-base md:leading-8">
-            Explore residential and investment opportunities across Cyprus.
-            Filter by location, type, bedrooms or price to quickly find the
-            properties most relevant to you.
-          </p>
         </div>
       </section>
 
