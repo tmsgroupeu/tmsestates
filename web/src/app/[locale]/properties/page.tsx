@@ -79,13 +79,13 @@ export default async function PropertiesPage({ searchParams }: Props) {
               Property Portfolio
             </p>
 
-            <h1 className="max-w-4xl font-montserrat text-[clamp(2.7rem,5.8vw,6.6rem)] font-bold leading-[0.96] tracking-[-0.07em] text-[#F5F0E8] drop-shadow-[0_18px_48px_rgba(0,0,0,0.76)]">
+            <h1 className="max-w-4xl font-montserrat text-[clamp(2.35rem,4.8vw,5.25rem)] font-bold leading-[0.98] tracking-[-0.065em] text-[#F5F0E8] drop-shadow-[0_18px_48px_rgba(0,0,0,0.76)]">
               Browse Available
               <span className="block text-[#C2A139]">Properties</span>
             </h1>
           </div>
 
-          <p className="max-w-xl border border-[#F5F0E8]/18 border-l-[#C2A139]/70 bg-[#242124]/72 px-5 py-5 text-sm leading-7 text-[#F5F0E8]/92 shadow-[0_24px_80px_rgba(0,0,0,0.36)] backdrop-blur-md md:text-base md:leading-8">
+          <p className="max-w-xl border border-[#C2A139]/46 bg-[#05070B]/82 px-5 py-5 text-sm leading-7 text-white shadow-[0_24px_90px_rgba(0,0,0,0.56)] backdrop-blur-xl md:text-base md:leading-8">
             Explore residential and investment opportunities across Cyprus.
             Filter by location, type, bedrooms or price to quickly find the
             properties most relevant to you.
@@ -106,23 +106,17 @@ export default async function PropertiesPage({ searchParams }: Props) {
         </div>
       </section>
 
-      <section className="bg-[#F5F0E8] px-6 pb-20 pt-14 md:px-10 md:pb-24 md:pt-16">
+      <section className="bg-[#242124] px-6 pb-20 pt-14 md:px-10 md:pb-24 md:pt-16">
         <div className="mx-auto w-full max-w-7xl">
-          <div className="mb-9 grid gap-5 border-b border-[#242124]/10 pb-7 lg:grid-cols-[0.8fr_1.2fr] lg:items-end">
+          <div className="mb-9 border-b border-[#F5F0E8]/10 pb-7">
             <div>
               <p className="mb-3 text-[10px] font-bold uppercase tracking-[0.3em] text-[#C2A139]">
                 Results
               </p>
-              <h2 className="font-montserrat text-[clamp(1.9rem,3vw,3.4rem)] font-bold leading-[1.02] tracking-[-0.055em] text-[#242124]">
+              <h2 className="font-montserrat text-[clamp(1.9rem,3vw,3.4rem)] font-bold leading-[1.02] tracking-[-0.055em] text-[#F5F0E8]">
                 Available Residences
               </h2>
             </div>
-
-            <p className="max-w-2xl text-sm leading-7 text-[#242124]/66 md:text-[0.95rem] md:leading-8">
-              Each listing is connected to live CMS data. Open a property to see
-              full details, project connection, specifications and enquiry
-              options.
-            </p>
           </div>
 
           {properties && properties.length > 0 ? (
@@ -132,14 +126,14 @@ export default async function PropertiesPage({ searchParams }: Props) {
               ))}
             </div>
           ) : (
-            <div className="border border-[#242124]/10 bg-white p-10 text-center shadow-[0_22px_70px_rgba(36,33,36,0.08)]">
+            <div className="border border-[#F5F0E8]/10 bg-[#05070B]/35 p-10 text-center shadow-[0_22px_70px_rgba(0,0,0,0.18)]">
               <p className="mb-3 text-[10px] font-bold uppercase tracking-[0.28em] text-[#C2A139]">
                 No Results
               </p>
-              <h3 className="font-montserrat text-2xl font-semibold tracking-[-0.04em] text-[#242124]">
+              <h3 className="font-montserrat text-2xl font-semibold tracking-[-0.04em] text-[#F5F0E8]">
                 No properties match your current filters.
               </h3>
-              <p className="mx-auto mt-4 max-w-md text-sm leading-7 text-[#242124]/62">
+              <p className="mx-auto mt-4 max-w-md text-sm leading-7 text-[#F5F0E8]/68">
                 Try widening the price range, selecting all locations, or
                 switching between sale and rent listings.
               </p>
