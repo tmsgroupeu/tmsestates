@@ -2,6 +2,8 @@
 
 import Image from "next/image";
 import { motion } from "framer-motion";
+import { Swiper, SwiperSlide } from "swiper/react";
+import { Autoplay, Navigation } from "swiper/modules";
 import {
   ArrowRight,
   ArrowUpRight,
@@ -14,6 +16,8 @@ import {
   Ruler,
 } from "lucide-react";
 import { Link } from "@/i18n/routing";
+import "swiper/css";
+import "swiper/css/navigation";
 
 const API_URL =
   process.env.CMS_URL ||
@@ -180,7 +184,7 @@ export default function ProjectPageClient({ project }: { project: any }) {
     : [];
 
   return (
-    <main className="overflow-hidden bg-[#F5F0E8] text-[#242124]">
+    <main className="detail-page-main overflow-hidden bg-[#F5F0E8] text-[#242124]">
       <section className="relative flex min-h-[56svh] items-end overflow-hidden bg-[#242124] px-6 pb-20 pt-36 md:px-10 md:pt-44 lg:min-h-[64svh]">
         <Image
           src={coverUrl}
@@ -191,10 +195,11 @@ export default function ProjectPageClient({ project }: { project: any }) {
           className="object-cover"
         />
 
-        <div className="absolute inset-0 bg-[#242124]/24" />
-        <div className="absolute inset-0 bg-gradient-to-r from-[#242124]/86 via-[#242124]/46 to-[#242124]/18" />
-        <div className="absolute inset-0 bg-gradient-to-t from-[#242124]/98 via-[#242124]/42 to-transparent" />
-        <div className="absolute bottom-0 left-0 h-[48%] w-full bg-gradient-to-t from-[#242124] via-[#242124]/74 to-transparent" />
+        <div className="absolute inset-0 bg-[#242124]/36" />
+        <div className="absolute inset-x-0 top-0 h-48 bg-gradient-to-b from-[#242124]/88 via-[#242124]/48 to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-r from-[#242124]/94 via-[#242124]/56 to-[#242124]/22" />
+        <div className="absolute inset-0 bg-gradient-to-t from-[#242124]/98 via-[#242124]/48 to-transparent" />
+        <div className="absolute bottom-0 left-0 h-[54%] w-full bg-gradient-to-t from-[#242124] via-[#242124]/78 to-transparent" />
 
         <div className="relative mx-auto w-full max-w-7xl">
           <motion.div
@@ -206,7 +211,7 @@ export default function ProjectPageClient({ project }: { project: any }) {
             <motion.div variants={fadeUp}>
               <Link
                 href="/projects"
-                className="mb-7 inline-flex items-center gap-2 text-[10px] font-bold uppercase tracking-[0.28em] text-[#C2A139] transition-colors hover:text-[#F5F0E8]"
+                className="mb-7 inline-flex items-center gap-3 border border-[#C2A139]/44 bg-[#242124]/62 px-4 py-2.5 text-[10px] font-bold uppercase tracking-[0.28em] text-[#C2A139] shadow-[0_12px_36px_rgba(0,0,0,0.34)] backdrop-blur-md transition-all duration-300 hover:border-[#C2A139] hover:bg-[#C2A139] hover:text-[#242124]"
               >
                 <ChevronLeft className="h-4 w-4" />
                 Projects
@@ -215,7 +220,7 @@ export default function ProjectPageClient({ project }: { project: any }) {
 
             <motion.h1
               variants={fadeUp}
-              className="font-montserrat text-[clamp(2.75rem,6vw,6.8rem)] font-bold leading-[0.95] tracking-[-0.07em] text-[#F5F0E8]"
+              className="font-montserrat text-[clamp(2.75rem,6vw,6.8rem)] font-bold leading-[0.95] tracking-[-0.07em] text-[#F5F0E8] drop-shadow-[0_16px_44px_rgba(0,0,0,0.72)]"
             >
               {title}
             </motion.h1>
@@ -334,17 +339,48 @@ export default function ProjectPageClient({ project }: { project: any }) {
           </div>
 
           {connectedProperties.length > 0 ? (
-            <div className="mt-10 grid gap-5 md:grid-cols-2 xl:grid-cols-3">
-              {connectedProperties.map((rawProp: any) => {
-                const prop = rawProp.attributes || rawProp;
+            <div className="available-units-rail relative mt-10 overflow-hidden bg-[#242124] py-7 shadow-[0_34px_110px_rgba(36,33,36,0.2)] md:py-9">
+              <div className="pointer-events-none absolute inset-0 z-0 bg-[#242124]" />
+              <div className="pointer-events-none absolute inset-0 z-0 bg-[radial-gradient(circle_at_50%_-28%,rgba(194,161,57,0.15),transparent_38%),linear-gradient(180deg,rgba(245,240,232,0.035),transparent_28%,rgba(5,7,11,0.22))]" />
+              <div className="available-units-rail-line pointer-events-none absolute left-0 top-0 z-[2] h-[2px] w-full" />
+              <div className="available-units-rail-line-bottom pointer-events-none absolute bottom-0 left-0 z-[2] h-px w-full" />
 
-                return (
-                  <UnitCard
-                    key={rawProp.id || prop.id || prop.slug}
-                    property={{ ...prop, id: rawProp.id || prop.id }}
-                  />
-                );
-              })}
+              <Swiper
+                modules={[Autoplay, Navigation]}
+                loop={connectedProperties.length > 3}
+                watchOverflow
+                navigation
+                slidesPerView="auto"
+                spaceBetween={18}
+                speed={850}
+                autoplay={
+                  connectedProperties.length > 3
+                    ? {
+                        delay: 3400,
+                        disableOnInteraction: false,
+                        pauseOnMouseEnter: true,
+                      }
+                    : false
+                }
+                breakpoints={{
+                  768: { spaceBetween: 22 },
+                  1280: { spaceBetween: 26 },
+                }}
+                className="tms-property-swiper relative z-10 !overflow-visible !px-6 md:!px-10"
+              >
+                {connectedProperties.map((rawProp: any) => {
+                  const prop = rawProp.attributes || rawProp;
+
+                  return (
+                    <SwiperSlide
+                      key={rawProp.id || prop.id || prop.slug}
+                      className="!w-[80vw] max-w-[360px] py-2 md:!w-[378px] md:max-w-none md:py-3 xl:!w-[405px]"
+                    >
+                      <UnitCard property={{ ...prop, id: rawProp.id || prop.id }} />
+                    </SwiperSlide>
+                  );
+                })}
+              </Swiper>
             </div>
           ) : (
             <div className="mt-10 border border-[#242124]/10 bg-white/46 p-8 text-sm leading-7 text-[#242124]/68">
@@ -386,6 +422,41 @@ export default function ProjectPageClient({ project }: { project: any }) {
           filter: drop-shadow(0 0 8px rgba(194, 161, 57, 0.45));
         }
 
+        .available-units-rail {
+          isolation: isolate;
+          transform: translateZ(0);
+        }
+
+        .available-units-rail-line,
+        .available-units-rail-line-bottom {
+          background: linear-gradient(
+            90deg,
+            transparent,
+            rgba(194, 161, 57, 0.4),
+            rgba(194, 161, 57, 1),
+            rgba(245, 240, 232, 0.78),
+            rgba(194, 161, 57, 1),
+            rgba(194, 161, 57, 0.4),
+            transparent
+          );
+          background-size: 260% 100%;
+          box-shadow: 0 0 20px rgba(194, 161, 57, 0.36);
+          animation: availableUnitsGoldSweep 5.6s ease-in-out infinite;
+        }
+
+        .available-units-rail-line-bottom {
+          opacity: 0.56;
+          animation-delay: 1.25s;
+        }
+
+        :global(body:has(.detail-page-main) #page-footer) {
+          padding-top: 0;
+        }
+
+        :global(body:has(.detail-page-main) #page-footer > div:first-child) {
+          display: none;
+        }
+
         @keyframes projectMetaGoldSweep {
           0% {
             transform: translateX(-115%);
@@ -393,6 +464,20 @@ export default function ProjectPageClient({ project }: { project: any }) {
           46%,
           100% {
             transform: translateX(320%);
+          }
+        }
+
+        @keyframes availableUnitsGoldSweep {
+          0% {
+            background-position: 130% 0;
+            opacity: 0.5;
+          }
+          42% {
+            opacity: 1;
+          }
+          100% {
+            background-position: -130% 0;
+            opacity: 0.5;
           }
         }
       `}</style>
@@ -470,52 +555,62 @@ function UnitCard({ property }: { property: any }) {
   return (
     <Link
       href={`/properties/${property.slug}`}
-      className="group relative min-h-[430px] overflow-hidden bg-[#242124] shadow-[0_24px_80px_rgba(36,33,36,0.22)]"
+      className="group relative block h-[360px] overflow-hidden border border-[#F5F0E8]/22 bg-[#05070B] shadow-[0_20px_65px_rgba(0,0,0,0.34)] transition-all duration-500 hover:-translate-y-1 hover:border-[#C2A139]/60 hover:shadow-[0_28px_90px_rgba(0,0,0,0.44)] md:h-[405px] xl:h-[455px]"
     >
       <Image
         src={image}
         alt={property.title || "TMS Estates residence"}
         fill
-        sizes="(max-width: 768px) 100vw, 33vw"
-        className="object-cover transition duration-[1200ms] group-hover:scale-105"
+        sizes="(max-width: 768px) 80vw, (max-width: 1280px) 378px, 405px"
+        className="object-cover transition duration-[1200ms] ease-out group-hover:scale-105"
       />
 
-      <div className="absolute inset-0 bg-gradient-to-t from-[#05070B]/98 via-[#05070B]/68 to-[#05070B]/22" />
+      <div className="absolute inset-0 bg-[#05070B]/18 transition duration-500 group-hover:bg-[#05070B]/10" />
+      <div className="absolute inset-x-0 top-0 h-36 bg-gradient-to-b from-[#05070B]/68 via-[#05070B]/28 to-transparent" />
+      <div className="absolute inset-x-0 bottom-0 h-[72%] bg-gradient-to-t from-[#05070B]/99 via-[#05070B]/82 to-transparent" />
+      <div className="absolute inset-y-0 left-0 w-[68%] bg-gradient-to-r from-[#05070B]/50 to-transparent" />
 
-      <div className="absolute right-5 top-5 grid h-11 w-11 place-items-center rounded-full border border-white/18 bg-[#05070B]/44 text-[#F5F0E8] backdrop-blur-md transition-all group-hover:-translate-y-1 group-hover:translate-x-1 group-hover:border-[#C2A139] group-hover:bg-[#C2A139] group-hover:text-[#242124]">
-        <ArrowUpRight className="h-4 w-4" />
+      <div className="absolute inset-x-0 top-0 flex items-start justify-between p-5 md:p-6">
+        <span className="max-w-[70%] truncate border border-[#C2A139]/50 bg-[#242124]/78 px-3.5 py-2 text-[9px] font-bold uppercase tracking-[0.22em] text-[#C2A139] shadow-[0_10px_35px_rgba(0,0,0,0.34)] backdrop-blur-md">
+          {property.marketing_label || property.marketing_tags || property.propertyType || "Residence"}
+        </span>
+
+        <span className="grid h-11 w-11 place-items-center rounded-full border border-white/20 bg-[#242124]/58 text-[#F5F0E8] shadow-[0_10px_32px_rgba(0,0,0,0.28)] backdrop-blur-md transition-all group-hover:-translate-y-1 group-hover:translate-x-1 group-hover:border-[#C2A139] group-hover:bg-[#C2A139] group-hover:text-[#05070B]">
+          <ArrowUpRight className="h-4 w-4" />
+        </span>
       </div>
 
-      <div className="absolute inset-x-0 bottom-0 p-6">
-        <p className="mb-3 text-[10px] font-bold uppercase tracking-[0.22em] text-[#C2A139]">
-          {property.marketing_tags || property.propertyType || "Residence"}
-        </p>
+      <div className="absolute inset-x-0 bottom-0 p-5 md:p-6">
+        <div className="mb-3 inline-flex max-w-full items-center gap-2 rounded-full border border-white/22 bg-[#242124]/68 px-3 py-1.5 text-[10px] font-bold uppercase tracking-[0.18em] text-[#F5F0E8]/90 backdrop-blur-md">
+          <MapPin className="h-3.5 w-3.5 shrink-0 text-[#C2A139]" />
+          <span className="truncate">{property.city || "Cyprus"}</span>
+        </div>
 
-        <h3 className="font-montserrat text-2xl font-semibold leading-tight tracking-[-0.045em] text-[#F5F0E8]">
+        <h3 className="line-clamp-2 font-montserrat text-[1.35rem] font-semibold leading-[1.08] tracking-[-0.045em] text-[#F5F0E8] drop-shadow-[0_8px_24px_rgba(0,0,0,0.78)] md:text-[1.55rem] xl:text-[1.75rem]">
           {property.title}
         </h3>
 
-        <p className="mt-3 text-sm font-semibold text-[#F5F0E8]/82">
+        <p className="mt-3 text-sm font-semibold text-[#F5F0E8]/90 drop-shadow-[0_8px_22px_rgba(0,0,0,0.62)]">
           {formatPrice(property.price, property.currency)}
         </p>
 
-        <div className="mt-5 flex flex-wrap gap-2 border-t border-white/14 pt-4 text-xs text-[#F5F0E8]/82">
+        <div className="mt-4 flex flex-wrap items-center gap-2 border-t border-white/16 pt-4 text-xs text-[#F5F0E8]/88">
           {property.bedrooms && (
-            <span className="inline-flex items-center gap-2 bg-white/[0.08] px-3 py-1.5">
+            <span className="inline-flex items-center gap-2 bg-[#242124]/62 px-3 py-1.5 backdrop-blur-sm">
               <BedDouble className="h-4 w-4 text-[#C2A139]" />
               {property.bedrooms} Beds
             </span>
           )}
 
           {property.bathrooms && (
-            <span className="inline-flex items-center gap-2 bg-white/[0.08] px-3 py-1.5">
+            <span className="inline-flex items-center gap-2 bg-[#242124]/62 px-3 py-1.5 backdrop-blur-sm">
               <Bath className="h-4 w-4 text-[#C2A139]" />
               {property.bathrooms} Baths
             </span>
           )}
 
           {property.area && (
-            <span className="inline-flex items-center gap-2 bg-white/[0.08] px-3 py-1.5">
+            <span className="inline-flex items-center gap-2 bg-[#242124]/62 px-3 py-1.5 backdrop-blur-sm">
               <Ruler className="h-4 w-4 text-[#C2A139]" />
               {property.area} m²
             </span>

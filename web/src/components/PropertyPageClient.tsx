@@ -3,14 +3,12 @@
 import Image from "next/image";
 import { motion } from "framer-motion";
 import {
-  ArrowRight,
   ArrowUpRight,
   Bath,
   BedDouble,
   ChevronLeft,
   Home,
   Mail,
-  MapPin,
   Ruler,
 } from "lucide-react";
 import { Link } from "@/i18n/routing";
@@ -181,7 +179,7 @@ export default function PropertyPageClient({ property }: { property: Property })
         "Property";
 
   return (
-    <main className="overflow-hidden bg-[#F5F0E8] text-[#242124]">
+    <main className="detail-page-main overflow-hidden bg-[#F5F0E8] text-[#242124]">
       <section className="relative flex min-h-[66svh] items-end overflow-hidden bg-[#242124] px-6 pb-20 pt-36 md:px-10 md:pt-44 lg:min-h-[74svh]">
         <Image
           src={heroImage}
@@ -192,33 +190,34 @@ export default function PropertyPageClient({ property }: { property: Property })
           className="object-cover"
         />
 
-        <div className="absolute inset-0 bg-[#242124]/20" />
-        <div className="absolute inset-0 bg-gradient-to-r from-[#242124]/88 via-[#242124]/42 to-[#242124]/14" />
-        <div className="absolute inset-0 bg-gradient-to-t from-[#242124]/98 via-[#242124]/44 to-transparent" />
-        <div className="absolute bottom-0 left-0 h-[52%] w-full bg-gradient-to-t from-[#242124] via-[#242124]/72 to-transparent" />
+        <div className="absolute inset-0 bg-[#242124]/34" />
+        <div className="absolute inset-x-0 top-0 h-48 bg-gradient-to-b from-[#242124]/88 via-[#242124]/48 to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-r from-[#242124]/94 via-[#242124]/56 to-[#242124]/20" />
+        <div className="absolute inset-0 bg-gradient-to-t from-[#242124]/98 via-[#242124]/50 to-transparent" />
+        <div className="absolute bottom-0 left-0 h-[58%] w-full bg-gradient-to-t from-[#242124] via-[#242124]/76 to-transparent" />
 
         <div className="relative mx-auto w-full max-w-7xl">
           <motion.div initial="hidden" animate="visible" variants={stagger} className="max-w-5xl">
             <motion.div variants={fadeUp}>
-              <Link href="/properties" className="mb-7 inline-flex items-center gap-2 text-[10px] font-bold uppercase tracking-[0.28em] text-[#C2A139] transition-colors hover:text-[#F5F0E8]">
+              <Link href="/properties" className="mb-7 inline-flex items-center gap-3 border border-[#C2A139]/44 bg-[#242124]/62 px-4 py-2.5 text-[10px] font-bold uppercase tracking-[0.28em] text-[#C2A139] shadow-[0_12px_36px_rgba(0,0,0,0.34)] backdrop-blur-md transition-all duration-300 hover:border-[#C2A139] hover:bg-[#C2A139] hover:text-[#242124]">
                 <ChevronLeft className="h-4 w-4" />
                 Properties
               </Link>
             </motion.div>
 
             <motion.div variants={fadeUp} className="mb-5 flex flex-wrap gap-3">
-              <span className="border border-[#C2A139]/45 bg-[#C2A139]/12 px-4 py-2 text-[10px] font-bold uppercase tracking-[0.28em] text-[#C2A139]">
+              <span className="border border-[#C2A139]/58 bg-[#242124]/72 px-4 py-2 text-[10px] font-bold uppercase tracking-[0.28em] text-[#C2A139] shadow-[0_12px_34px_rgba(0,0,0,0.34)] backdrop-blur-md">
                 {readable(label)}
               </span>
 
               {property.prop_status && (
-                <span className="border border-[#F5F0E8]/16 bg-[#F5F0E8]/8 px-4 py-2 text-[10px] font-bold uppercase tracking-[0.28em] text-[#F5F0E8]/82">
+                <span className="border border-[#F5F0E8]/24 bg-[#242124]/58 px-4 py-2 text-[10px] font-bold uppercase tracking-[0.28em] text-[#F5F0E8]/90 shadow-[0_12px_34px_rgba(0,0,0,0.3)] backdrop-blur-md">
                   {readable(property.prop_status)}
                 </span>
               )}
             </motion.div>
 
-            <motion.h1 variants={fadeUp} className="max-w-5xl font-montserrat text-[clamp(2.7rem,6vw,6.8rem)] font-bold leading-[0.96] tracking-[-0.07em] text-[#F5F0E8]">
+            <motion.h1 variants={fadeUp} className="max-w-5xl font-montserrat text-[clamp(2.35rem,5.05vw,5.35rem)] font-bold leading-[0.98] tracking-[-0.065em] text-[#F5F0E8] drop-shadow-[0_16px_44px_rgba(0,0,0,0.72)]">
               {property.title}
             </motion.h1>
           </motion.div>
@@ -340,6 +339,14 @@ export default function PropertyPageClient({ property }: { property: Property })
           animation: propertySummaryGoldSweep 4.8s cubic-bezier(0.65, 0, 0.35, 1) infinite;
           opacity: 0.9;
           filter: drop-shadow(0 0 8px rgba(194, 161, 57, 0.45));
+        }
+
+        :global(body:has(.detail-page-main) #page-footer) {
+          padding-top: 0;
+        }
+
+        :global(body:has(.detail-page-main) #page-footer > div:first-child) {
+          display: none;
         }
 
         @keyframes propertySummaryGoldSweep {
