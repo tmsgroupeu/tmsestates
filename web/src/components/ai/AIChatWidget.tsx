@@ -274,7 +274,7 @@ export default function AIChatWidget() {
             >
               <div className="relative flex items-center">
                 <input
-                  className="h-12 w-full border border-[#F5F0E8]/12 bg-[#05070B]/24 px-4 pr-14 text-sm text-[#F5F0E8] outline-none transition-all placeholder:text-[#F5F0E8]/34 focus:border-[#C2A139]/70 focus:shadow-[0_0_0_3px_rgba(194,161,57,0.14)]"
+                  className="chat-input h-12 w-full border border-[#F5F0E8]/12 bg-[#05070B] px-4 pr-14 text-sm font-medium text-white caret-[#C2A139] outline-none transition-all placeholder:text-[#F5F0E8]/42 focus:border-[#C2A139]/70 focus:bg-[#05070B] focus:text-white focus:shadow-[0_0_0_3px_rgba(194,161,57,0.14)]"
                   value={localInput}
                   onChange={(event) => setLocalInput(event.target.value)}
                   placeholder="Ask about properties, projects, or investment..."
@@ -384,6 +384,24 @@ export default function AIChatWidget() {
 
         .chat-message li + li {
           margin-top: 0.35rem;
+        }
+
+        .chat-input {
+          color: #ffffff !important;
+          -webkit-text-fill-color: #ffffff;
+        }
+
+        .chat-input::placeholder {
+          color: rgba(245, 240, 232, 0.42);
+          -webkit-text-fill-color: rgba(245, 240, 232, 0.42);
+        }
+
+        .chat-input:-webkit-autofill,
+        .chat-input:-webkit-autofill:hover,
+        .chat-input:-webkit-autofill:focus {
+          box-shadow: 0 0 0 1000px #05070b inset !important;
+          -webkit-text-fill-color: #ffffff !important;
+          caret-color: #c2a139;
         }
 
         @keyframes chatGoldSweep {
