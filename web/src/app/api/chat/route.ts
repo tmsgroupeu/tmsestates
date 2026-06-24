@@ -35,6 +35,12 @@ export async function POST(req: Request) {
         "fields[1]": "city",
         "fields[2]": "slug",
         "fields[3]": "bedrooms",
+        "fields[4]": "bathrooms",
+        "fields[5]": "area",
+        "fields[6]": "price",
+        "fields[7]": "currency",
+        "fields[8]": "propertyType",
+        "fields[9]": "prop_status",
       });
       properties = response.data || [];
     } catch (error) {
@@ -46,6 +52,11 @@ export async function POST(req: Request) {
           - Title: "${p.title}"
           - Location: ${p.city}
           - Beds: ${p.bedrooms}
+          - Baths: ${p.bathrooms || 'Not specified'}
+          - Area: ${p.area ? `${p.area} m²` : 'Not specified'}
+          - Price: ${p.price ? `${p.price} ${p.currency || 'EUR'}` : 'Price upon request'}
+          - Type: ${p.propertyType || 'Property'}
+          - Status: ${p.prop_status || 'Available'}
           - Slug: ${p.slug}
         `).join('\n')
       : "Database temporarily unavailable.";
@@ -53,27 +64,26 @@ export async function POST(req: Request) {
     // --- 2. DEFINE CORPORATE KNOWLEDGE BASE ---
     const corporateKnowledge = `
       ABOUT TMS ESTATES:
-      - We are a professional real estate agency in Limassol with over a decade of experience.
-      - Member of the TMS Group (international organization).
-      - Values: Integrity, Professional Excellence, Transparency.
-      - Services: Property selection, Residency guidance, Legal/Tax coordination, Banking setup.
+      - TMS Estates is a Cyprus-based real estate development company.
+      - We create contemporary residential and mixed-use developments in carefully selected locations.
+      - Our developments may include boutique apartment buildings, standalone residences and land-driven opportunities.
+      - TMS Estates is backed by the strength and heritage of TMS Group.
+      - Our approach focuses on careful site evaluation, location potential, market demand, quality construction, thoughtful design and long-term value.
+      - Core values: Selectivity, Integrity, Excellence and Longevity.
+      - Services: project information, property availability, viewing coordination, property selection and investment guidance.
 
       INVESTMENT IN CYPRUS (Key Selling Points):
-      - Corporate Tax: 12.5% - 15% (One of the lowest in EU).
-      - Dividends: 0% tax for non-domiciled residents.
-      - Inheritance/Gift Tax: 0%.
-      - VAT: Reduced 5% VAT available for first primary residence.
+      - Cyprus is positioned as a strategic European real estate market with lifestyle, residency and investment appeal.
+      - For tax, legal, residency and financing questions, provide general guidance only and recommend speaking with qualified advisors.
       
       PERMANENT RESIDENCY:
-      - "Fast Track": Investment of €300,000 (+VAT) in new residential property. 
-      - Valid for life, covers spouse and children.
-      - Leads to citizenship eligibility after 5 years of residence.
+      - Cyprus has residency routes connected to property investment, but requirements can change.
+      - Do not present legal or residency details as final advice. Invite the client to contact the TMS Estates team for current guidance.
 
       CONTACT:
       - Email: info@tmsestates.com
-      - Address: Onisilou Street 4, Ayios Tychonas, 4532, Limassol, Cyprus, Office No 70070085
-      - Office tel: 70070085 or +357 99875500
-      - Action: We offer private consultations for high-net-worth individuals.
+      - WhatsApp / phone: +357 99 875500
+      - Action: We offer follow-up consultations for property, project and investment enquiries.
     `;
 
     // --- 3. SYSTEM PROMPT (The Persona) ---
