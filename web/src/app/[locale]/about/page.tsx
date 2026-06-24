@@ -182,7 +182,7 @@ export default function AboutPage() {
         </div>
       </section>
 
-      <section className="relative overflow-hidden bg-[#C2A139] px-6 py-12 text-[#242124] md:px-10 md:py-14">
+      <section className="relative overflow-hidden bg-[#D1AA67] px-6 py-12 text-[#242124] md:px-10 md:py-14">
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_-12%,rgba(245,240,232,0.34),transparent_34%),linear-gradient(135deg,rgba(245,240,232,0.18),transparent_38%,rgba(36,33,36,0.14))]" />
         <div className="values-dark-line pointer-events-none absolute inset-x-0 top-0 h-px" />
         <div className="values-dark-line pointer-events-none absolute inset-x-0 bottom-0 h-px opacity-55" />
