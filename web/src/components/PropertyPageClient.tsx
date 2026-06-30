@@ -12,6 +12,13 @@ import {
   Ruler,
 } from "lucide-react";
 import { Link } from "@/i18n/routing";
+import {
+  areaValue,
+  bathroomValue,
+  bedroomValue,
+  formatPropertyPrice,
+  readable,
+} from "@/lib/propertyDisplay";
 
 const API =
   process.env.CMS_URL ||
@@ -42,9 +49,12 @@ export type Property = {
   description?: any;
   city?: string;
   address?: string;
-  area?: number | null;
-  bedrooms?: number | null;
-  bathrooms?: number | null;
+  area?: number | string | null;
+  areaLabel?: string | null;
+  bedrooms?: number | string | null;
+  bedroomsLabel?: string | null;
+  bathrooms?: number | string | null;
+  bathroomsLabel?: string | null;
   propertyType?: string | null;
   price?: number | null;
   currency?: "EUR" | "USD" | "GBP" | null;
@@ -104,21 +114,6 @@ function mediaArray(images: any): any[] {
   if (!images) return [];
   const data = images.data || images;
   return Array.isArray(data) ? data : [data];
-}
-
-function formatPrice(price?: number | null, currency?: string | null) {
-  if (!price) return "Price Upon Request";
-
-  return new Intl.NumberFormat("en-IE", {
-    style: "currency",
-    currency: currency || "EUR",
-    maximumFractionDigits: 0,
-  }).format(price);
-}
-
-function readable(value?: string | null) {
-  if (!value) return "";
-  return value.replace(/[-_]/g, " ");
 }
 
 function extractText(value: any): string {
@@ -235,10 +230,10 @@ export default function PropertyPageClient({ property }: { property: Property })
             <div className="property-summary-gold-line h-full w-1/3 bg-gradient-to-r from-transparent via-[#C2A139] to-transparent" />
           </div>
 
-          <SummaryItem label="Price" value={formatPrice(property.price, property.currency)} />
+          <SummaryItem label="Price" value={formatPropertyPrice(property)} />
           <SummaryItem label="Location" value={property.city || property.address || "Cyprus"} />
           <SummaryItem label="Type" value={readable(property.propertyType) || "Residence"} />
-          <SummaryItem label="Area" value={property.area ? `${property.area} m²` : "Upon Request"} />
+          <SummaryItem label="Area" value={areaValue(property, "Upon Request")} />
         </motion.div>
       </section>
 
@@ -279,9 +274,9 @@ export default function PropertyPageClient({ property }: { property: Property })
           </motion.div>
 
           <div className="mt-10 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-            <Spec icon={<BedDouble />} label="Bedrooms" value={property.bedrooms ? `${property.bedrooms}` : "—"} />
-            <Spec icon={<Bath />} label="Bathrooms" value={property.bathrooms ? `${property.bathrooms}` : "—"} />
-            <Spec icon={<Ruler />} label="Area" value={property.area ? `${property.area} m²` : "—"} />
+            <Spec icon={<BedDouble />} label="Bedrooms" value={bedroomValue(property)} />
+            <Spec icon={<Bath />} label="Bathrooms" value={bathroomValue(property)} />
+            <Spec icon={<Ruler />} label="Area" value={areaValue(property)} />
             <Spec icon={<Home />} label="Property Type" value={readable(property.propertyType) || "Residence"} />
           </div>
 
