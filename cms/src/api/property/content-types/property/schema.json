@@ -26,20 +26,11 @@
     "bedrooms": {
       "type": "integer"
     },
-    "bedroomsLabel": {
-      "type": "string"
-    },
     "bathrooms": {
       "type": "integer"
     },
-    "bathroomsLabel": {
-      "type": "string"
-    },
     "area": {
       "type": "decimal"
-    },
-    "areaLabel": {
-      "type": "text"
     },
     "description": {
       "type": "richtext"
