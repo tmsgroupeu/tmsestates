@@ -2,6 +2,13 @@ import Image from "next/image";
 import { ArrowUpRight, Bath, BedDouble, MapPin, Ruler } from "lucide-react";
 import { Link } from "@/i18n/routing";
 import type { Property } from "@/lib/cms";
+import {
+  areaText,
+  bathroomText,
+  bedroomText,
+  formatPropertyPrice,
+  readable,
+} from "@/lib/propertyDisplay";
 
 const API =
   process.env.CMS_URL ||
@@ -26,22 +33,10 @@ function mediaUrl(media: any) {
   return asUrl(url) || "/assets/hero-poster.jpg";
 }
 
-function formatPrice(price?: number, currency = "EUR") {
-  if (!price) return "Price Upon Request";
-
-  return new Intl.NumberFormat("en-IE", {
-    style: "currency",
-    currency,
-    maximumFractionDigits: 0,
-  }).format(price);
-}
-
-function readable(value?: string | null) {
-  if (!value) return "";
-  return value.replace(/[-_]/g, " ");
-}
-
 export default function PropertyCard({ p }: { p: Property }) {
+  const beds = bedroomText(p);
+  const baths = bathroomText(p);
+  const area = areaText(p);
   const imageData = (p as any).images?.data?.[0] || (p as any).images?.[0];
   const tag =
     (p as any).vip
@@ -91,28 +86,28 @@ export default function PropertyCard({ p }: { p: Property }) {
         </h3>
 
         <p className="mt-3 text-sm font-semibold text-[#F5F0E8]/90 drop-shadow-[0_8px_22px_rgba(0,0,0,0.62)]">
-          {formatPrice(p.price, p.currency)}
+          {formatPropertyPrice(p)}
         </p>
 
         <div className="mt-4 flex flex-wrap items-center gap-2 border-t border-white/16 pt-4 text-xs">
-          {p.bedrooms && (
-            <span className="inline-flex items-center gap-2 border border-white/14 bg-[#05070B]/82 px-3 py-1.5 font-semibold text-white shadow-[0_8px_24px_rgba(0,0,0,0.42)] backdrop-blur-md">
-              <BedDouble className="h-4 w-4 text-[#C2A139]" />
-              {p.bedrooms} Beds
+          {beds && (
+            <span className="inline-flex items-center gap-2 border border-white/14 bg-[#05070B]/86 px-3 py-1.5 font-semibold text-[#F5F0E8] shadow-[0_8px_24px_rgba(0,0,0,0.42)] backdrop-blur-md">
+              <BedDouble className="h-4 w-4 shrink-0 text-[#C2A139]" />
+              <span className="truncate">{beds}</span>
             </span>
           )}
 
-          {(p as any).bathrooms && (
-            <span className="inline-flex items-center gap-2 border border-white/14 bg-[#05070B]/82 px-3 py-1.5 font-semibold text-white shadow-[0_8px_24px_rgba(0,0,0,0.42)] backdrop-blur-md">
-              <Bath className="h-4 w-4 text-[#C2A139]" />
-              {(p as any).bathrooms} Baths
+          {baths && (
+            <span className="inline-flex items-center gap-2 border border-white/14 bg-[#05070B]/86 px-3 py-1.5 font-semibold text-[#F5F0E8] shadow-[0_8px_24px_rgba(0,0,0,0.42)] backdrop-blur-md">
+              <Bath className="h-4 w-4 shrink-0 text-[#C2A139]" />
+              <span className="truncate">{baths}</span>
             </span>
           )}
 
-          {p.area && (
-            <span className="inline-flex items-center gap-2 border border-white/14 bg-[#05070B]/82 px-3 py-1.5 font-semibold text-white shadow-[0_8px_24px_rgba(0,0,0,0.42)] backdrop-blur-md">
-              <Ruler className="h-4 w-4 text-[#C2A139]" />
-              {p.area} m²
+          {area && (
+            <span className="inline-flex items-center gap-2 border border-white/14 bg-[#05070B]/86 px-3 py-1.5 font-semibold text-[#F5F0E8] shadow-[0_8px_24px_rgba(0,0,0,0.42)] backdrop-blur-md">
+              <Ruler className="h-4 w-4 shrink-0 text-[#C2A139]" />
+              <span className="truncate">{area}</span>
             </span>
           )}
         </div>

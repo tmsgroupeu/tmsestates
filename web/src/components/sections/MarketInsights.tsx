@@ -15,18 +15,14 @@ import {
   Ruler,
 } from "lucide-react";
 import { Link } from "@/i18n/routing";
+import {
+  areaText,
+  bathroomText,
+  bedroomText,
+  formatPropertyPrice,
+} from "@/lib/propertyDisplay";
 import "swiper/css";
 import "swiper/css/navigation";
-
-const formatPrice = (price?: number, currency = "EUR") => {
-  if (!price) return "Price Upon Request";
-
-  return new Intl.NumberFormat("en-IE", {
-    style: "currency",
-    currency,
-    maximumFractionDigits: 0,
-  }).format(price);
-};
 
 function imageFor(property: Property) {
   const url = getStrapiMediaUrl((property as any).images?.[0]);
@@ -145,7 +141,12 @@ export default function MarketInsights() {
           }}
           className="tms-property-swiper tms-property-rail relative z-10 !overflow-visible !px-6 md:!px-10 lg:!px-[clamp(3rem,7vw,8.5rem)]"
         >
-          {carouselProperties.map((property, index) => (
+          {carouselProperties.map((property, index) => {
+            const beds = bedroomText(property);
+            const baths = bathroomText(property);
+            const area = areaText(property);
+
+            return (
             <SwiperSlide
               key={`${property.id}-${index}`}
               className="!w-[80vw] max-w-[360px] py-2 md:!w-[378px] md:max-w-none md:py-3 xl:!w-[405px]"
@@ -188,35 +189,36 @@ export default function MarketInsights() {
                   </h3>
 
                   <p className="mt-3 text-sm font-semibold text-[#F5F0E8]/90 drop-shadow-[0_8px_22px_rgba(0,0,0,0.62)]">
-                    {formatPrice(property.price, property.currency)}
+                    {formatPropertyPrice(property)}
                   </p>
 
-                  <div className="mt-4 flex flex-wrap items-center gap-2 border-t border-white/16 pt-4 text-xs text-[#F5F0E8]/88">
-                    {property.bedrooms ? (
-                      <span className="inline-flex items-center gap-2 bg-[#242124]/62 px-3 py-1.5 backdrop-blur-sm">
-                        <BedDouble className="h-4 w-4 text-[#C2A139]" />
-                        {property.bedrooms} Beds
+                  <div className="mt-4 flex flex-wrap items-center gap-2 border-t border-white/16 pt-4 text-xs">
+                    {beds ? (
+                      <span className="inline-flex max-w-full items-center gap-2 border border-white/14 bg-[#05070B]/86 px-3 py-1.5 font-semibold text-[#F5F0E8] shadow-[0_8px_24px_rgba(0,0,0,0.42)] backdrop-blur-md">
+                        <BedDouble className="h-4 w-4 shrink-0 text-[#C2A139]" />
+                        <span className="truncate">{beds}</span>
                       </span>
                     ) : null}
 
-                    {(property as any).bathrooms ? (
-                      <span className="inline-flex items-center gap-2 bg-[#242124]/62 px-3 py-1.5 backdrop-blur-sm">
-                        <Bath className="h-4 w-4 text-[#C2A139]" />
-                        {(property as any).bathrooms} Baths
+                    {baths ? (
+                      <span className="inline-flex max-w-full items-center gap-2 border border-white/14 bg-[#05070B]/86 px-3 py-1.5 font-semibold text-[#F5F0E8] shadow-[0_8px_24px_rgba(0,0,0,0.42)] backdrop-blur-md">
+                        <Bath className="h-4 w-4 shrink-0 text-[#C2A139]" />
+                        <span className="truncate">{baths}</span>
                       </span>
                     ) : null}
 
-                    {property.area ? (
-                      <span className="inline-flex items-center gap-2 bg-[#242124]/62 px-3 py-1.5 backdrop-blur-sm">
-                        <Ruler className="h-4 w-4 text-[#C2A139]" />
-                        {property.area} m²
+                    {area ? (
+                      <span className="inline-flex max-w-full items-center gap-2 border border-white/14 bg-[#05070B]/86 px-3 py-1.5 font-semibold text-[#F5F0E8] shadow-[0_8px_24px_rgba(0,0,0,0.42)] backdrop-blur-md">
+                        <Ruler className="h-4 w-4 shrink-0 text-[#C2A139]" />
+                        <span className="truncate">{area}</span>
                       </span>
                     ) : null}
                   </div>
                 </div>
               </Link>
             </SwiperSlide>
-          ))}
+            );
+          })}
         </Swiper>
       </div>
 

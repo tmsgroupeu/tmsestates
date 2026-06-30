@@ -16,6 +16,13 @@ import {
   Ruler,
 } from "lucide-react";
 import { Link } from "@/i18n/routing";
+import {
+  areaText,
+  bathroomText,
+  bedroomText,
+  formatPropertyPrice,
+  readable,
+} from "@/lib/propertyDisplay";
 import "swiper/css";
 import "swiper/css/navigation";
 
@@ -111,16 +118,6 @@ function paragraphs(text: string) {
     .split(/\n{2,}/)
     .map((item) => item.trim())
     .filter(Boolean);
-}
-
-function formatPrice(price?: number, currency = "EUR") {
-  if (!price) return "Price Upon Request";
-
-  return new Intl.NumberFormat("en-IE", {
-    style: "currency",
-    currency,
-    maximumFractionDigits: 0,
-  }).format(price);
 }
 
 const fadeUp = {
@@ -339,7 +336,7 @@ export default function ProjectPageClient({ project }: { project: any }) {
           </div>
 
           {connectedProperties.length > 0 ? (
-            <div className="available-units-rail relative mt-10 overflow-hidden bg-[#242124] py-7 shadow-[0_34px_110px_rgba(36,33,36,0.2)] md:py-9">
+            <div className="available-units-rail relative mt-10 w-screen overflow-hidden bg-[#242124] py-7 shadow-[0_34px_110px_rgba(36,33,36,0.2)] md:py-9">
               <div className="pointer-events-none absolute inset-0 z-0 bg-[#242124]" />
               <div className="pointer-events-none absolute inset-0 z-0 bg-[radial-gradient(circle_at_50%_-28%,rgba(194,161,57,0.15),transparent_38%),linear-gradient(180deg,rgba(245,240,232,0.035),transparent_28%,rgba(5,7,11,0.22))]" />
               <div className="available-units-rail-line pointer-events-none absolute left-0 top-0 z-[2] h-[2px] w-full" />
@@ -366,7 +363,7 @@ export default function ProjectPageClient({ project }: { project: any }) {
                   768: { spaceBetween: 22 },
                   1280: { spaceBetween: 26 },
                 }}
-                className="tms-property-swiper relative z-10 !overflow-visible !px-6 md:!px-10"
+                className="tms-property-swiper relative z-10 !overflow-visible !px-6 md:!px-10 lg:!px-[clamp(3rem,7vw,8.5rem)]"
               >
                 {connectedProperties.map((rawProp: any) => {
                   const prop = rawProp.attributes || rawProp;
@@ -424,6 +421,8 @@ export default function ProjectPageClient({ project }: { project: any }) {
 
         .available-units-rail {
           isolation: isolate;
+          margin-left: calc(50% - 50vw);
+          margin-right: calc(50% - 50vw);
           transform: translateZ(0);
         }
 
@@ -549,6 +548,9 @@ function EditorialImage({
 }
 
 function UnitCard({ property }: { property: any }) {
+  const beds = bedroomText(property);
+  const baths = bathroomText(property);
+  const area = areaText(property);
   const imageData = property.images?.data?.[0] || property.images?.[0];
   const image = getSafeUrl(imageData) || "/assets/hero-poster.jpg";
 
@@ -572,7 +574,7 @@ function UnitCard({ property }: { property: any }) {
 
       <div className="absolute inset-x-0 top-0 flex items-start justify-between p-5 md:p-6">
         <span className="max-w-[70%] truncate border border-[#C2A139]/50 bg-[#242124]/78 px-3.5 py-2 text-[9px] font-bold uppercase tracking-[0.22em] text-[#C2A139] shadow-[0_10px_35px_rgba(0,0,0,0.34)] backdrop-blur-md">
-          {property.marketing_label || property.marketing_tags || property.propertyType || "Residence"}
+          {readable(property.marketing_label || property.marketing_tags || property.propertyType || property.prop_status || "Residence")}
         </span>
 
         <span className="grid h-11 w-11 place-items-center rounded-full border border-white/20 bg-[#242124]/58 text-[#F5F0E8] shadow-[0_10px_32px_rgba(0,0,0,0.28)] backdrop-blur-md transition-all group-hover:-translate-y-1 group-hover:translate-x-1 group-hover:border-[#C2A139] group-hover:bg-[#C2A139] group-hover:text-[#05070B]">
@@ -591,28 +593,28 @@ function UnitCard({ property }: { property: any }) {
         </h3>
 
         <p className="mt-3 text-sm font-semibold text-[#F5F0E8]/90 drop-shadow-[0_8px_22px_rgba(0,0,0,0.62)]">
-          {formatPrice(property.price, property.currency)}
+          {formatPropertyPrice(property)}
         </p>
 
-        <div className="mt-4 flex flex-wrap items-center gap-2 border-t border-white/16 pt-4 text-xs text-[#F5F0E8]/88">
-          {property.bedrooms && (
-            <span className="inline-flex items-center gap-2 bg-[#242124]/62 px-3 py-1.5 backdrop-blur-sm">
-              <BedDouble className="h-4 w-4 text-[#C2A139]" />
-              {property.bedrooms} Beds
+        <div className="mt-4 flex flex-wrap items-center gap-2 border-t border-white/16 pt-4 text-xs">
+          {beds && (
+            <span className="inline-flex max-w-full items-center gap-2 border border-white/14 bg-[#05070B]/86 px-3 py-1.5 font-semibold text-[#F5F0E8] shadow-[0_8px_24px_rgba(0,0,0,0.42)] backdrop-blur-md">
+              <BedDouble className="h-4 w-4 shrink-0 text-[#C2A139]" />
+              <span className="truncate">{beds}</span>
             </span>
           )}
 
-          {property.bathrooms && (
-            <span className="inline-flex items-center gap-2 bg-[#242124]/62 px-3 py-1.5 backdrop-blur-sm">
-              <Bath className="h-4 w-4 text-[#C2A139]" />
-              {property.bathrooms} Baths
+          {baths && (
+            <span className="inline-flex max-w-full items-center gap-2 border border-white/14 bg-[#05070B]/86 px-3 py-1.5 font-semibold text-[#F5F0E8] shadow-[0_8px_24px_rgba(0,0,0,0.42)] backdrop-blur-md">
+              <Bath className="h-4 w-4 shrink-0 text-[#C2A139]" />
+              <span className="truncate">{baths}</span>
             </span>
           )}
 
-          {property.area && (
-            <span className="inline-flex items-center gap-2 bg-[#242124]/62 px-3 py-1.5 backdrop-blur-sm">
-              <Ruler className="h-4 w-4 text-[#C2A139]" />
-              {property.area} m²
+          {area && (
+            <span className="inline-flex max-w-full items-center gap-2 border border-white/14 bg-[#05070B]/86 px-3 py-1.5 font-semibold text-[#F5F0E8] shadow-[0_8px_24px_rgba(0,0,0,0.42)] backdrop-blur-md">
+              <Ruler className="h-4 w-4 shrink-0 text-[#C2A139]" />
+              <span className="truncate">{area}</span>
             </span>
           )}
         </div>

@@ -4,6 +4,7 @@ import { streamText, tool } from 'ai';
 import { fetchProperties } from '@/lib/cms';
 import { z } from 'zod';
 import { Resend } from 'resend';
+import { areaText, bathroomText, bedroomText, formatPropertyPrice } from '@/lib/propertyDisplay';
 
 export const maxDuration = 30;
 
@@ -37,10 +38,13 @@ export async function POST(req: Request) {
         "fields[3]": "bedrooms",
         "fields[4]": "bathrooms",
         "fields[5]": "area",
-        "fields[6]": "price",
-        "fields[7]": "currency",
-        "fields[8]": "propertyType",
-        "fields[9]": "prop_status",
+        "fields[6]": "bedroomsLabel",
+        "fields[7]": "bathroomsLabel",
+        "fields[8]": "areaLabel",
+        "fields[9]": "price",
+        "fields[10]": "currency",
+        "fields[11]": "propertyType",
+        "fields[12]": "prop_status",
       });
       properties = response.data || [];
     } catch (error) {
@@ -51,10 +55,10 @@ export async function POST(req: Request) {
       ? properties.map((p: any) => `
           - Title: "${p.title}"
           - Location: ${p.city}
-          - Beds: ${p.bedrooms}
-          - Baths: ${p.bathrooms || 'Not specified'}
-          - Area: ${p.area ? `${p.area} m²` : 'Not specified'}
-          - Price: ${p.price ? `${p.price} ${p.currency || 'EUR'}` : 'Price upon request'}
+          - Beds: ${bedroomText(p) || 'Not specified'}
+          - Baths: ${bathroomText(p) || 'Not specified'}
+          - Area: ${areaText(p) || 'Not specified'}
+          - Price: ${formatPropertyPrice(p)}
           - Type: ${p.propertyType || 'Property'}
           - Status: ${p.prop_status || 'Available'}
           - Slug: ${p.slug}
@@ -133,8 +137,8 @@ export async function POST(req: Request) {
               title: p.title,
               city: p.city,
               slug: p.slug,
-              bedrooms: p.bedrooms,
-              area: p.area,
+              bedrooms: bedroomText(p) || p.bedrooms,
+              area: areaText(p) || p.area,
               imageUrl: getFullImageUrl(p.images?.[0]?.url || p.coverImage?.url) || '/placeholder.jpg',
             };
           },
