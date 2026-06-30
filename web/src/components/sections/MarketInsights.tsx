@@ -24,6 +24,20 @@ import {
 import "swiper/css";
 import "swiper/css/navigation";
 
+function shuffleProperties(list: Property[]) {
+  const shuffled = [...list];
+
+  for (let index = shuffled.length - 1; index > 0; index -= 1) {
+    const randomIndex = Math.floor(Math.random() * (index + 1));
+    [shuffled[index], shuffled[randomIndex]] = [
+      shuffled[randomIndex],
+      shuffled[index],
+    ];
+  }
+
+  return shuffled;
+}
+
 function imageFor(property: Property) {
   const url = getStrapiMediaUrl((property as any).images?.[0]);
   return url === "/placeholder.jpg" ? "/assets/hero-poster.jpg" : url;
@@ -47,34 +61,28 @@ export default function MarketInsights() {
   useEffect(() => {
     async function loadProperties() {
       const { data } = await fetchProperties({
-        "pagination[pageSize]": "14",
+        "pagination[pageSize]": "50",
         "sort[0]": "createdAt:desc",
       });
 
-      setProperties(data || []);
+      setProperties(shuffleProperties(data || []));
     }
 
     loadProperties();
   }, []);
 
-  const sortedProperties = useMemo(() => {
-    return [...properties].sort(
-      (a: any, b: any) => Number(Boolean(b.vip)) - Number(Boolean(a.vip)),
-    );
-  }, [properties]);
-
   const carouselProperties = useMemo(() => {
-    if (!sortedProperties.length) return [];
+    if (!properties.length) return [];
 
     const minimumSlides = 16;
     const repeated: Property[] = [];
 
     while (repeated.length < minimumSlides) {
-      repeated.push(...sortedProperties);
+      repeated.push(...properties);
     }
 
     return repeated;
-  }, [sortedProperties]);
+  }, [properties]);
 
   if (!carouselProperties.length) return null;
 
