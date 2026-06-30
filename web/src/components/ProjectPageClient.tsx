@@ -336,7 +336,7 @@ export default function ProjectPageClient({ project }: { project: any }) {
           </div>
 
           {connectedProperties.length > 0 ? (
-            <div className="available-units-rail relative left-1/2 mt-10 w-screen -translate-x-1/2 overflow-hidden bg-[#242124] py-7 shadow-[0_34px_110px_rgba(36,33,36,0.2)] md:py-9">
+            <div className="available-units-rail relative mt-10 w-screen overflow-hidden bg-[#242124] py-7 shadow-[0_34px_110px_rgba(36,33,36,0.2)] md:py-9">
               <div className="pointer-events-none absolute inset-0 z-0 bg-[#242124]" />
               <div className="pointer-events-none absolute inset-0 z-0 bg-[radial-gradient(circle_at_50%_-28%,rgba(194,161,57,0.15),transparent_38%),linear-gradient(180deg,rgba(245,240,232,0.035),transparent_28%,rgba(5,7,11,0.22))]" />
               <div className="available-units-rail-line pointer-events-none absolute left-0 top-0 z-[2] h-[2px] w-full" />
@@ -421,6 +421,8 @@ export default function ProjectPageClient({ project }: { project: any }) {
 
         .available-units-rail {
           isolation: isolate;
+          margin-left: calc(50% - 50vw);
+          margin-right: calc(50% - 50vw);
           transform: translateZ(0);
         }
 
