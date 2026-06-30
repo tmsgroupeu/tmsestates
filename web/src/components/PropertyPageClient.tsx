@@ -50,11 +50,8 @@ export type Property = {
   city?: string;
   address?: string;
   area?: number | string | null;
-  areaLabel?: string | null;
   bedrooms?: number | string | null;
-  bedroomsLabel?: string | null;
   bathrooms?: number | string | null;
-  bathroomsLabel?: string | null;
   propertyType?: string | null;
   price?: number | null;
   currency?: "EUR" | "USD" | "GBP" | null;
