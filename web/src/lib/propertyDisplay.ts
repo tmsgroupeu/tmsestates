@@ -7,9 +7,6 @@ export type PropertyDisplayLike = {
   bedrooms?: number | string | null;
   bathrooms?: number | string | null;
   area?: number | string | null;
-  bedroomsLabel?: string | null;
-  bathroomsLabel?: string | null;
-  areaLabel?: string | null;
 };
 
 export function readable(value?: string | null) {
@@ -62,31 +59,26 @@ export function formatPropertyPrice(property: PropertyDisplayLike) {
 }
 
 export function bedroomText(property: PropertyDisplayLike) {
-  if (hasValue(property.bedroomsLabel)) return String(property.bedroomsLabel).trim();
   if (hasValue(property.bedrooms)) return `${property.bedrooms} Beds`;
   return "";
 }
 
 export function bathroomText(property: PropertyDisplayLike) {
-  if (hasValue(property.bathroomsLabel)) return String(property.bathroomsLabel).trim();
   if (hasValue(property.bathrooms)) return `${property.bathrooms} Baths`;
   return "";
 }
 
 export function areaText(property: PropertyDisplayLike) {
-  if (hasValue(property.areaLabel)) return String(property.areaLabel).trim();
   if (hasValue(property.area)) return `${property.area} m²`;
   return "";
 }
 
 export function bedroomValue(property: PropertyDisplayLike) {
-  if (hasValue(property.bedroomsLabel)) return String(property.bedroomsLabel).trim();
   if (hasValue(property.bedrooms)) return String(property.bedrooms);
   return "—";
 }
 
 export function bathroomValue(property: PropertyDisplayLike) {
-  if (hasValue(property.bathroomsLabel)) return String(property.bathroomsLabel).trim();
   if (hasValue(property.bathrooms)) return String(property.bathrooms);
   return "—";
 }
