@@ -38,13 +38,10 @@ export async function POST(req: Request) {
         "fields[3]": "bedrooms",
         "fields[4]": "bathrooms",
         "fields[5]": "area",
-        "fields[6]": "bedroomsLabel",
-        "fields[7]": "bathroomsLabel",
-        "fields[8]": "areaLabel",
-        "fields[9]": "price",
-        "fields[10]": "currency",
-        "fields[11]": "propertyType",
-        "fields[12]": "prop_status",
+        "fields[6]": "price",
+        "fields[7]": "currency",
+        "fields[8]": "propertyType",
+        "fields[9]": "prop_status",
       });
       properties = response.data || [];
     } catch (error) {
@@ -137,8 +134,8 @@ export async function POST(req: Request) {
               title: p.title,
               city: p.city,
               slug: p.slug,
-              bedrooms: bedroomText(p) || p.bedrooms,
-              area: areaText(p) || p.area,
+              bedrooms: p.bedrooms,
+              area: p.area,
               imageUrl: getFullImageUrl(p.images?.[0]?.url || p.coverImage?.url) || '/placeholder.jpg',
             };
           },
