@@ -114,172 +114,291 @@ function mediaArray(images: any): any[] {
 }
 
 /**
- * Renders Strapi rich-text inline nodes while preserving links,
- * formatting marks and normal text.
+ * Converts Strapi rich-text content into plain text while preserving
+ * links in the structured Strapi format.
  */
-function renderInlineChildren(children: any[], keyPrefix: string): React.ReactNode[] {
-  if (!Array.isArray(children)) return [];
+function extractText(value: any): string {
+  if (!value) return "";
 
-  return children.map((child: any, index: number) => {
-    const key = `${keyPrefix}-${index}`;
+  if (typeof value === "string") {
+    return value.trim();
+  }
 
-    if (!child) return null;
+  if (Array.isArray(value)) {
+    return value
+      .map((block) => {
+        if (!block) return "";
 
-    // Strapi link node
-    if (child.type === "link") {
-      const url = child.url || "";
+        if (typeof block === "string") {
+          return block;
+        }
 
-      return (
-        <a
-          key={key}
-          href={url}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="font-semibold text-[#242124] underline decoration-[#C2A139] decoration-2 underline-offset-4 transition-colors duration-200 hover:text-[#C2A139]"
-        >
-          {renderInlineChildren(child.children || [], `${key}-link`)}
-        </a>
-      );
-    }
+        if (Array.isArray(block.children)) {
+          return block.children
+            .map((child: any) => {
+              if (!child) return "";
 
-    // Normal Strapi text node
-    if (child.type === "text" || typeof child.text === "string") {
-      let content: React.ReactNode = child.text || "";
+              if (typeof child.text === "string") {
+                return child.text;
+              }
 
-      if (child.bold) {
-        content = <strong>{content}</strong>;
-      }
+              if (Array.isArray(child.children)) {
+                return child.children
+                  .map((nested: any) => nested?.text || "")
+                  .join("");
+              }
 
-      if (child.italic) {
-        content = <em>{content}</em>;
-      }
+              return "";
+            })
+            .join("");
+        }
 
-      if (child.underline) {
-        content = <u>{content}</u>;
-      }
+        return "";
+      })
+      .filter(Boolean)
+      .join("\n\n")
+      .trim();
+  }
 
-      if (child.strikethrough) {
-        content = <s>{content}</s>;
-      }
+  return "";
+}
 
-      if (child.code) {
-        content = (
-          <code className="rounded bg-[#242124]/8 px-1.5 py-0.5 text-[0.9em]">
-            {content}
-          </code>
-        );
-      }
+/**
+ * Splits the description into paragraphs while supporting both
+ * Strapi rich-text output and Markdown-style paragraphs.
+ */
+function paragraphs(value?: any) {
+  return extractText(value)
+    .split(/\n{2,}|\r\n{2,}/)
+    .map((item) => item.trim())
+    .filter(Boolean);
+}
 
-      return <span key={key}>{content}</span>;
-    }
+/**
+ * Renders a text string containing Markdown-style links:
+ *
+ * [View the location here](https://example.com)
+ *
+ * as a real clickable link.
+ *
+ * It also supports the format currently being used in Strapi:
+ *
+ * [**View the location here**](https://example.com)
+ */
+function renderMarkdownText(text: string) {
+  const parts: React.ReactNode[] = [];
 
-    // Support nested nodes if Strapi provides them.
-    if (Array.isArray(child.children)) {
-      return (
-        <span key={key}>
-          {renderInlineChildren(child.children, `${key}-children`)}
+  const markdownLinkRegex =
+    /\[([^\]]+)\]\((https?:\/\/[^\s)]+)\)/g;
+
+  let lastIndex = 0;
+  let match: RegExpExecArray | null;
+  let key = 0;
+
+  while ((match = markdownLinkRegex.exec(text)) !== null) {
+    const before = text.slice(lastIndex, match.index);
+
+    if (before) {
+      parts.push(
+        <span key={`text-${key++}`}>
+          {renderInlineFormatting(before)}
         </span>
       );
     }
 
-    return null;
-  });
+    let linkText = match[1];
+
+    // Remove Markdown bold markers if present.
+    linkText = linkText.replace(/\*\*/g, "");
+
+    parts.push(
+      <a
+        key={`link-${key++}`}
+        href={match[2]}
+        target="_blank"
+        rel="noopener noreferrer"
+        className="font-semibold text-[#242124] underline decoration-[#C2A139] decoration-2 underline-offset-4 transition-colors duration-300 hover:text-[#C2A139]"
+      >
+        {linkText}
+      </a>
+    );
+
+    lastIndex = markdownLinkRegex.lastIndex;
+  }
+
+  const remaining = text.slice(lastIndex);
+
+  if (remaining) {
+    parts.push(
+      <span key={`text-${key++}`}>
+        {renderInlineFormatting(remaining)}
+      </span>
+    );
+  }
+
+  return parts;
 }
 
 /**
- * Renders Strapi rich-text blocks.
- *
- * The important part here is that Strapi link nodes are rendered
- * as real <a> elements instead of having their URL stripped out.
+ * Handles simple Markdown bold formatting without introducing
+ * another dependency.
  */
-function renderRichText(value: any): React.ReactNode[] {
-  if (!value) return [];
+function renderInlineFormatting(text: string) {
+  const parts: React.ReactNode[] = [];
 
-  // Fallback for plain string content.
-  if (typeof value === "string") {
-    return value
-      .split(/\n{2,}|\r\n{2,}/)
-      .map((paragraph, index) => {
-        const text = paragraph.trim();
-        if (!text) return null;
+  const boldRegex = /\*\*(.*?)\*\*/g;
 
-        return (
-          <motion.p key={`paragraph-${index}`} variants={fadeUp}>
-            {text}
-          </motion.p>
-        );
-      })
-      .filter(Boolean) as React.ReactNode[];
+  let lastIndex = 0;
+  let match: RegExpExecArray | null;
+  let key = 0;
+
+  while ((match = boldRegex.exec(text)) !== null) {
+    const before = text.slice(lastIndex, match.index);
+
+    if (before) {
+      parts.push(
+        <span key={`plain-${key++}`}>{before}</span>
+      );
+    }
+
+    parts.push(
+      <strong
+        key={`bold-${key++}`}
+        className="font-semibold"
+      >
+        {match[1]}
+      </strong>
+    );
+
+    lastIndex = boldRegex.lastIndex;
   }
 
-  if (!Array.isArray(value)) return [];
+  const remaining = text.slice(lastIndex);
 
-  return value
-    .map((block: any, index: number) => {
+  if (remaining) {
+    parts.push(
+      <span key={`plain-${key++}`}>{remaining}</span>
+    );
+  }
+
+  return parts;
+}
+
+/**
+ * Renders Strapi structured rich-text content.
+ *
+ * This handles:
+ * - normal text
+ * - Strapi links
+ * - Markdown links stored as plain text
+ * - bold text
+ */
+function renderDescription(value: any) {
+  if (!value) {
+    return (
+      <motion.p variants={fadeUp}>
+        Property details will be available soon.
+      </motion.p>
+    );
+  }
+
+  /*
+   * Structured Strapi rich text.
+   *
+   * Example:
+   * [
+   *   {
+   *     type: "paragraph",
+   *     children: [
+   *       { type: "text", text: "View " },
+   *       {
+   *         type: "link",
+   *         url: "https://maps.google.com",
+   *         children: [
+   *           { type: "text", text: "the location here" }
+   *         ]
+   *       }
+   *     ]
+   *   }
+   * ]
+   */
+  if (Array.isArray(value)) {
+    return value.map((block: any, blockIndex: number) => {
       if (!block) return null;
 
-      const key = `block-${index}`;
-      const children = Array.isArray(block.children) ? block.children : [];
+      const children = Array.isArray(block.children)
+        ? block.children
+        : [];
 
-      switch (block.type) {
-        case "paragraph":
-          return (
-            <motion.p key={key} variants={fadeUp}>
-              {renderInlineChildren(children, key)}
-            </motion.p>
-          );
+      return (
+        <motion.p
+          key={`description-block-${blockIndex}`}
+          variants={fadeUp}
+        >
+          {children.map((child: any, childIndex: number) => {
+            if (!child) return null;
 
-        case "heading": {
-          const level = Math.min(Math.max(Number(block.level) || 2, 2), 6);
-          const HeadingTag = `h${level}` as keyof JSX.IntrinsicElements;
+            // Strapi link node
+            if (child.type === "link" && child.url) {
+              const linkText = Array.isArray(child.children)
+                ? child.children
+                    .map((nested: any) => nested?.text || "")
+                    .join("")
+                : "";
 
-          return (
-            <motion.div key={key} variants={fadeUp}>
-              <HeadingTag className="font-montserrat font-semibold text-[#242124]">
-                {renderInlineChildren(children, key)}
-              </HeadingTag>
-            </motion.div>
-          );
-        }
+              return (
+                <a
+                  key={`description-link-${blockIndex}-${childIndex}`}
+                  href={child.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="font-semibold text-[#242124] underline decoration-[#C2A139] decoration-2 underline-offset-4 transition-colors duration-300 hover:text-[#C2A139]"
+                >
+                  {linkText}
+                </a>
+              );
+            }
 
-        case "quote":
-          return (
-            <motion.blockquote
-              key={key}
-              variants={fadeUp}
-              className="border-l-2 border-[#C2A139] pl-5 italic text-[#242124]/72"
-            >
-              {renderInlineChildren(children, key)}
-            </motion.blockquote>
-          );
+            // Normal Strapi text node
+            if (typeof child.text === "string") {
+              return (
+                <span
+                  key={`description-text-${blockIndex}-${childIndex}`}
+                  className={child.bold ? "font-semibold" : undefined}
+                >
+                  {child.text}
+                </span>
+              );
+            }
 
-        case "list":
-          return (
-            <motion.ul
-              key={key}
-              variants={fadeUp}
-              className="list-disc space-y-2 pl-6"
-            >
-              {children.map((item: any, itemIndex: number) => (
-                <li key={`${key}-item-${itemIndex}`}>
-                  {renderInlineChildren(
-                    item.children || [],
-                    `${key}-item-${itemIndex}`
-                  )}
-                </li>
-              ))}
-            </motion.ul>
-          );
+            return null;
+          })}
+        </motion.p>
+      );
+    });
+  }
 
-        default:
-          return (
-            <motion.p key={key} variants={fadeUp}>
-              {renderInlineChildren(children, key)}
-            </motion.p>
-          );
-      }
-    })
-    .filter(Boolean) as React.ReactNode[];
+  /*
+   * Fallback for plain strings / Markdown content.
+   *
+   * This is specifically what fixes the current content shown
+   * in the screenshot:
+   *
+   * [**View the location here**](https://maps.app.goo.gl/...)
+   */
+  if (typeof value === "string") {
+    return paragraphs(value).map((paragraph, index) => (
+      <motion.p key={`description-${index}`} variants={fadeUp}>
+        {renderMarkdownText(paragraph)}
+      </motion.p>
+    ));
+  }
+
+  return (
+    <motion.p variants={fadeUp}>
+      Property details will be available soon.
+    </motion.p>
+  );
 }
 
 function extractProject(property: Property): ProjectRelation | null {
@@ -299,7 +418,9 @@ export default function PropertyPageClient({
   property: Property;
 }) {
   if (!property) {
-    return <main className="min-h-screen bg-[#242124] text-[#F5F0E8]" />;
+    return (
+      <main className="min-h-screen bg-[#242124] text-[#F5F0E8]" />
+    );
   }
 
   const images = mediaArray(property.images);
@@ -311,15 +432,14 @@ export default function PropertyPageClient({
   const projectTitle = project?.Title || project?.title;
   const projectSlug = project?.slug;
 
-  const descriptionContent = renderRichText(property.description);
-
-  const label = property.vip
-    ? "VIP"
-    : property.marketing_label ||
-      property.marketing_tags ||
-      property.propertyType ||
-      property.prop_status ||
-      "Property";
+  const label =
+    property.vip
+      ? "VIP"
+      : property.marketing_label ||
+        property.marketing_tags ||
+        property.propertyType ||
+        property.prop_status ||
+        "Property";
 
   return (
     <main className="detail-page-main overflow-hidden bg-[#F5F0E8] text-[#242124]">
@@ -383,16 +503,31 @@ export default function PropertyPageClient({
 
       <section className="relative z-20 bg-[#F5F0E8] px-6 md:px-10">
         <motion.div
-          initial={{ opacity: 0, y: 28, filter: "blur(6px)" }}
-          animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
-          transition={{ delay: 0.18, duration: 0.9, ease: [0.16, 1, 0.3, 1] }}
+          initial={{
+            opacity: 0,
+            y: 28,
+            filter: "blur(6px)",
+          }}
+          animate={{
+            opacity: 1,
+            y: 0,
+            filter: "blur(0px)",
+          }}
+          transition={{
+            delay: 0.18,
+            duration: 0.9,
+            ease: [0.16, 1, 0.3, 1],
+          }}
           className="property-summary-bar relative mx-auto -mt-12 grid w-full max-w-6xl overflow-hidden bg-white shadow-[0_28px_95px_rgba(36,33,36,0.18)] md:grid-cols-4"
         >
           <div className="pointer-events-none absolute inset-x-0 top-0 h-[2px] overflow-hidden bg-[#C2A139]/14">
             <div className="property-summary-gold-line h-full w-1/3 bg-gradient-to-r from-transparent via-[#C2A139] to-transparent" />
           </div>
 
-          <SummaryItem label="Price" value={formatPropertyPrice(property)} />
+          <SummaryItem
+            label="Price"
+            value={formatPropertyPrice(property)}
+          />
           <SummaryItem
             label="Location"
             value={property.city || property.address || "Cyprus"}
@@ -401,7 +536,10 @@ export default function PropertyPageClient({
             label="Type"
             value={readable(property.propertyType) || "Residence"}
           />
-          <SummaryItem label="Area" value={areaValue(property, "Upon Request")} />
+          <SummaryItem
+            label="Area"
+            value={areaValue(property, "Upon Request")}
+          />
         </motion.div>
       </section>
 
@@ -422,13 +560,7 @@ export default function PropertyPageClient({
             </motion.p>
 
             <div className="space-y-5 text-sm leading-7 text-[#242124]/74 md:text-[0.95rem] md:leading-8">
-              {descriptionContent.length > 0 ? (
-                descriptionContent
-              ) : (
-                <motion.p variants={fadeUp}>
-                  Property details will be available soon.
-                </motion.p>
-              )}
+              {renderDescription(property.description)}
             </div>
           </motion.div>
 
@@ -481,7 +613,9 @@ export default function PropertyPageClient({
             <Spec
               icon={<Home />}
               label="Property Type"
-              value={readable(property.propertyType) || "Residence"}
+              value={
+                readable(property.propertyType) || "Residence"
+              }
             />
           </div>
 
@@ -491,7 +625,9 @@ export default function PropertyPageClient({
                 <EditorialImage
                   key={index}
                   src={mediaUrl(image)}
-                  alt={`${property.title || "Property"} gallery ${index + 1}`}
+                  alt={`${property.title || "Property"} gallery ${
+                    index + 1
+                  }`}
                   compact
                 />
               ))}
@@ -515,8 +651,8 @@ export default function PropertyPageClient({
 
             <div className="max-w-2xl text-sm leading-7 text-[#242124]/68 md:text-[0.95rem] md:leading-8">
               This residence belongs to one of our carefully selected
-              developments. View the full project to understand the wider
-              concept, location and available units.
+              developments. View the full project to understand the
+              wider concept, location and available units.
             </div>
           </div>
 
@@ -549,10 +685,12 @@ export default function PropertyPageClient({
         }
 
         .property-summary-gold-line {
-          animation: propertySummaryGoldSweep 4.8s cubic-bezier(0.65, 0, 0.35, 1)
-            infinite;
+          animation: propertySummaryGoldSweep
+            4.8s cubic-bezier(0.65, 0, 0.35, 1) infinite;
           opacity: 0.9;
-          filter: drop-shadow(0 0 8px rgba(194, 161, 57, 0.45));
+          filter: drop-shadow(
+            0 0 8px rgba(194, 161, 57, 0.45)
+          );
         }
 
         :global(body:has(.detail-page-main) #page-footer) {
@@ -567,6 +705,7 @@ export default function PropertyPageClient({
           0% {
             transform: translateX(-115%);
           }
+
           46%,
           100% {
             transform: translateX(320%);
@@ -577,7 +716,13 @@ export default function PropertyPageClient({
   );
 }
 
-function SummaryItem({ label, value }: { label: string; value: string }) {
+function SummaryItem({
+  label,
+  value,
+}: {
+  label: string;
+  value: string;
+}) {
   return (
     <div className="group relative border-b border-[#242124]/8 bg-white px-6 py-6 transition-colors duration-300 last:border-b-0 hover:bg-[#F5F0E8] md:border-b-0 md:border-r md:px-8 md:last:border-r-0">
       <div className="absolute inset-0 opacity-0 transition-opacity duration-300 group-hover:opacity-100">
@@ -615,7 +760,9 @@ function Spec({
 
       <div className="relative z-10">
         <div className="mb-7 flex h-11 w-11 items-center justify-center border border-[#C2A139]/34 bg-[#C2A139]/10 text-[#C2A139] transition-all duration-300 group-hover:bg-[#C2A139] group-hover:text-[#242124]">
-          <span className="[&>svg]:h-5 [&>svg]:w-5">{icon}</span>
+          <span className="[&>svg]:h-5 [&>svg]:w-5">
+            {icon}
+          </span>
         </div>
 
         <p className="mb-2 text-[9px] font-bold uppercase tracking-[0.28em] text-[#C2A139]/80">
@@ -646,7 +793,9 @@ function EditorialImage({
       viewport={{ once: true, margin: "-90px" }}
       variants={fadeUp}
       className={`relative overflow-hidden shadow-[0_28px_90px_rgba(36,33,36,0.18)] ${
-        compact ? "min-h-[280px]" : "min-h-[340px] md:min-h-[460px]"
+        compact
+          ? "min-h-[280px]"
+          : "min-h-[340px] md:min-h-[460px]"
       }`}
     >
       <Image
