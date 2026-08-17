@@ -113,26 +113,173 @@ function mediaArray(images: any): any[] {
   return Array.isArray(data) ? data : [data];
 }
 
-function extractText(value: any): string {
-  if (!value) return "";
-  if (typeof value === "string") return value.trim();
+/**
+ * Renders Strapi rich-text inline nodes while preserving links,
+ * formatting marks and normal text.
+ */
+function renderInlineChildren(children: any[], keyPrefix: string): React.ReactNode[] {
+  if (!Array.isArray(children)) return [];
 
-  if (Array.isArray(value)) {
-    return value
-      .map((block) => block.children?.map((child: any) => child.text).join("") || "")
-      .filter(Boolean)
-      .join("\n\n")
-      .trim();
-  }
+  return children.map((child: any, index: number) => {
+    const key = `${keyPrefix}-${index}`;
 
-  return "";
+    if (!child) return null;
+
+    // Strapi link node
+    if (child.type === "link") {
+      const url = child.url || "";
+
+      return (
+        <a
+          key={key}
+          href={url}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="font-semibold text-[#242124] underline decoration-[#C2A139] decoration-2 underline-offset-4 transition-colors duration-200 hover:text-[#C2A139]"
+        >
+          {renderInlineChildren(child.children || [], `${key}-link`)}
+        </a>
+      );
+    }
+
+    // Normal Strapi text node
+    if (child.type === "text" || typeof child.text === "string") {
+      let content: React.ReactNode = child.text || "";
+
+      if (child.bold) {
+        content = <strong>{content}</strong>;
+      }
+
+      if (child.italic) {
+        content = <em>{content}</em>;
+      }
+
+      if (child.underline) {
+        content = <u>{content}</u>;
+      }
+
+      if (child.strikethrough) {
+        content = <s>{content}</s>;
+      }
+
+      if (child.code) {
+        content = (
+          <code className="rounded bg-[#242124]/8 px-1.5 py-0.5 text-[0.9em]">
+            {content}
+          </code>
+        );
+      }
+
+      return <span key={key}>{content}</span>;
+    }
+
+    // Support nested nodes if Strapi provides them.
+    if (Array.isArray(child.children)) {
+      return (
+        <span key={key}>
+          {renderInlineChildren(child.children, `${key}-children`)}
+        </span>
+      );
+    }
+
+    return null;
+  });
 }
 
-function paragraphs(value?: any) {
-  return extractText(value)
-    .split(/\n{2,}|\r\n{2,}/)
-    .map((item) => item.trim())
-    .filter(Boolean);
+/**
+ * Renders Strapi rich-text blocks.
+ *
+ * The important part here is that Strapi link nodes are rendered
+ * as real <a> elements instead of having their URL stripped out.
+ */
+function renderRichText(value: any): React.ReactNode[] {
+  if (!value) return [];
+
+  // Fallback for plain string content.
+  if (typeof value === "string") {
+    return value
+      .split(/\n{2,}|\r\n{2,}/)
+      .map((paragraph, index) => {
+        const text = paragraph.trim();
+        if (!text) return null;
+
+        return (
+          <motion.p key={`paragraph-${index}`} variants={fadeUp}>
+            {text}
+          </motion.p>
+        );
+      })
+      .filter(Boolean) as React.ReactNode[];
+  }
+
+  if (!Array.isArray(value)) return [];
+
+  return value
+    .map((block: any, index: number) => {
+      if (!block) return null;
+
+      const key = `block-${index}`;
+      const children = Array.isArray(block.children) ? block.children : [];
+
+      switch (block.type) {
+        case "paragraph":
+          return (
+            <motion.p key={key} variants={fadeUp}>
+              {renderInlineChildren(children, key)}
+            </motion.p>
+          );
+
+        case "heading": {
+          const level = Math.min(Math.max(Number(block.level) || 2, 2), 6);
+          const HeadingTag = `h${level}` as keyof JSX.IntrinsicElements;
+
+          return (
+            <motion.div key={key} variants={fadeUp}>
+              <HeadingTag className="font-montserrat font-semibold text-[#242124]">
+                {renderInlineChildren(children, key)}
+              </HeadingTag>
+            </motion.div>
+          );
+        }
+
+        case "quote":
+          return (
+            <motion.blockquote
+              key={key}
+              variants={fadeUp}
+              className="border-l-2 border-[#C2A139] pl-5 italic text-[#242124]/72"
+            >
+              {renderInlineChildren(children, key)}
+            </motion.blockquote>
+          );
+
+        case "list":
+          return (
+            <motion.ul
+              key={key}
+              variants={fadeUp}
+              className="list-disc space-y-2 pl-6"
+            >
+              {children.map((item: any, itemIndex: number) => (
+                <li key={`${key}-item-${itemIndex}`}>
+                  {renderInlineChildren(
+                    item.children || [],
+                    `${key}-item-${itemIndex}`
+                  )}
+                </li>
+              ))}
+            </motion.ul>
+          );
+
+        default:
+          return (
+            <motion.p key={key} variants={fadeUp}>
+              {renderInlineChildren(children, key)}
+            </motion.p>
+          );
+      }
+    })
+    .filter(Boolean) as React.ReactNode[];
 }
 
 function extractProject(property: Property): ProjectRelation | null {
@@ -146,7 +293,11 @@ function extractProject(property: Property): ProjectRelation | null {
   return raw.data || raw.attributes || raw;
 }
 
-export default function PropertyPageClient({ property }: { property: Property }) {
+export default function PropertyPageClient({
+  property,
+}: {
+  property: Property;
+}) {
   if (!property) {
     return <main className="min-h-screen bg-[#242124] text-[#F5F0E8]" />;
   }
@@ -160,15 +311,15 @@ export default function PropertyPageClient({ property }: { property: Property })
   const projectTitle = project?.Title || project?.title;
   const projectSlug = project?.slug;
 
-  const descriptionParagraphs = paragraphs(property.description);
-  const label =
-    property.vip
-      ? "VIP"
-      : property.marketing_label ||
-        property.marketing_tags ||
-        property.propertyType ||
-        property.prop_status ||
-        "Property";
+  const descriptionContent = renderRichText(property.description);
+
+  const label = property.vip
+    ? "VIP"
+    : property.marketing_label ||
+      property.marketing_tags ||
+      property.propertyType ||
+      property.prop_status ||
+      "Property";
 
   return (
     <main className="detail-page-main overflow-hidden bg-[#F5F0E8] text-[#242124]">
@@ -189,15 +340,26 @@ export default function PropertyPageClient({ property }: { property: Property })
         <div className="absolute bottom-0 left-0 h-[58%] w-full bg-gradient-to-t from-[#242124] via-[#242124]/76 to-transparent" />
 
         <div className="relative mx-auto w-full max-w-7xl">
-          <motion.div initial="hidden" animate="visible" variants={stagger} className="max-w-5xl">
+          <motion.div
+            initial="hidden"
+            animate="visible"
+            variants={stagger}
+            className="max-w-5xl"
+          >
             <motion.div variants={fadeUp}>
-              <Link href="/properties" className="mb-7 inline-flex items-center gap-3 border border-[#C2A139]/44 bg-[#242124]/62 px-4 py-2.5 text-[10px] font-bold uppercase tracking-[0.28em] text-[#C2A139] shadow-[0_12px_36px_rgba(0,0,0,0.34)] backdrop-blur-md transition-all duration-300 hover:border-[#C2A139] hover:bg-[#C2A139] hover:text-[#242124]">
+              <Link
+                href="/properties"
+                className="mb-7 inline-flex items-center gap-3 border border-[#C2A139]/44 bg-[#242124]/62 px-4 py-2.5 text-[10px] font-bold uppercase tracking-[0.28em] text-[#C2A139] shadow-[0_12px_36px_rgba(0,0,0,0.34)] backdrop-blur-md transition-all duration-300 hover:border-[#C2A139] hover:bg-[#C2A139] hover:text-[#242124]"
+              >
                 <ChevronLeft className="h-4 w-4" />
                 Properties
               </Link>
             </motion.div>
 
-            <motion.div variants={fadeUp} className="mb-5 flex flex-wrap gap-3">
+            <motion.div
+              variants={fadeUp}
+              className="mb-5 flex flex-wrap gap-3"
+            >
               <span className="border border-[#C2A139]/58 bg-[#242124]/72 px-4 py-2 text-[10px] font-bold uppercase tracking-[0.28em] text-[#C2A139] shadow-[0_12px_34px_rgba(0,0,0,0.34)] backdrop-blur-md">
                 {readable(label)}
               </span>
@@ -209,7 +371,10 @@ export default function PropertyPageClient({ property }: { property: Property })
               )}
             </motion.div>
 
-            <motion.h1 variants={fadeUp} className="max-w-5xl font-montserrat text-[clamp(2.35rem,5.05vw,5.35rem)] font-bold leading-[0.98] tracking-[-0.065em] text-[#F5F0E8] drop-shadow-[0_16px_44px_rgba(0,0,0,0.72)]">
+            <motion.h1
+              variants={fadeUp}
+              className="max-w-5xl font-montserrat text-[clamp(2.35rem,5.05vw,5.35rem)] font-bold leading-[0.98] tracking-[-0.065em] text-[#F5F0E8] drop-shadow-[0_16px_44px_rgba(0,0,0,0.72)]"
+            >
               {property.title}
             </motion.h1>
           </motion.div>
@@ -228,59 +393,107 @@ export default function PropertyPageClient({ property }: { property: Property })
           </div>
 
           <SummaryItem label="Price" value={formatPropertyPrice(property)} />
-          <SummaryItem label="Location" value={property.city || property.address || "Cyprus"} />
-          <SummaryItem label="Type" value={readable(property.propertyType) || "Residence"} />
+          <SummaryItem
+            label="Location"
+            value={property.city || property.address || "Cyprus"}
+          />
+          <SummaryItem
+            label="Type"
+            value={readable(property.propertyType) || "Residence"}
+          />
           <SummaryItem label="Area" value={areaValue(property, "Upon Request")} />
         </motion.div>
       </section>
 
       <section className="bg-[#F5F0E8] px-6 py-16 md:px-10 md:py-20">
         <div className="mx-auto grid w-full max-w-7xl gap-12 lg:grid-cols-[0.95fr_1.05fr] lg:items-center lg:gap-20">
-          <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-90px" }} variants={stagger} className="max-w-2xl">
-            <motion.p variants={fadeUp} className="mb-5 text-[10px] font-bold uppercase tracking-[0.3em] text-[#C2A139]">
+          <motion.div
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, margin: "-90px" }}
+            variants={stagger}
+            className="max-w-2xl"
+          >
+            <motion.p
+              variants={fadeUp}
+              className="mb-5 text-[10px] font-bold uppercase tracking-[0.3em] text-[#C2A139]"
+            >
               Property Overview
             </motion.p>
 
             <div className="space-y-5 text-sm leading-7 text-[#242124]/74 md:text-[0.95rem] md:leading-8">
-              {descriptionParagraphs.length > 0 ? (
-                descriptionParagraphs.map((paragraph) => (
-                  <motion.p key={paragraph} variants={fadeUp}>
-                    {paragraph}
-                  </motion.p>
-                ))
+              {descriptionContent.length > 0 ? (
+                descriptionContent
               ) : (
-                <motion.p variants={fadeUp}>Property details will be available soon.</motion.p>
+                <motion.p variants={fadeUp}>
+                  Property details will be available soon.
+                </motion.p>
               )}
             </div>
           </motion.div>
 
-          <EditorialImage src={sideImage} alt={property.title || "Property interior"} />
+          <EditorialImage
+            src={sideImage}
+            alt={property.title || "Property interior"}
+          />
         </div>
       </section>
 
       <section className="bg-[#242124] px-6 py-16 text-[#F5F0E8] md:px-10 md:py-20">
         <div className="mx-auto w-full max-w-7xl">
-          <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-90px" }} variants={stagger}>
-            <motion.p variants={fadeUp} className="mb-4 text-[10px] font-bold uppercase tracking-[0.3em] text-[#C2A139]">
+          <motion.div
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, margin: "-90px" }}
+            variants={stagger}
+          >
+            <motion.p
+              variants={fadeUp}
+              className="mb-4 text-[10px] font-bold uppercase tracking-[0.3em] text-[#C2A139]"
+            >
               Details
             </motion.p>
 
-            <motion.h2 variants={fadeUp} className="font-montserrat text-[clamp(2rem,3.5vw,4rem)] font-bold leading-[1.02] tracking-[-0.055em] text-[#F5F0E8]">
+            <motion.h2
+              variants={fadeUp}
+              className="font-montserrat text-[clamp(2rem,3.5vw,4rem)] font-bold leading-[1.02] tracking-[-0.055em] text-[#F5F0E8]"
+            >
               Residence Specifications
             </motion.h2>
           </motion.div>
 
           <div className="mt-10 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-            <Spec icon={<BedDouble />} label="Bedrooms" value={bedroomValue(property)} />
-            <Spec icon={<Bath />} label="Bathrooms" value={bathroomValue(property)} />
-            <Spec icon={<Ruler />} label="Area" value={areaValue(property)} />
-            <Spec icon={<Home />} label="Property Type" value={readable(property.propertyType) || "Residence"} />
+            <Spec
+              icon={<BedDouble />}
+              label="Bedrooms"
+              value={bedroomValue(property)}
+            />
+            <Spec
+              icon={<Bath />}
+              label="Bathrooms"
+              value={bathroomValue(property)}
+            />
+            <Spec
+              icon={<Ruler />}
+              label="Area"
+              value={areaValue(property)}
+            />
+            <Spec
+              icon={<Home />}
+              label="Property Type"
+              value={readable(property.propertyType) || "Residence"}
+            />
           </div>
 
           {galleryImages.length > 0 && (
             <div className="mt-12 grid gap-4 md:grid-cols-3">
               {galleryImages.map((image, index) => (
-                <EditorialImage key={index} src={mediaUrl(image)} alt={`${property.title || "Property"} gallery ${index + 1}`} compact />
+                <EditorialImage
+                  key={index}
+                  src={mediaUrl(image)}
+                  alt={`${property.title || "Property"} gallery ${index + 1}`}
+                  compact
+                />
               ))}
             </div>
           )}
@@ -301,17 +514,25 @@ export default function PropertyPageClient({ property }: { property: Property })
             </div>
 
             <div className="max-w-2xl text-sm leading-7 text-[#242124]/68 md:text-[0.95rem] md:leading-8">
-              This residence belongs to one of our carefully selected developments. View the full project to understand the wider concept, location and available units.
+              This residence belongs to one of our carefully selected
+              developments. View the full project to understand the wider
+              concept, location and available units.
             </div>
           </div>
 
           <div className="mx-auto mt-10 flex w-full max-w-7xl flex-col gap-3 border-t border-[#242124]/10 pt-8 sm:flex-row">
-            <Link href={`/projects/${projectSlug}`} className="group inline-flex items-center justify-center gap-3 bg-[#242124] px-6 py-4 text-[11px] font-bold uppercase tracking-[0.22em] text-[#F5F0E8] transition-all duration-300 hover:bg-[#C2A139] hover:text-[#242124]">
+            <Link
+              href={`/projects/${projectSlug}`}
+              className="group inline-flex items-center justify-center gap-3 bg-[#242124] px-6 py-4 text-[11px] font-bold uppercase tracking-[0.22em] text-[#F5F0E8] transition-all duration-300 hover:bg-[#C2A139] hover:text-[#242124]"
+            >
               View Project
               <ArrowUpRight className="h-4 w-4" />
             </Link>
 
-            <a href="mailto:info@tmsestates.com" className="group inline-flex items-center justify-center gap-3 border border-[#242124]/18 px-6 py-4 text-[11px] font-bold uppercase tracking-[0.22em] text-[#242124] transition-all duration-300 hover:border-[#C2A139] hover:text-[#C2A139]">
+            <a
+              href="mailto:info@tmsestates.com"
+              className="group inline-flex items-center justify-center gap-3 border border-[#242124]/18 px-6 py-4 text-[11px] font-bold uppercase tracking-[0.22em] text-[#242124] transition-all duration-300 hover:border-[#C2A139] hover:text-[#C2A139]"
+            >
               Request Details
               <Mail className="h-4 w-4" />
             </a>
@@ -328,7 +549,8 @@ export default function PropertyPageClient({ property }: { property: Property })
         }
 
         .property-summary-gold-line {
-          animation: propertySummaryGoldSweep 4.8s cubic-bezier(0.65, 0, 0.35, 1) infinite;
+          animation: propertySummaryGoldSweep 4.8s cubic-bezier(0.65, 0, 0.35, 1)
+            infinite;
           opacity: 0.9;
           filter: drop-shadow(0 0 8px rgba(194, 161, 57, 0.45));
         }
@@ -367,13 +589,23 @@ function SummaryItem({ label, value }: { label: string; value: string }) {
           {label}
         </p>
 
-        <p className="text-sm font-semibold leading-6 text-[#242124]">{value}</p>
+        <p className="text-sm font-semibold leading-6 text-[#242124]">
+          {value}
+        </p>
       </div>
     </div>
   );
 }
 
-function Spec({ icon, label, value }: { icon: React.ReactNode; label: string; value: string }) {
+function Spec({
+  icon,
+  label,
+  value,
+}: {
+  icon: React.ReactNode;
+  label: string;
+  value: string;
+}) {
   return (
     <div className="group relative min-h-[170px] overflow-hidden border border-[#F5F0E8]/12 bg-[#05070B]/22 p-6 transition-all duration-300 hover:border-[#C2A139]/55 hover:bg-[#05070B]/34">
       <div className="absolute inset-0 opacity-0 transition-opacity duration-300 group-hover:opacity-100">
@@ -417,7 +649,13 @@ function EditorialImage({
         compact ? "min-h-[280px]" : "min-h-[340px] md:min-h-[460px]"
       }`}
     >
-      <Image src={src} alt={alt} fill sizes="(max-width: 1024px) 100vw, 48vw" className="object-cover" />
+      <Image
+        src={src}
+        alt={alt}
+        fill
+        sizes="(max-width: 1024px) 100vw, 48vw"
+        className="object-cover"
+      />
       <div className="absolute inset-0 bg-gradient-to-t from-[#242124]/34 via-transparent to-transparent" />
       <div className="absolute inset-x-0 bottom-0 h-[2px] bg-gradient-to-r from-transparent via-[#C2A139]/70 to-transparent" />
     </motion.div>
