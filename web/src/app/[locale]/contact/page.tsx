@@ -46,8 +46,8 @@ export default function ContactPage() {
       {
         icon: Phone,
         label: "Telephone",
-        value: `${telephoneNumber}`,
-        href: `tel: ${telephoneNumber}`,
+        value: `+357 ${telephoneNumber}`,
+        href: `tel: +357 ${telephoneNumber}`,
       },
       {
         icon: MessageCircle,
