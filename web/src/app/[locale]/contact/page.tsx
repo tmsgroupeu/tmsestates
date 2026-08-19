@@ -18,6 +18,7 @@ import { Link } from "@/i18n/routing";
 
 const contactEmail = "info@tmsestates.com";
 const whatsappNumber = "35799875500";
+const telephoneNumber = "70070085";
 
 const inquiryTypes = [
   "Property availability",
@@ -41,6 +42,12 @@ export default function ContactPage() {
         label: "Email",
         value: contactEmail,
         href: `mailto:${contactEmail}`,
+      },
+      {
+        icon: Phone,
+        label: "Telephone",
+        value: `+357 ${telephoneNumber}`,
+        href: `tel:+357${telephoneNumber}`,
       },
       {
         icon: MessageCircle,
@@ -162,6 +169,14 @@ export default function ContactPage() {
                 >
                   <Mail className="h-4 w-4 text-[#C2A139]" />
                   Email Us
+                </a>
+
+                <a
+                  href={`tel:+357${telephoneNumber}`}
+                  className="inline-flex items-center gap-3 border border-[#F5F0E8]/14 bg-[#242124]/72 px-4 py-3 text-xs font-bold uppercase tracking-[0.18em] text-[#F5F0E8]/82 transition-colors hover:border-[#C2A139]/60 hover:text-[#C2A139]"
+                >
+                  <Phone className="h-4 w-4 text-[#C2A139]" />
+                  Call Us
                 </a>
 
                 <a
