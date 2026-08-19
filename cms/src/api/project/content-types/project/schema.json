@@ -27,6 +27,9 @@
     "Location": {
   "type": "string"
 },
+    "locationLink": {
+      "type": "string"
+    },
 "Scale": {
   "type": "string"
 },
