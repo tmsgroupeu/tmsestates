@@ -152,6 +152,8 @@ export default function ProjectPageClient({ project }: { project: any }) {
     p.city,
     "Cyprus",
   );
+  const locationLink = firstDefined(p.locationLink, p.LocationLink, "");
+  
   const status = firstDefined(
     p.CompletionStatus,
     p.completionStatus,
@@ -236,7 +238,7 @@ export default function ProjectPageClient({ project }: { project: any }) {
             <div className="project-meta-gold-line h-full w-1/3 bg-gradient-to-r from-transparent via-[#C2A139] to-transparent" />
           </div>
 
-          <ProjectMeta icon={<MapPin />} label="Location" value={location} />
+          <ProjectMeta icon={<MapPin />} label="Location" value={location} href={locationLink} />
           {status && <ProjectMeta icon={<CalendarClock />} label="Status" value={status} />}
           {scale && <ProjectMeta icon={<Ruler />} label="Available Units" value={scale} />}
         </motion.div>
@@ -488,10 +490,12 @@ function ProjectMeta({
   icon,
   label,
   value,
+  href,
 }: {
   icon: React.ReactNode;
   label: string;
   value: string;
+  href?: string | null;
 }) {
   return (
     <div className="group relative border-b border-[#242124]/8 bg-white px-6 py-6 transition-colors duration-300 last:border-b-0 hover:bg-[#F5F0E8] md:border-b-0 md:border-r md:px-8 md:last:border-r-0">
@@ -508,7 +512,21 @@ function ProjectMeta({
           {label}
         </p>
 
-        <p className="text-sm font-semibold leading-6 text-[#242124]">{value}</p>
+        <p className="text-sm font-semibold leading-6 text-[#242124]">
+          {href ? (
+            <a
+              href={href}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="transition-colors duration-300 hover:text-[#C2A139] underline decoration-[#C2A139]/40 decoration-2 underline-offset-4"
+            >
+              {value}
+              <ArrowUpRight className="inline-block h-3.5 w-3.5 ml-1 mb-0.5" />
+            </a>
+          ) : (
+            value
+          )}
+        </p>
       </div>
     </div>
   );
