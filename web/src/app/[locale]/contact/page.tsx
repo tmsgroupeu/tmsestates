@@ -57,9 +57,9 @@ export default function ContactPage() {
       },
       {
         icon: MapPin,
-        label: "Market",
-        value: "Cyprus Real Estate",
-        href: "/projects",
+        label: "Office",
+        value: "Onisilou 4, LORDOS KANTARA BLD, Block A, Agios Tychonas, 4532",
+        href: "https://maps.app.goo.gl/zMEyDKpLkzyuZd249",
       },
     ],
     [],
@@ -224,7 +224,7 @@ export default function ContactPage() {
                         <span className="block text-[10px] font-bold uppercase tracking-[0.24em] text-[#C2A139]/82">
                           {item.label}
                         </span>
-                        <span className="mt-1 block truncate text-sm font-semibold text-[#F5F0E8]/82">
+                        <span className="mt-1 block text-sm font-semibold leading-5 text-[#F5F0E8]/82">
                           {item.value}
                         </span>
                       </span>
