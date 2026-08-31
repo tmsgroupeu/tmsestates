@@ -30,11 +30,11 @@ function TikTokIcon({ className }: { className?: string }) {
 }
 
 const socialLinks = [
-  {
-    label: "Facebook",
-    href: "https://www.facebook.com/people/TMS-Estates",
-    Icon: Facebook,
-  },
+  // {
+  //   label: "Facebook",
+  //   href: "https://www.facebook.com/people/TMS-Estates",
+  //   Icon: Facebook,
+  // },
   {
     label: "Instagram",
     href: "https://www.instagram.com/tmsestates/",
