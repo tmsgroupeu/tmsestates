@@ -31,14 +31,9 @@ function TikTokIcon({ className }: { className?: string }) {
 
 const socialLinks = [
   {
-    label: "LinkedIn",
-    href: "https://www.linkedin.com/company/tms-estates/",
-    Icon: Linkedin,
-  },
-  {
-    label: "TikTok",
-    href: "https://www.tiktok.com/@tms.estates?_r=1&_t=ZN-97Tlo9SHLNO",
-    Icon: TikTokIcon,
+    label: "Facebook",
+    href: "https://www.facebook.com/people/TMS-Estates",
+    Icon: Facebook,
   },
   {
     label: "Instagram",
@@ -46,9 +41,14 @@ const socialLinks = [
     Icon: Instagram,
   },
   {
-    label: "Facebook",
-    href: "https://www.facebook.com/people/TMS-Estates",
-    Icon: Facebook,
+    label: "TikTok",
+    href: "https://www.tiktok.com/@tms.estates?_r=1&_t=ZN-97Tlo9SHLNO",
+    Icon: TikTokIcon,
+  },
+  {
+    label: "LinkedIn",
+    href: "https://www.linkedin.com/company/tms-estates/",
+    Icon: Linkedin,
   },
 ];
 
