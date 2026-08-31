@@ -162,7 +162,7 @@ export default function Footer() {
               reserved.
             </p>
 
-            <div className="order-1 flex items-center gap-3 sm:order-2 sm:absolute sm:left-1/2 sm:-translate-x-1/2">
+            <div className="order-1 flex items-center gap-2.5 sm:order-2 sm:absolute sm:left-1/2 sm:-translate-x-1/2">
               {socialLinks.map(({ label, href, Icon }) => (
                 <a
                   key={label}
@@ -170,9 +170,10 @@ export default function Footer() {
                   target="_blank"
                   rel="noopener noreferrer"
                   aria-label={label}
-                  className="group relative flex h-9 w-9 items-center justify-center overflow-hidden rounded-full border border-[#C2A139]/40 bg-[#F5F0E8]/[0.03] text-[#F5F0E8]/70 transition-all duration-500 hover:-translate-y-0.5 hover:border-[#C2A139] hover:bg-[#C2A139] hover:text-[#242124] hover:shadow-[0_14px_34px_rgba(194,161,57,0.24)]"
+                  className="group relative flex h-9 w-9 items-center justify-center overflow-hidden border border-[#C2A139]/40 bg-[#F5F0E8]/[0.03] text-[#F5F0E8]/70 transition-all duration-500 hover:-translate-y-0.5 hover:border-[#C2A139] hover:bg-[#C2A139] hover:text-[#242124] hover:shadow-[0_14px_34px_rgba(194,161,57,0.24)]"
                 >
-                  <Icon className="h-4 w-4 transition-transform duration-500 group-hover:scale-110" />
+                  <span className="pointer-events-none absolute inset-y-0 left-0 w-[2px] bg-[#C2A139] transition-all duration-500 group-hover:w-full" />
+                  <Icon className="relative z-10 h-4 w-4 transition-transform duration-500 group-hover:scale-110" />
                 </a>
               ))}
             </div>
