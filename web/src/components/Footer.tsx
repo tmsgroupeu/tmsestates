@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { ArrowRight, ArrowUpRight } from "lucide-react";
+import { ArrowRight, ArrowUpRight, Facebook, Instagram, Linkedin } from "lucide-react";
 import { Link } from "@/i18n/routing";
 
 const primaryLinks = [
@@ -14,6 +14,42 @@ const primaryLinks = [
 const secondaryLinks = [
   { label: "Privacy Policy", href: "/privacy-policy" },
   { label: "Terms of Use", href: "/terms-of-use" },
+];
+
+function TikTokIcon({ className }: { className?: string }) {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      fill="currentColor"
+      className={className}
+      aria-hidden="true"
+    >
+      <path d="M16.8 2h-3.3v13.2c0 1.53-1.24 2.79-2.79 2.79a2.79 2.79 0 0 1-2.79-2.79c0-1.54 1.25-2.79 2.79-2.79.25 0 .49.03.72.1V9.1a6.1 6.1 0 0 0-.72-.04A6.13 6.13 0 0 0 4.6 15.2a6.13 6.13 0 0 0 6.11 6.12 6.13 6.13 0 0 0 6.11-6.12V8.36a8.3 8.3 0 0 0 4.68 1.44V6.5a5 5 0 0 1-4.7-4.5Z" />
+    </svg>
+  );
+}
+
+const socialLinks = [
+  {
+    label: "LinkedIn",
+    href: "https://www.linkedin.com/company/tms-estates/",
+    Icon: Linkedin,
+  },
+  {
+    label: "TikTok",
+    href: "https://www.tiktok.com/@tms.estates?_r=1&_t=ZN-97Tlo9SHLNO",
+    Icon: TikTokIcon,
+  },
+  {
+    label: "Instagram",
+    href: "https://www.instagram.com/tmsestates/",
+    Icon: Instagram,
+  },
+  {
+    label: "Facebook",
+    href: "https://www.facebook.com/people/TMS-Estates",
+    Icon: Facebook,
+  },
 ];
 
 export default function Footer() {
@@ -120,13 +156,28 @@ export default function Footer() {
             </div>
           </div>
 
-          <div className="flex flex-col gap-4 pt-6 text-xs text-[#F5F0E8]/46 sm:flex-row sm:items-center sm:justify-between">
-            <p>
+          <div className="relative flex flex-col items-center gap-6 pt-6 text-xs text-[#F5F0E8]/46 sm:flex-row sm:justify-between">
+            <p className="order-2 sm:order-1">
               &copy; {new Date().getFullYear()} TMS ESTATES. All rights
               reserved.
             </p>
 
-            <p className="uppercase tracking-[0.22em]">
+            <div className="order-1 flex items-center gap-3 sm:order-2 sm:absolute sm:left-1/2 sm:-translate-x-1/2">
+              {socialLinks.map(({ label, href, Icon }) => (
+                <a
+                  key={label}
+                  href={href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label={label}
+                  className="group relative flex h-9 w-9 items-center justify-center overflow-hidden rounded-full border border-[#C2A139]/40 bg-[#F5F0E8]/[0.03] text-[#F5F0E8]/70 transition-all duration-500 hover:-translate-y-0.5 hover:border-[#C2A139] hover:bg-[#C2A139] hover:text-[#242124] hover:shadow-[0_14px_34px_rgba(194,161,57,0.24)]"
+                >
+                  <Icon className="h-4 w-4 transition-transform duration-500 group-hover:scale-110" />
+                </a>
+              ))}
+            </div>
+
+            <p className="order-3 uppercase tracking-[0.22em]">
               Real Estate Development · Cyprus
             </p>
           </div>
