@@ -1,0 +1,40 @@
+{
+  "kind": "collectionType",
+  "collectionName": "page_seos",
+  "info": {
+    "singularName": "page-seo",
+    "pluralName": "page-seos",
+    "displayName": "Page SEO",
+    "description": "SEO metadata for fixed website pages"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "name": {
+      "type": "string",
+      "required": true
+    },
+    "pageKey": {
+      "type": "enumeration",
+      "required": true,
+      "enum": [
+        "home",
+        "about",
+        "projects",
+        "properties",
+        "invest",
+        "insights",
+        "contact",
+        "privacy_policy",
+        "terms_of_use"
+      ]
+    },
+    "seo": {
+      "type": "component",
+      "component": "shared.seo",
+      "repeatable": false
+    }
+  }
+}
