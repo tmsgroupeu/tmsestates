@@ -1,5 +1,6 @@
 /* UPDATED: src/app/[locale]/layout.tsx */
 import type { Metadata } from "next";
+import Script from "next/script";
 import { Inter, Montserrat } from "next/font/google";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
@@ -45,6 +46,12 @@ export default async function LocaleLayout({ children, params }: Props) {
       className={`${inter.variable} ${montserrat.variable} scroll-smooth`}
     >
       <body>
+        <Script
+          id="cookieyes"
+          src="https://cdn-cookieyes.com/client_data/152e376bf1e0ea7f9827516e01983890/script.js"
+          strategy="beforeInteractive"
+        />
+
         <NextIntlClientProvider messages={messages}>
           <Header locale={locale} />
           <main>{children}</main>
