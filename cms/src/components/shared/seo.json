@@ -1,0 +1,33 @@
+{
+  "collectionName": "components_shared_seos",
+  "info": {
+    "displayName": "SEO",
+    "description": "Search engine and social sharing metadata"
+  },
+  "options": {},
+  "attributes": {
+    "metaTitle": {
+      "type": "string",
+      "maxLength": 65
+    },
+    "metaDescription": {
+      "type": "text",
+      "maxLength": 160
+    },
+    "socialTitle": {
+      "type": "string",
+      "maxLength": 100
+    },
+    "socialDescription": {
+      "type": "text",
+      "maxLength": 250
+    },
+    "socialImage": {
+      "type": "media",
+      "multiple": false,
+      "allowedTypes": [
+        "images"
+      ]
+    }
+  }
+}
