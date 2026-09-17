@@ -104,6 +104,11 @@
       "relation": "manyToOne",
       "target": "api::project.project",
       "inversedBy": "properties"
-    }
+    },
+    "seo": {
+        "type": "component",
+        "component": "shared.seo",
+        "repeatable": false
+}
   }
 }

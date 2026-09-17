@@ -59,6 +59,12 @@
       "relation": "oneToMany",
       "target": "api::property.property",
       "mappedBy": "project"
-    }
+    },
+    "seo": {
+  "type": "component",
+  "component": "shared.seo",
+  "repeatable": false
+}
+      
   }
 }
